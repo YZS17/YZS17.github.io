@@ -1,0 +1,243 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WAFPecker-XU17 | XU17</title>
+<link rel="shortcut icon" href="https://yzs17.github.io/favicon.ico?v=1734794530690">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://yzs17.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="WAFPecker-XU17 | XU17 - Atom Feed" href="https://yzs17.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+GitHub Address: [WAFPecker](YZS17/WAFPecker: A tool for bypassing SSTI-WAF used in CTF in conjunction with fenjing. (gi..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://yzs17.github.io">
+  <img class="avatar" src="https://yzs17.github.io/images/avatar.png?v=1734794530690" alt="">
+  </a>
+  <h1 class="site-title">
+    XU17
+  </h1>
+  <p class="site-description">
+    Follow the light but walk on the darkest path
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/YZS17" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              WAFPecker-XU17
+            </h2>
+            <div class="post-info">
+              <span>
+                2024-12-21
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412212320170.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <blockquote>
+<p><strong>GitHub Address: [WAFPecker](<a href="https://github.com/YZS17/WAFPecker">YZS17/WAFPecker: A tool for bypassing SSTI-WAF used in CTF in conjunction with fenjing. (github.com)</a>)</strong></p>
+</blockquote>
+<h3 id="introduction">Introduction</h3>
+<ul>
+<li>
+<p><code>A tool for bypassing SSTI-WAF used in CTF in conjunction with fenjing.</code></p>
+</li>
+<li>
+<p>SSTI vulnerability is a common problem in the Web direction of CTF, in many cases we can get the source code, so as to obtain the WAF blacklist information, this time we need to bypass according to the blacklist, and fenjing can not be used directly at all times, he needs to judge whether the payload is valid according to the response. However, the topic is often designed to have no echo, at this time we need to modify the source code, add echo, and then use fenjing tools.</p>
+</li>
+<li>
+<p>WAFPecker is a project written to solve this kind of situation. By directly entering a Blacklist, you can simulate the testable environment of fenjing, and cooperate with fenjing to generate a valid payload in the fastest way. Hope that this tool can give your some help.</p>
+</li>
+<li>
+<p>Good Luck for you! Have fun in your CTF game!</p>
+</li>
+</ul>
+<h3 id="usage">Usage</h3>
+<h4 id="project-structure">Project Structure</h4>
+<pre><code class="language-/your_project_directory">/WAFPecker    
+    app.py       //run this file to use this tool
+    __init__.py
+    views.py
+    waf.py   //POST,you can also change to GET
+    blacklist.txt   //write your WAF blacklist in  this file.
+    requirement.txt 
+</code></pre>
+<h4 id="detailed-usage-steps">Detailed Usage Steps</h4>
+<ul>
+<li>
+<p><code>Open the blacklist.txt file, write your WAF blacklist in it like the example below.</code></p>
+<pre><code>[&quot;os&quot;, &quot;system&quot;, &quot;eval&quot;, 'setstate', &quot;globals&quot;, 'exec', '__builtins__', 'template', 'render', '\\','compile', 'requests', 'exit',  'pickle',&quot;class&quot;,&quot;mro&quot;,&quot;flask&quot;,&quot;sys&quot;,&quot;base&quot;,&quot;init&quot;,&quot;config&quot;,&quot;session&quot;]
+</code></pre>
+</li>
+<li>
+<p><code>Then run the app.py</code></p>
+<figure data-type="image" tabindex="1"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412212237301.png" alt="image-20241221223751030" loading="lazy"></figure>
+</li>
+<li>
+<p><code>Open http://127.0.0.1:5000</code></p>
+<figure data-type="image" tabindex="2"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412212240089.png" alt="image-20241221224045869" loading="lazy"></figure>
+<h4 id="in-conjunction-with-fenjing">In conjunction with fenjing</h4>
+</li>
+<li>
+<p><code>Run 'fenjing webui' in your teminal.</code></p>
+</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412212232566.png" alt="image-20241221223237433" loading="lazy"></figure>
+<ul>
+<li><code>At last , We can optain the payload that can bypass the WAF.</code></li>
+</ul>
+<pre><code>{%set iq='so'[::-1]%}{{cycler.next['__g''lobals__']['_''_builtins__'].__import__(iq).popen('ls').read()}}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#usage">Usage</a>
+<ul>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#detailed-usage-steps">Detailed Usage Steps</a></li>
+<li><a href="#in-conjunction-with-fenjing">In conjunction with fenjing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://yzs17.github.io/post/2024-chu-hui-bei-l-zu-xu17-dui/">
+              <h3 class="post-title">
+                2024-楚慧杯-Writeup-XU17
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/YZS17" target="_blank">XU17</a>
+  <a class="rss" href="https://yzs17.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

