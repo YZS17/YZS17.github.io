@@ -19,21 +19,23 @@
   <meta name="author" content="XU17">
   <meta name="keywords" content="">
   
-    <meta name="description" content="XU17 Follow the light but walk on the darkest path.   无人问津也好，技不如人也罢，  你都要试着安静下来，去做自己该做的事，  而不是让内心烦躁、焦虑，毁掉你本就不多的热情和定力.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="关于">
-<meta property="og:url" content="https://xu17.top/about/index.html">
+    <meta name="description" content="ThinkPHP反序列化漏洞学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThinkPHP反序列化漏洞学习">
+<meta property="og:url" content="https://xu17.top/2024/12/31/ThinkPHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="XU17">
-<meta property="og:description" content="XU17 Follow the light but walk on the darkest path.   无人问津也好，技不如人也罢，  你都要试着安静下来，去做自己该做的事，  而不是让内心烦躁、焦虑，毁掉你本就不多的热情和定力.">
+<meta property="og:description" content="ThinkPHP反序列化漏洞学习">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-20T09:20:00.000Z">
-<meta property="article:modified_time" content="2025-01-01T17:42:29.217Z">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412271312358.png">
+<meta property="article:published_time" content="2024-12-31T13:20:00.000Z">
+<meta property="article:modified_time" content="2024-12-31T17:04:54.662Z">
 <meta property="article:author" content="XU17">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412271312358.png">
   
   
   
-  <title>关于 - XU17</title>
+  <title>ThinkPHP反序列化漏洞学习 - XU17</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -106,7 +108,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 60vh;">
+<div class="header-inner" style="height: 70vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -218,15 +220,64 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412281014683.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412271312358.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="关于"></span>
+            <span id="subtitle" data-typed-text="ThinkPHP反序列化漏洞学习"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-31 21:20" pubdate>
+          2024年12月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          105 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          1 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
 
         
       </div>
@@ -242,86 +293,194 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div id="board"
-          >
-          
-            <div class="about-avatar">
-              <img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412222328446.jpg" srcset="/img/loading.gif" lazyload class="img-fluid" alt="avatar">
-            </div>
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
+      
 
-<div class="text-center">
-  <div class="about-info">
-    <div class="about-name">XU17</div>
-    <div class="about-intro">XU17's Blog</div>
-    <div class="about-icons">
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
       
-        
-        
-        
-        <a href=https://github.com/YZS17 class="
-           hint--bottom hint--rounded"
-           aria-label="GitHub"
-           target="_blank"
-        >
-          <i class="iconfont icon-github-fill" aria-hidden="true"></i>
-          
-        </a>
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ThinkPHP反序列化漏洞学习</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="ThinkPHP反序列化漏洞学习"><a href="#ThinkPHP反序列化漏洞学习" class="headerlink" title="ThinkPHP反序列化漏洞学习"></a>ThinkPHP反序列化漏洞学习</h1><h2 id="1-环境搭建"><a href="#1-环境搭建" class="headerlink" title="1 环境搭建"></a>1 环境搭建</h2><h3 id="1-1-Composer"><a href="#1-1-Composer" class="headerlink" title="1.1 Composer"></a>1.1 Composer</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">composer config -<span class="hljs-selector-tag">g</span> repos<span class="hljs-selector-class">.packagist</span> composer https:<span class="hljs-comment">//mirrors.cloud.tencent.com/composer/</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412312025019.png" srcset="/img/loading.gif" lazyload alt="image-20241231202554752"></p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">composer</span> <span class="hljs-built_in">create-project</span> <span class="hljs-string">topthink</span>/<span class="hljs-string">think</span>=<span class="hljs-string">5</span>.<span class="hljs-string">1</span>.<span class="hljs-string">37</span> <span class="hljs-string">v5</span>.<span class="hljs-string">1</span>.<span class="hljs-string">37</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">composer</span> <span class="hljs-built_in">create-project</span> <span class="hljs-string">topthink</span>/<span class="hljs-string">think</span> <span class="hljs-string">tp61</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412312054303.png" srcset="/img/loading.gif" lazyload alt="image-20241231205437178"></p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">composer install <span class="hljs-comment">--ignore-platform-reqs</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45794666/article/details/123237118">https://blog.csdn.net/weixin_45794666/article/details/123237118</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/359770.html">thinkphp6.1.0反序列化RCE分析复现 - FreeBuf网络安全行业门户</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/10644?time__1311=CqjxR70QD=u4lxGgx+OmDci0ne=ziWoD#toc-10">Thinkphp6.0.9反序列化复现及整合 - 先知社区</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/263977.html">Thinkphp5.1.37-5.1.41(最新版本) 反序列化漏洞复现与分析 - FreeBuf网络安全行业门户</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
       
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
         
-        
-        
-        <a href=/1944118663 class="
-           hint--bottom hint--rounded"
-           aria-label="QQ"
-           target="_blank"
-        >
-          <i class="iconfont icon-qq-fill" aria-hidden="true"></i>
-          
-        </a>
+  <a href="/categories/CTF-Writeup/" class="category-chain-item">CTF-Writeup</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ThinkPHP反序列化漏洞学习</div>
+      <div>https://xu17.top/2024/12/31/ThinkPHP反序列化学习/</div>
+    </div>
+    <div class="license-meta">
       
-        
-        
-        
-        <a  class="qr-trigger
-           "
-           
-           target="_self"
-        >
-          <i class="iconfont icon-wechat-fill" aria-hidden="true"></i>
-          
-            <img class="qr-img" src="/img/favicon.png" srcset="/img/loading.gif" lazyload alt="qrcode" />
-          
-        </a>
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>XU17</div>
+        </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              XU17
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/23/2024DASCTF/" title="DASCTF 2024最后一战 wp">
+                        <span class="hidden-mobile">DASCTF 2024最后一战 wp</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'YZS17/comment-utterances');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
     </div>
   </div>
 </div>
 
-<article class="about-content page-content mt-5">
-  <div class="markdown-body">
-    <h2 id="XU17"><a href="#XU17" class="headerlink" title="XU17"></a>XU17</h2><blockquote>
-<p>Follow the light but walk on the darkest path.</p>
-</blockquote>
-<ul>
-<li><p>无人问津也好，技不如人也罢，</p>
-</li>
-<li><p>你都要试着安静下来，去做自己该做的事，</p>
-</li>
-<li><p>而不是让内心烦躁、焦虑，毁掉你本就不多的热情和定力.</p>
-</li>
-</ul>
-
-  </div>
-
-  
-</article>
-
 
 
 
@@ -348,11 +507,8 @@
 
 
 
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+
     
 
     
@@ -470,6 +626,46 @@
   
 
 
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
 
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>

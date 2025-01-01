@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>ThinkPHP反序列化漏洞学习</title>
+    <link href="/2024/12/31/ThinkPHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/"/>
+    <url>/2024/12/31/ThinkPHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="ThinkPHP反序列化漏洞学习"><a href="#ThinkPHP反序列化漏洞学习" class="headerlink" title="ThinkPHP反序列化漏洞学习"></a>ThinkPHP反序列化漏洞学习</h1><h2 id="1-环境搭建"><a href="#1-环境搭建" class="headerlink" title="1 环境搭建"></a>1 环境搭建</h2><h3 id="1-1-Composer"><a href="#1-1-Composer" class="headerlink" title="1.1 Composer"></a>1.1 Composer</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">composer config -<span class="hljs-selector-tag">g</span> repos<span class="hljs-selector-class">.packagist</span> composer https:<span class="hljs-comment">//mirrors.cloud.tencent.com/composer/</span><br></code></pre></td></tr></table></figure><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412312025019.png" alt="image-20241231202554752"></p><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">composer</span> <span class="hljs-built_in">create-project</span> <span class="hljs-string">topthink</span>/<span class="hljs-string">think</span>=<span class="hljs-string">5</span>.<span class="hljs-string">1</span>.<span class="hljs-string">37</span> <span class="hljs-string">v5</span>.<span class="hljs-string">1</span>.<span class="hljs-string">37</span><br></code></pre></td></tr></table></figure><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">composer</span> <span class="hljs-built_in">create-project</span> <span class="hljs-string">topthink</span>/<span class="hljs-string">think</span> <span class="hljs-string">tp61</span><br></code></pre></td></tr></table></figure><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412312054303.png" alt="image-20241231205437178"></p><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">composer install <span class="hljs-comment">--ignore-platform-reqs</span><br></code></pre></td></tr></table></figure><p><a href="https://blog.csdn.net/weixin_45794666/article/details/123237118">https://blog.csdn.net/weixin_45794666/article/details/123237118</a></p><p><a href="https://www.freebuf.com/vuls/359770.html">thinkphp6.1.0反序列化RCE分析复现 - FreeBuf网络安全行业门户</a></p><p><a href="https://xz.aliyun.com/t/10644?time__1311=CqjxR70QD=u4lxGgx+OmDci0ne=ziWoD#toc-10">Thinkphp6.0.9反序列化复现及整合 - 先知社区</a></p><p><a href="https://www.freebuf.com/vuls/263977.html">Thinkphp5.1.37-5.1.41(最新版本) 反序列化漏洞复现与分析 - FreeBuf网络安全行业门户</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CTF-Writeup</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>DASCTF 2024最后一战 wp</title>
     <link href="/2024/12/23/2024DASCTF/"/>
     <url>/2024/12/23/2024DASCTF/</url>
