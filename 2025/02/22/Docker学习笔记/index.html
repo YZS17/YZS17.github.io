@@ -26,13 +26,13 @@
 <meta property="og:site_name" content="XU17">
 <meta property="og:description" content="Docker笔记 Dockerfile学习笔记">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pplware.sapo.pt/wp-content/uploads/2024/02/docker_capa.webp">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202502221813256.webp">
 <meta property="article:published_time" content="2025-02-22T09:20:00.000Z">
-<meta property="article:modified_time" content="2025-02-22T05:28:12.241Z">
+<meta property="article:modified_time" content="2025-02-22T10:40:10.365Z">
 <meta property="article:author" content="XU17">
 <meta property="article:tag" content="Sec">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pplware.sapo.pt/wp-content/uploads/2024/02/docker_capa.webp">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202502221813256.webp">
   
   
   
@@ -221,7 +221,7 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('https://pplware.sapo.pt/wp-content/uploads/2024/02/docker_capa.webp') no-repeat center center; background-size: cover;">
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202502221813256.webp') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          1.8k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          13 分钟
+          16 分钟
         
       </span>
     
@@ -312,61 +312,73 @@
             
               <div class="markdown-body">
                 
-                <p><img src="https://pplware.sapo.pt/wp-content/uploads/2024/02/docker_capa.webp" srcset="/img/loading.gif" lazyload alt="docker"></p>
-<h1 id="Docker学习笔记"><a href="#Docker学习笔记" class="headerlink" title="Docker学习笔记"></a>Docker学习笔记</h1><h2 id="docker命令"><a href="#docker命令" class="headerlink" title="docker命令"></a>docker命令</h2><h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps -a<br>docker <span class="hljs-built_in">rm</span> XXXX<br>docker images<br>docker rmi XXXX<br></code></pre></td></tr></table></figure>
+                <p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202502221813256.webp" srcset="/img/loading.gif" lazyload alt="docker"></p>
+<h1 id="Docker学习笔记"><a href="#Docker学习笔记" class="headerlink" title="Docker学习笔记"></a>Docker学习笔记</h1><p>搭建完成<code>Dockerfile</code>后的导出数据库和<code>var/www/html</code>整个步骤</p>
+<p><code>docker ps</code>查看序列号</p>
+<p><code>docker exec -it  xxxx /bin/bash</code>进入容器</p>
+<p>将数据库<code>dump</code>下来</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u [用户名] -p [数据库名] &gt; [导出文件名].sql<br>Enter Password：输入你的数据库密码<br></code></pre></td></tr></table></figure>
+
+<p><code>exit</code>退出容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#将数据库复制到本机</span><br>docker <span class="hljs-built_in">cp</span> f1c88e98728c:database.sql /home/XU17/XU/dockerfile<br><br><span class="hljs-comment">#将源码复制到本机</span><br>docker <span class="hljs-built_in">cp</span> f1c88e98728c:/var/www/html/ /home/XU17/XU/dockerfile<br></code></pre></td></tr></table></figure>
+
+
+
+<p>在<code>Dockerfile</code>中修改</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-comment"># 将源码复制到容器中</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> files/. /var/www/html/</span><br><br><span class="hljs-comment"># 导入数据库架构</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> service mariadb start &amp;&amp; \</span><br><span class="language-bash">    mysql -u fuel -ppassword fuel &lt; /data/fuel_schema.sql</span><br></code></pre></td></tr></table></figure>
+
+<p>配置文件导入(apache2为例)，<code>Dockerfile</code>中这样改</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-comment"># Step 8: Copy Apache virtual host configuration</span><br><br><span class="hljs-keyword">COPY</span><span class="language-bash"> phplist.conf /etc/apache2/sites-available/phplist.conf</span><br><br><span class="hljs-comment"># Step 9: Enable the PHPList site and disable the default site</span><br><br><span class="hljs-keyword">RUN</span><span class="language-bash"> a2ensite phplist.conf &amp;&amp; \</span><br><span class="language-bash">    a2dissite 000-default.conf &amp;&amp; \</span><br><span class="language-bash">    <span class="hljs-built_in">rm</span> /var/www/html/index.html</span><br></code></pre></td></tr></table></figure>
+
+<p>打包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">tar -czvf fuel.tar.gz fuel<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="docker命令"><a href="#docker命令" class="headerlink" title="docker命令"></a>docker命令</h2><h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps -a<br>docker <span class="hljs-built_in">rm</span> XXXX<br>docker images<br>docker rmi XXXX<br></code></pre></td></tr></table></figure>
 
 
 
 <p>在使用 Docker 时，清理缓存通常指的是清理 Docker 的镜像、容器、卷和网络等资源，以释放磁盘空间。以下是一些常用的命令来清空 Docker 缓存：</p>
-<h4 id="1-清理未使用的资源"><a href="#1-清理未使用的资源" class="headerlink" title="1. 清理未使用的资源"></a>1. 清理未使用的资源</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker system prune<br></code></pre></td></tr></table></figure>
+<h4 id="1-清理未使用的资源"><a href="#1-清理未使用的资源" class="headerlink" title="1. 清理未使用的资源"></a>1. 清理未使用的资源</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker system prune<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li><p>这个命令会清理所有未使用的容器、网络、镜像（不包括标签为 <code>&lt;none&gt;</code> 的镜像）和卷。</p>
 </li>
 <li><p>如果希望同时清理未使用的镜像（包括悬空的镜像），可以加上 <code>-a</code> 参数：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker system prune -a<br></code></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="2-清理所有未使用的容器"><a href="#2-清理所有未使用的容器" class="headerlink" title="2. 清理所有未使用的容器"></a>2. 清理所有未使用的容器</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container prune<br></code></pre></td></tr></table></figure>
+<h4 id="2-清理所有未使用的容器"><a href="#2-清理所有未使用的容器" class="headerlink" title="2. 清理所有未使用的容器"></a>2. 清理所有未使用的容器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container prune<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>这个命令会删除所有未运行的容器。</li>
 </ul>
-<h4 id="3-清理所有未使用的镜像"><a href="#3-清理所有未使用的镜像" class="headerlink" title="3. 清理所有未使用的镜像"></a>3. 清理所有未使用的镜像</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker image prune<br></code></pre></td></tr></table></figure>
+<h4 id="3-清理所有未使用的镜像"><a href="#3-清理所有未使用的镜像" class="headerlink" title="3. 清理所有未使用的镜像"></a>3. 清理所有未使用的镜像</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker image prune<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li><p>默认情况下，只会清理悬空的镜像（即没有标签的镜像）。</p>
 </li>
 <li><p>如果希望清理所有未使用的镜像，可以加上 <code>-a</code> 参数：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker image prune -a<br></code></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="4-清理所有未使用的卷"><a href="#4-清理所有未使用的卷" class="headerlink" title="4. 清理所有未使用的卷"></a>4. 清理所有未使用的卷</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker volume prune<br></code></pre></td></tr></table></figure>
+<h4 id="4-清理所有未使用的卷"><a href="#4-清理所有未使用的卷" class="headerlink" title="4. 清理所有未使用的卷"></a>4. 清理所有未使用的卷</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker volume prune<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>这个命令会删除所有未被容器使用的卷。</li>
 </ul>
-<h4 id="5-清理所有未使用的网络"><a href="#5-清理所有未使用的网络" class="headerlink" title="5. 清理所有未使用的网络"></a>5. 清理所有未使用的网络</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network prune<br></code></pre></td></tr></table></figure>
+<h4 id="5-清理所有未使用的网络"><a href="#5-清理所有未使用的网络" class="headerlink" title="5. 清理所有未使用的网络"></a>5. 清理所有未使用的网络</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network prune<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>这个命令会删除所有未被容器使用的网络。</li>
 </ul>
 <h4 id="6-清理所有未使用的构建缓存"><a href="#6-清理所有未使用的构建缓存" class="headerlink" title="6. 清理所有未使用的构建缓存"></a>6. 清理所有未使用的构建缓存</h4><p>如果你使用了 Docker 的构建功能，可以清理构建缓存：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker builder prune<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li><p>如果希望清理所有构建缓存，可以加上 <code>-a</code> 参数：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker builder prune -a<br></code></pre></td></tr></table></figure></li>
 </ul>
 <h4 id="7-清理所有资源"><a href="#7-清理所有资源" class="headerlink" title="7. 清理所有资源"></a>7. 清理所有资源</h4><p>如果你希望一次性清理所有未使用的资源，可以直接运行：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker system prune -a<br></code></pre></td></tr></table></figure>
 
 <ul>
@@ -388,11 +400,16 @@
 
 <h3 id="dump数据库"><a href="#dump数据库" class="headerlink" title="dump数据库"></a><code>dump</code>数据库</h3><p>将数据库导出（dump）通常是指将数据库中的数据和结构以某种格式（如SQL文件或备份文件）保存到磁盘或其他存储介质中，以便后续恢复或迁移。不同的数据库管理系统（DBMS）有不同的导出方法。以下是一些常见数据库的导出方法：</p>
 <h3 id="1-MySQL-Mariadb"><a href="#1-MySQL-Mariadb" class="headerlink" title="1. MySQL&#x2F;Mariadb"></a>1. <strong>MySQL</strong>&#x2F;Mariadb</h3><p>MySQL是最常用的开源数据库之一，可以使用<code>mysqldump</code>工具来导出数据库。</p>
-<h4 id="基本命令："><a href="#基本命令：" class="headerlink" title="基本命令："></a>基本命令：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u [用户名] -p[密码] [数据库名] &gt; [导出文件名].sql<br></code></pre></td></tr></table></figure>
+<h4 id="基本命令："><a href="#基本命令：" class="headerlink" title="基本命令："></a>基本命令：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u [用户名] -p[密码] [数据库名] &gt; [导出文件名].sql<br></code></pre></td></tr></table></figure>
 
-<h4 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u root -p123456 my_database &gt; my_database_backup.sql<br></code></pre></td></tr></table></figure>
+
+
+<p><code>docker exec -it  xxxx /bin/bash</code>进入容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u [用户名] -p [数据库名] &gt; [导出文件名].sql<br>Enter Password：<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u root -p123456 my_database &gt; my_database_backup.sql<br></code></pre></td></tr></table></figure>
 
 <h4 id="选项说明："><a href="#选项说明：" class="headerlink" title="选项说明："></a>选项说明：</h4><ul>
 <li><code>-u</code>：指定数据库用户名。</li>
@@ -400,13 +417,16 @@
 <li><code>my_database</code>：要导出的数据库名称。</li>
 <li><code>my_database_backup.sql</code>：导出的文件名。</li>
 </ul>
-<h4 id="高级选项："><a href="#高级选项：" class="headerlink" title="高级选项："></a>高级选项：</h4><ul>
+<h4 id="docekr中命令"><a href="#docekr中命令" class="headerlink" title="docekr中命令"></a>docekr中命令</h4><p><code>docker</code>中<code>mysql/Mariadb</code>命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#查看状态</span><br>service mysql/mariadb status<br><br><span class="hljs-comment">#启动</span><br>service mysql/mariadb start<br><br><span class="hljs-comment">#重载</span><br>service mysql/mariadb reload<br><br><span class="hljs-comment">#重启</span><br>service mysql/mariadb restart<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="高级选项（用不到）："><a href="#高级选项（用不到）：" class="headerlink" title="高级选项（用不到）："></a>高级选项（用不到）：</h4><ul>
 <li><p>如果只想导出表结构，不导出数据：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u root -p123456 --no-data my_database &gt; my_database_structure.sql<br></code></pre></td></tr></table></figure>
 </li>
 <li><p>如果只想导出数据，不导出表结构：</p>
-<p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u root -p123456 --no-create-info my_database &gt; my_database_data.sql<br></code></pre></td></tr></table></figure>
 </li>
 <li><p>导出所有数据库：</p>
@@ -414,11 +434,9 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysqldump -u root -p123456 --all-databases &gt; all_databases.sql<br></code></pre></td></tr></table></figure></li>
 </ul>
 <h3 id="2-PostgreSQL"><a href="#2-PostgreSQL" class="headerlink" title="2. PostgreSQL"></a>2. <strong>PostgreSQL</strong></h3><p>PostgreSQL使用<code>pg_dump</code>工具来导出数据库。</p>
-<h4 id="基本命令：-1"><a href="#基本命令：-1" class="headerlink" title="基本命令："></a>基本命令：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_dump -U [用户名] -W [数据库名] &gt; [导出文件名].sql<br></code></pre></td></tr></table></figure>
+<h4 id="基本命令：-1"><a href="#基本命令：-1" class="headerlink" title="基本命令："></a>基本命令：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_dump -U [用户名] -W [数据库名] &gt; [导出文件名].sql<br></code></pre></td></tr></table></figure>
 
-<h4 id="示例：-1"><a href="#示例：-1" class="headerlink" title="示例："></a>示例：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_dump -U postgres -W my_database &gt; my_database_backup.sql<br></code></pre></td></tr></table></figure>
+<h4 id="示例：-1"><a href="#示例：-1" class="headerlink" title="示例："></a>示例：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_dump -U postgres -W my_database &gt; my_database_backup.sql<br></code></pre></td></tr></table></figure>
 
 <h4 id="选项说明：-1"><a href="#选项说明：-1" class="headerlink" title="选项说明："></a>选项说明：</h4><ul>
 <li><code>-U</code>：指定数据库用户名。</li>
@@ -426,7 +444,7 @@
 <li><code>my_database</code>：要导出的数据库名称。</li>
 <li><code>my_database_backup.sql</code>：导出的文件名。</li>
 </ul>
-<h4 id="高级选项：-1"><a href="#高级选项：-1" class="headerlink" title="高级选项："></a>高级选项：</h4><ul>
+<h4 id="高级选项："><a href="#高级选项：" class="headerlink" title="高级选项："></a>高级选项：</h4><ul>
 <li><p>导出为自定义格式（压缩备份）：</p>
 <p>bash复制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pg_dump -U postgres -W -F c my_database &gt; my_database_backup.dump<br></code></pre></td></tr></table></figure>
@@ -440,11 +458,9 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 在SQLite命令行工具中</span><br>.mode <span class="hljs-keyword">insert</span><br>.output my_database_backup.sql<br>.dump<br>.output stdout<br></code></pre></td></tr></table></figure>
 
 <h3 id="4-SQL-Server"><a href="#4-SQL-Server" class="headerlink" title="4. SQL Server"></a>4. <strong>SQL Server</strong></h3><p>SQL Server使用<code>sqlcmd</code>工具或SQL Server Management Studio（SSMS）来导出数据库。</p>
-<h4 id="使用sqlcmd："><a href="#使用sqlcmd：" class="headerlink" title="使用sqlcmd："></a>使用<code>sqlcmd</code>：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlcmd -S [服务器名] -U [用户名] -P [密码] -d [数据库名] -Q <span class="hljs-string">&quot;BACKUP DATABASE [数据库名] TO DISK = &#x27;[备份文件路径].bak&#x27;&quot;</span><br></code></pre></td></tr></table></figure>
+<h4 id="使用sqlcmd："><a href="#使用sqlcmd：" class="headerlink" title="使用sqlcmd："></a>使用<code>sqlcmd</code>：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlcmd -S [服务器名] -U [用户名] -P [密码] -d [数据库名] -Q <span class="hljs-string">&quot;BACKUP DATABASE [数据库名] TO DISK = &#x27;[备份文件路径].bak&#x27;&quot;</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="示例：-3"><a href="#示例：-3" class="headerlink" title="示例："></a>示例：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlcmd -S localhost -U sa -P 123456 -d my_database -Q <span class="hljs-string">&quot;BACKUP DATABASE my_database TO DISK = &#x27;C:\backup\my_database.bak&#x27;&quot;</span><br></code></pre></td></tr></table></figure>
+<h4 id="示例：-3"><a href="#示例：-3" class="headerlink" title="示例："></a>示例：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlcmd -S localhost -U sa -P 123456 -d my_database -Q <span class="hljs-string">&quot;BACKUP DATABASE my_database TO DISK = &#x27;C:\backup\my_database.bak&#x27;&quot;</span><br></code></pre></td></tr></table></figure>
 
 <h4 id="使用SSMS："><a href="#使用SSMS：" class="headerlink" title="使用SSMS："></a>使用SSMS：</h4><ol>
 <li>在SSMS中，右键点击数据库。</li>
@@ -452,11 +468,9 @@
 <li>按照向导操作，指定备份文件路径和备份选项。</li>
 </ol>
 <h3 id="5-Oracle"><a href="#5-Oracle" class="headerlink" title="5. Oracle"></a>5. <strong>Oracle</strong></h3><p>Oracle数据库使用<code>expdp</code>（数据泵）工具来导出数据库。</p>
-<h4 id="基本命令：-2"><a href="#基本命令：-2" class="headerlink" title="基本命令："></a>基本命令：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">expdp [用户名]/[密码] DIRECTORY=[目录对象] DUMPFILE=[导出文件名].dmp LOGFILE=[日志文件名].<span class="hljs-built_in">log</span><br></code></pre></td></tr></table></figure>
+<h4 id="基本命令：-2"><a href="#基本命令：-2" class="headerlink" title="基本命令："></a>基本命令：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">expdp [用户名]/[密码] DIRECTORY=[目录对象] DUMPFILE=[导出文件名].dmp LOGFILE=[日志文件名].<span class="hljs-built_in">log</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="示例：-4"><a href="#示例：-4" class="headerlink" title="示例："></a>示例：</h4><p>bash复制</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">expdp system/123456 DIRECTORY=my_dir DUMPFILE=my_database_backup.dmp LOGFILE=my_database_backup.log<br></code></pre></td></tr></table></figure>
+<h4 id="示例：-4"><a href="#示例：-4" class="headerlink" title="示例："></a>示例：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">expdp system/123456 DIRECTORY=my_dir DUMPFILE=my_database_backup.dmp LOGFILE=my_database_backup.log<br></code></pre></td></tr></table></figure>
 
 <h4 id="选项说明：-2"><a href="#选项说明：-2" class="headerlink" title="选项说明："></a>选项说明：</h4><ul>
 <li><code>DIRECTORY</code>：Oracle目录对象，指向文件系统路径。</li>
@@ -475,14 +489,6 @@
 <li><code>--out</code>：指定导出的目录路径。</li>
 </ul>
 <hr>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li><strong>MySQL</strong>：使用<code>mysqldump</code>。</li>
-<li><strong>PostgreSQL</strong>：使用<code>pg_dump</code>。</li>
-<li><strong>SQLite</strong>：直接复制数据库文件或使用SQL命令导出。</li>
-<li><strong>SQL Server</strong>：使用<code>sqlcmd</code>或SSMS。</li>
-<li><strong>Oracle</strong>：使用<code>expdp</code>。</li>
-<li><strong>MongoDB</strong>：使用<code>mongodump</code>。</li>
-</ul>
 <h3 id="导入数据库"><a href="#导入数据库" class="headerlink" title="导入数据库"></a>导入数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysql -u root -p123456 database_name &lt; /path/database.sql<br></code></pre></td></tr></table></figure>
 
 
@@ -491,9 +497,35 @@
 
 <h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><h3 id="apache2"><a href="#apache2" class="headerlink" title="apache2"></a><code>apache2</code></h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">RUN</span> apt-<span class="hljs-built_in">get</span> update &amp;&amp; <br>	apt-<span class="hljs-built_in">get</span> install -y \<br>    apache2 \<br></code></pre></td></tr></table></figure>
 
+<p><code>xxxx.conf</code></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-section">&lt;VirtualHost *<span class="hljs-number">:80</span>&gt;</span><br>    <span class="hljs-attribute">ServerAdmin</span> admin@your_domain<br>    <span class="hljs-attribute">DocumentRoot</span> /var/www/html/<br>    <span class="hljs-attribute">ServerName</span> localhost<br>    <span class="hljs-section">&lt;Directory /var/www/html/&gt;</span><br>        <span class="hljs-attribute">Options</span> FollowSymLinks<br>        <span class="hljs-attribute">AllowOverride</span> <span class="hljs-literal">All</span><br>        <span class="hljs-attribute">Order</span> <span class="hljs-literal">allow</span>,<span class="hljs-literal">deny</span><br>        <span class="hljs-attribute">allow</span> from <span class="hljs-literal">all</span><br>    <span class="hljs-section">&lt;/Directory&gt;</span><br>    <span class="hljs-attribute">ErrorLog</span> <span class="hljs-variable">$&#123;APACHE_LOG_DIR&#125;</span>/error.log<br>    <span class="hljs-attribute">CustomLog</span> <span class="hljs-variable">$&#123;APACHE_LOG_DIR&#125;</span>/access.log combined<br><span class="hljs-section">&lt;/VirtualHost&gt;</span><br></code></pre></td></tr></table></figure>
 
 
-<h4 id="xxxx-conf"><a href="#xxxx-conf" class="headerlink" title="xxxx.conf"></a><code>xxxx.conf</code></h4><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs coq">```<br><br><br><br>### nginx<br><br>`xxxx.conf`<br><br>```conf<br>server &#123;<br>    listen <span class="hljs-number">80</span>;<br>    server_name localhost;<br>    root /var/www/html/grav;<br><br>    index index.html index.php;<br><br>    location / &#123;<br>        try_files $uri $uri/ /index.php?$query_string;<br>    &#125;<br><br>    location ~* /(\.git|<span class="hljs-type">cache</span>|<span class="hljs-type">bin</span>|<span class="hljs-type">logs</span>|<span class="hljs-type">backup</span>|<span class="hljs-type">tests</span>)/.*$ &#123; <span class="hljs-keyword">return</span> <span class="hljs-number">403</span>; &#125;<br>    location ~* /(system|<span class="hljs-type">vendor</span>)/.*\.(txt|<span class="hljs-type">xml</span>|<span class="hljs-type">md</span>|<span class="hljs-type">html</span>|<span class="hljs-type">yaml</span>|<span class="hljs-type">yml</span>|<span class="hljs-type">php</span>|<span class="hljs-type">pl</span>|<span class="hljs-type">py</span>|<span class="hljs-type">cgi</span>|<span class="hljs-type">twig</span>|<span class="hljs-type">sh</span>|<span class="hljs-type">bat</span>)$ &#123; <span class="hljs-keyword">return</span> <span class="hljs-number">403</span>; &#125;<br>    location ~* /user/.*\.(txt|<span class="hljs-type">md</span>|<span class="hljs-type">yaml</span>|<span class="hljs-type">yml</span>|<span class="hljs-type">php</span>|<span class="hljs-type">pl</span>|<span class="hljs-type">py</span>|<span class="hljs-type">cgi</span>|<span class="hljs-type">twig</span>|<span class="hljs-type">sh</span>|<span class="hljs-type">bat</span>)$ &#123; <span class="hljs-keyword">return</span> <span class="hljs-number">403</span>; &#125;<br>    location ~ /(LICENSE\.txt|<span class="hljs-type">composer</span>\.lock|<span class="hljs-type">composer</span>\.json|<span class="hljs-type">nginx</span>\.conf|<span class="hljs-type">web</span>\.config|<span class="hljs-type">htaccess</span>\.txt|<span class="hljs-type">\.htaccess</span>) &#123; <span class="hljs-keyword">return</span> <span class="hljs-number">403</span>; &#125;<br><br>    location ~ \.php$ &#123;<br>        fastcgi_pass unix:/var/run/php/php8<span class="hljs-number">.1</span>-fpm.sock;<br>        fastcgi_split_path_info ^(.+\.php)(/.+)$;<br>        fastcgi_index index.php;<br>        include fastcgi_params;<br>        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-comment"># Step 8: Copy Apache virtual host configuration</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> phplist.conf /etc/apache2/sites-available/phplist.conf</span><br><br><span class="hljs-comment"># Step 9: Enable the PHPList site and disable the default site</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> a2ensite phplist.conf &amp;&amp; \</span><br><span class="language-bash">    a2dissite 000-default.conf &amp;&amp; \</span><br><span class="language-bash">    <span class="hljs-built_in">rm</span> /var/www/html/index.html</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p><code>docker</code>中<code>apache2</code>命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#查看状态</span><br>service apache2 status<br><br><span class="hljs-comment">#启动</span><br>service apache2 start<br><br><span class="hljs-comment">#重载</span><br>service apache2 reload<br><br><span class="hljs-comment">#重启</span><br>service apache2 restart<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">RUN</span><span class="language-bash"> apt-get update -y &amp;&amp; \</span><br><span class="language-bash">    apt-get upgrade -y &amp;&amp; \</span><br><span class="language-bash">    apt-get install -y --no-install-recommends \</span><br><span class="language-bash">    nginx \</span><br></code></pre></td></tr></table></figure>
+
+<p>导入<code>docker</code></p>
+<p><code>xxxx.conf</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs conf">server &#123;<br>    listen 80;<br>    server_name localhost;<br>    root /var/www/html/grav;<br><br>    index index.html index.php;<br><br>    location / &#123;<br>        try_files $uri $uri/ /index.php?$query_string;<br>    &#125;<br><br>    location ~* /(\.git|cache|bin|logs|backup|tests)/.*$ &#123; return 403; &#125;<br>    location ~* /(system|vendor)/.*\.(txt|xml|md|html|yaml|yml|php|pl|py|cgi|twig|sh|bat)$ &#123; return 403; &#125;<br>    location ~* /user/.*\.(txt|md|yaml|yml|php|pl|py|cgi|twig|sh|bat)$ &#123; return 403; &#125;<br>    location ~ /(LICENSE\.txt|composer\.lock|composer\.json|nginx\.conf|web\.config|htaccess\.txt|\.htaccess) &#123; return 403; &#125;<br><br>    location ~ \.php$ &#123;<br>        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;<br>        fastcgi_split_path_info ^(.+\.php)(/.+)$;<br>        fastcgi_index index.php;<br>        include fastcgi_params;<br>        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>导入<code>docker</code></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Dockerfile"><span class="hljs-comment"># 配置Nginx</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> files/fuel.conf /etc/nginx/conf.d/fuel.conf</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">rm</span> /etc/nginx/sites-enabled/default &amp;&amp; \</span><br><span class="language-bash">    nginx -t</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="php"><a href="#php" class="headerlink" title="php"></a>php</h2><p>配置<code>php.ini</code>，在<code>Dockerfile</code>中可以这样操作，可以不用替换文件</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-comment"># 配置PHP设置</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> sed -i <span class="hljs-string">&#x27;s/memory_limit = .*/memory_limit = 256M/&#x27;</span> /etc/php/8.1/fpm/php.ini &amp;&amp; \</span><br><span class="language-bash">    sed -i <span class="hljs-string">&#x27;s/upload_max_filesize = .*/upload_max_filesize = 100M/&#x27;</span> /etc/php/8.1/fpm/php.ini &amp;&amp; \</span><br><span class="language-bash">    sed -i <span class="hljs-string">&#x27;s/max_execution_time = .*/max_execution_time = 360/&#x27;</span> /etc/php/8.1/fpm/php.ini &amp;&amp; \</span><br><span class="language-bash">    sed -i <span class="hljs-string">&#x27;s/;date.timezone =/date.timezone = UTC/&#x27;</span> /etc/php/8.1/fpm/php.ini</span><br></code></pre></td></tr></table></figure>
 
 
 
